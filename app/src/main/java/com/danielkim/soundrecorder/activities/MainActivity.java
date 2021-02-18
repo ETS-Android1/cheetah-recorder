@@ -36,8 +36,6 @@ public class MainActivity extends AppCompatActivity{
     private PagerSlidingTabStrip tabs;
     private ViewPager pager;
 
-    private int PERMISSION_CODE = 123;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
