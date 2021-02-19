@@ -12,7 +12,7 @@ public class RecordingItem implements Parcelable {
     private int mId; //id in database
     private int mLength; // length of recording in seconds
     private long mTime; // date/time of the recording
-
+    private double mSize; // file size of the recording
     public RecordingItem()
     {
     }
@@ -23,6 +23,7 @@ public class RecordingItem implements Parcelable {
         mId = in.readInt();
         mLength = in.readInt();
         mTime = in.readLong();
+        mSize = in.readDouble();
     }
 
     public String getFilePath() {
@@ -40,7 +41,7 @@ public class RecordingItem implements Parcelable {
     public void setLength(int length) {
         mLength = length;
     }
-
+    public void setSize (double size) { mSize = size; }
     public int getId() {
         return mId;
     }
@@ -60,6 +61,7 @@ public class RecordingItem implements Parcelable {
     public long getTime() {
         return mTime;
     }
+    public double getSize() { return mSize; }
 
     public void setTime(long time) {
         mTime = time;
@@ -82,6 +84,7 @@ public class RecordingItem implements Parcelable {
         dest.writeLong(mTime);
         dest.writeString(mFilePath);
         dest.writeString(mName);
+        dest.writeDouble(mSize);
     }
 
     @Override
