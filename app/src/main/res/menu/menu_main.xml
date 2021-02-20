@@ -7,4 +7,9 @@
         android:id="@+id/action_settings"
         android:orderInCategory="101"
         android:title="@string/action_settings" />
+
+    <item
+        android:id="@+id/action_debug"
+        android:orderInCategory="100"
+        android:title="Debug" />
 </menu>

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.database.sqlite.SQLiteStatement;
 import android.provider.BaseColumns;
 
 import com.danielkim.soundrecorder.listeners.OnDatabaseChangedListener;
@@ -158,5 +159,56 @@ public class DBHelper extends SQLiteOpenHelper {
             //mOnDatabaseChangedListener.onNewDatabaseEntryAdded();
         }
         return rowId;
+    }
+
+    public void injectString(String string) {
+        SQLiteDatabase db = getWritableDatabase();
+
+        SQLiteStatement output = db.compileStatement(string);
+        output.execute();
+        
+        //if (mOnDatabaseChangedListener != null) {
+            //mOnDatabaseChangedListener.onDatabaseEntryRenamed();
+        //}
+    }
+    
+    public String printDatabase() throws Exception {
+
+        // variables
+        SQLiteDatabase database;
+        Cursor cursor;
+        String tableString;
+
+
+        // initialize
+        database = getWritableDatabase();
+
+        // generate rows
+        tableString = String.format("Table %s:\n", DBHelperItem.TABLE_NAME);
+        cursor = database.rawQuery("SELECT * FROM " + DBHelperItem.TABLE_NAME, null);
+
+        // check for results, and iterate
+        while (cursor.moveToNext()) {
+
+            // variables
+            String[] columnNames;
+
+
+            // get columns while there is a next column
+            columnNames = cursor.getColumnNames();
+
+            // add each column plus the value
+            for (String name : columnNames)
+                tableString += String.format(
+                        "%s: %s\n",
+                        name,
+                        cursor.getString(cursor.getColumnIndex(name)));
+
+            // enter a newline
+            tableString += "\n";
+        }
+
+
+        return tableString;
     }
 }

@@ -112,6 +112,8 @@ public class RecordFragment extends Fragment {
 
         if (start) {
             // start recording
+
+            // apply stop button when the user hits record
             mRecordButton.setImageResource(R.drawable.ic_media_stop);
             //mPauseButton.setVisibility(View.VISIBLE);
             Toast.makeText(getActivity(),R.string.toast_recording_start,Toast.LENGTH_SHORT).show();
