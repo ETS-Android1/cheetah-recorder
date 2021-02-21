@@ -1,10 +1,17 @@
 package com.danielkim.soundrecorder.fragments;
 
+import android.Manifest;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.SystemClock;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,6 +40,8 @@ public class RecordFragment extends Fragment {
     private static final String LOG_TAG = RecordFragment.class.getSimpleName();
 
     private int position;
+    private int PERMISSION_CODE = 123;
+
 
     //Recording controls
     private FloatingActionButton mRecordButton = null;
@@ -86,8 +95,14 @@ public class RecordFragment extends Fragment {
         mRecordButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onRecord(mStartRecording);
-                mStartRecording = !mStartRecording;
+                if(!(ContextCompat.checkSelfPermission(getActivity(),
+                        Manifest.permission.RECORD_AUDIO) + ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED)) {
+
+                    requestPermission();
+                }else {
+                    onRecord(mStartRecording);
+                    mStartRecording = !mStartRecording;
+                }
             }
         });
 
@@ -103,6 +118,50 @@ public class RecordFragment extends Fragment {
 
         return recordView;
     }
+
+    private void requestPermission() {
+        if(ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), Manifest.permission.RECORD_AUDIO) || ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+            new AlertDialog.Builder(getActivity()).
+                    setTitle("Permission Needed")
+                    .setMessage("Audio and Storage permission needed to use this app")
+                    .setPositiveButton("ok", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            ActivityCompat.requestPermissions(getActivity(), new String[] {Manifest.permission.RECORD_AUDIO, Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSION_CODE);
+                        }
+                    })
+                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    })
+                    .create().show();
+        } else {
+            ActivityCompat.requestPermissions(getActivity(), new String[] {Manifest.permission.RECORD_AUDIO, Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSION_CODE);
+        }
+    }
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+
+        System.out.println("----------------------------------------------- " + grantResults[0]);
+        System.out.println("----------------------------------------------- " + grantResults[1]);
+
+        if(requestCode == PERMISSION_CODE) {
+
+            if(grantResults.length > 0 && (grantResults[0] + grantResults[1] == PackageManager.PERMISSION_GRANTED)){
+                Toast.makeText(getActivity(), "PERMISSION GRANTED", Toast.LENGTH_LONG).show();
+            }else {
+                Toast.makeText(getActivity(), "PERMISSION DENIED", Toast.LENGTH_LONG).show();
+            }
+        }
+    }
+
+
+
 
     // Recording Start/Stop
     //TODO: recording pause

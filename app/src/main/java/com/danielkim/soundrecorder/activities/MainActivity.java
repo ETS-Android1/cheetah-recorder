@@ -37,26 +37,11 @@ public class MainActivity extends AppCompatActivity{
     private PagerSlidingTabStrip tabs;
     private ViewPager pager;
 
-    private int PERMISSION_CODE = 123;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-
-
-        if(ContextCompat.checkSelfPermission(MainActivity.this,
-                Manifest.permission.RECORD_AUDIO) + ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-
-            //consider removing this due to constant after returning to MainActivity
-            Toast.makeText(MainActivity.this, "You have already granted this permission", Toast.LENGTH_SHORT).show();
-
-        } else {
-            requestPermission();
-        }
-
 
         pager = (ViewPager) findViewById(R.id.pager);
         pager.setAdapter(new MyAdapter(getSupportFragmentManager()));
@@ -72,49 +57,6 @@ public class MainActivity extends AppCompatActivity{
 
 
 
-
-    private void requestPermission() {
-        if(ActivityCompat.shouldShowRequestPermissionRationale(MainActivity.this, Manifest.permission.RECORD_AUDIO) || ActivityCompat.shouldShowRequestPermissionRationale(MainActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-            new AlertDialog.Builder(MainActivity.this).
-                    setTitle("Permission Needed")
-                    .setMessage("Audio and Storage permission needed to use this app")
-                    .setPositiveButton("ok", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            ActivityCompat.requestPermissions(MainActivity.this, new String[] {Manifest.permission.RECORD_AUDIO, Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSION_CODE);
-                        }
-                    })
-                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                        }
-                    })
-                    .create().show();
-        } else {
-            ActivityCompat.requestPermissions(MainActivity.this, new String[] {Manifest.permission.RECORD_AUDIO, Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSION_CODE);
-        }
-    }
-
-
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-
-        System.out.println("----------------------------------------------- " + grantResults[0]);
-        System.out.println("----------------------------------------------- " + grantResults[1]);
-
-        if(requestCode == PERMISSION_CODE) {
-
-            if(grantResults.length > 0 && (grantResults[0] + grantResults[1] == PackageManager.PERMISSION_GRANTED)){
-                Toast.makeText(MainActivity.this, "PERMISSION GRANTED", Toast.LENGTH_LONG).show();
-            }else {
-                Toast.makeText(MainActivity.this, "PERMISSION DENIED", Toast.LENGTH_LONG).show();
-                finish();
-            }
-        }
-    }
 
 
 
