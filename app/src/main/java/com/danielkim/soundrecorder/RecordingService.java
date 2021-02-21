@@ -37,7 +37,7 @@ public class RecordingService extends Service {
     private MediaRecorder mRecorder = null;
 
     private DBHelper mDatabase;
-
+    private double mFileSize = 0;
     private long mStartingTimeMillis = 0;
     private long mElapsedMillis = 0;
     private int mElapsedSeconds = 0;
@@ -125,6 +125,15 @@ public class RecordingService extends Service {
         mElapsedMillis = (System.currentTimeMillis() - mStartingTimeMillis);
         mRecorder.release();
         Toast.makeText(this, getString(R.string.toast_recording_finish) + " " + mFilePath, Toast.LENGTH_LONG).show();
+        try {
+            File file = new File(mFilePath);
+            mFileSize = file.length();
+            mFileSize = mFileSize/1024;
+
+
+        } catch (Exception e){
+            Log.e(LOG_TAG, "exception", e);
+        }
 
         //remove notification
         if (mIncrementTimerTask != null) {
@@ -135,7 +144,7 @@ public class RecordingService extends Service {
         mRecorder = null;
 
         try {
-            mDatabase.addRecording(mFileName, mFilePath, mElapsedMillis);
+            mDatabase.addRecording(mFileName, mFilePath, mElapsedMillis, mFileSize);
 
         } catch (Exception e){
             Log.e(LOG_TAG, "exception", e);
