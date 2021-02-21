@@ -13,8 +13,8 @@ public class RecordingItem implements Parcelable {
     private int mLength; // length of recording in seconds
     private long mTime; // date/time of the recording
     private double mSize; // file size of the recording
-    public RecordingItem()
-    {
+
+    public RecordingItem() {
     }
 
     public RecordingItem(Parcel in) {
@@ -41,7 +41,11 @@ public class RecordingItem implements Parcelable {
     public void setLength(int length) {
         mLength = length;
     }
-    public void setSize (double size) { mSize = size; }
+
+    public void setSize(double size) {
+        mSize = size;
+    }
+
     public int getId() {
         return mId;
     }
@@ -61,7 +65,37 @@ public class RecordingItem implements Parcelable {
     public long getTime() {
         return mTime;
     }
-    public double getSize() { return mSize; }
+
+    public double getSize() {
+
+        return mSize;
+    }
+
+    public String getSizeFormatted() {
+
+        // variables
+        String[] unit;
+        double size;
+        int order;
+
+        String output;
+
+
+        // assign
+        unit = new String[]{"KB", "MB", "GB", "TB"};
+        size = this.mSize;
+
+        // assume Bytes to start, divide to find the units order.
+        order = 0;
+        while (size >= 1024 && order < unit.length - 1){
+
+            size = size / 1024;
+            order++;
+        }
+
+        output = String.format("%.0f %s", size, unit[order]);
+        return output;
+    }
 
     public void setTime(long time) {
         mTime = time;
