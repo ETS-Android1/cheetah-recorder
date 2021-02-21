@@ -11,6 +11,7 @@
         layout="@layout/toolbar"/>
 
     <com.astuetz.PagerSlidingTabStrip
+
         android:id="@+id/tabs"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"

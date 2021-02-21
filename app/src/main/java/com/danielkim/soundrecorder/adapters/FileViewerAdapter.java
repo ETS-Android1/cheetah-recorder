@@ -99,7 +99,8 @@ public class FileViewerAdapter extends RecyclerView.Adapter<FileViewerAdapter.Re
 
                 ArrayList<String> entrys = new ArrayList<String>();
                 entrys.add(mContext.getString(R.string.dialog_file_share));
-                entrys.add(mContext.getString(R.string.dialog_file_rename));
+                entrys.add(
+             mContext.getString(R.string.dialog_file_rename));
                 entrys.add(mContext.getString(R.string.dialog_file_delete));
 
                 final CharSequence[] items = entrys.toArray(new CharSequence[entrys.size()]);
