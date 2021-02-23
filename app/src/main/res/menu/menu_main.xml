@@ -3,6 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".MainActivity">
+
+    <item
+        android:id="@+id/action_filter"
+        android:orderInCategory="102"
+        android:title="@string/filter" />
     <item
         android:id="@+id/action_settings"
         android:orderInCategory="101"
@@ -11,5 +16,6 @@
     <item
         android:id="@+id/action_debug"
         android:orderInCategory="100"
-        android:title="Debug" />
+        android:title="@string/debug" />
+
 </menu>

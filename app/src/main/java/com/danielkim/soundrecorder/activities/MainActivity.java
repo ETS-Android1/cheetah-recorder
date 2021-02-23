@@ -26,6 +26,7 @@ import android.widget.Toast;
 import com.astuetz.PagerSlidingTabStrip;
 import com.danielkim.soundrecorder.R;
 import com.danielkim.soundrecorder.fragments.FileViewerFragment;
+import com.danielkim.soundrecorder.fragments.FilterFragment;
 import com.danielkim.soundrecorder.fragments.LicensesFragment;
 import com.danielkim.soundrecorder.fragments.RecordFragment;
 
@@ -85,6 +86,11 @@ public class MainActivity extends AppCompatActivity{
                 intent = new Intent(this, SqlDebugActivity.class);
                 startActivity(intent);
                 break;
+                // delete this case if you have to
+            case R.id.action_filter:
+                intent = new Intent(this, FilterFragment.class); // probably wrong
+                startActivity(intent);
+                break;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -107,6 +113,9 @@ public class MainActivity extends AppCompatActivity{
                 }
                 case 1:{
                     return FileViewerFragment.newInstance(position);
+                }
+                case 2:{
+                    return FilterFragment.newInstance(position);
                 }
             }
             return null;
