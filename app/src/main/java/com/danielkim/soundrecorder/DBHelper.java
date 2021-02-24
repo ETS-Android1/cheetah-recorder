@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.os.Environment;
 import android.provider.BaseColumns;
 
 import com.danielkim.soundrecorder.listeners.OnDatabaseChangedListener;
@@ -26,7 +27,6 @@ public class DBHelper extends SQLiteOpenHelper {
 
     public static abstract class DBHelperItem implements BaseColumns {
         public static final String TABLE_NAME = "saved_recordings";
-
         public static final String COLUMN_NAME_RECORDING_NAME = "recording_name";
         public static final String COLUMN_NAME_RECORDING_FILE_PATH = "file_path";
         public static final String COLUMN_NAME_RECORDING_LENGTH = "length";
@@ -42,6 +42,9 @@ public class DBHelper extends SQLiteOpenHelper {
                     DBHelperItem.COLUMN_NAME_RECORDING_FILE_PATH + TEXT_TYPE + COMMA_SEP +
                     DBHelperItem.COLUMN_NAME_RECORDING_LENGTH + " INTEGER " + COMMA_SEP +
                     DBHelperItem.COLUMN_NAME_TIME_ADDED + " INTEGER " + ")";
+
+
+
 
     @SuppressWarnings("unused")
     private static final String SQL_DELETE_ENTRIES = "DROP TABLE IF EXISTS " + DBHelperItem.TABLE_NAME;
@@ -93,7 +96,27 @@ public class DBHelper extends SQLiteOpenHelper {
         String[] whereArgs = { String.valueOf(id) };
         db.delete(DBHelperItem.TABLE_NAME, "_ID=?", whereArgs);
     }
+    public void moveToDeletedFiles(int id) {
+        SQLiteDatabase db = getWritableDatabase();
+        String[] whereArgs = { String.valueOf(id) };
+// Does directory need file name?
+        ContentValues cv = new ContentValues();
+        cv.put(DBHelperItem.COLUMN_NAME_RECORDING_FILE_PATH, Environment.getExternalStorageDirectory() + "/SoundRecorder/deleted");
 
+        db.update(DBHelperItem.TABLE_NAME, cv, null, whereArgs);
+    }
+    public void restoreDeletedFiles() {
+        SQLiteDatabase db = getReadableDatabase();
+
+// Does directory need file name?
+        ContentValues cv = new ContentValues();
+        cv.put(DBHelperItem.COLUMN_NAME_RECORDING_FILE_PATH, "/SoundRecorder");
+        db.update(DBHelperItem.TABLE_NAME, cv, DBHelperItem.COLUMN_NAME_RECORDING_FILE_PATH + "='/SoundRecorder/deleted'", null);
+
+        if (mOnDatabaseChangedListener != null) {
+            mOnDatabaseChangedListener.onDatabaseEntryRenamed();
+        }
+    }
     public int getCount() {
         SQLiteDatabase db = getReadableDatabase();
         String[] projection = { DBHelperItem._ID };

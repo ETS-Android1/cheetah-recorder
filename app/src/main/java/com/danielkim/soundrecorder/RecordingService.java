@@ -107,7 +107,7 @@ public class RecordingService extends Service {
     public void setFileNameAndPath(){
         int count = 0;
         File f;
-
+        //how the file is stored
         do{
             count++;
 
