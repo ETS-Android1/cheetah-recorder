@@ -26,6 +26,7 @@ import com.danielkim.soundrecorder.fragments.PlaybackFragment;
 import com.danielkim.soundrecorder.listeners.OnDatabaseChangedListener;
 
 import java.io.File;
+import java.util.LinkedList;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 import java.util.ArrayList;
@@ -39,6 +40,7 @@ public class FileViewerAdapter extends RecyclerView.Adapter<FileViewerAdapter.Re
     private static final String LOG_TAG = "FileViewerAdapter";
 
     private DBHelper mDatabase;
+    private LinkedList<String> filePaths;
 
     RecordingItem item;
     Context mContext;
@@ -50,6 +52,8 @@ public class FileViewerAdapter extends RecyclerView.Adapter<FileViewerAdapter.Re
         mDatabase = new DBHelper(mContext);
         mDatabase.setOnDatabaseChangedListener(this);
         llm = linearLayoutManager;
+
+        filePaths = mDatabase.getFilePaths();
     }
 
     @Override
@@ -167,16 +171,18 @@ public class FileViewerAdapter extends RecyclerView.Adapter<FileViewerAdapter.Re
 
     @Override
     public int getItemCount() {
-        return mDatabase.getCount();
+        return filePaths.size();
     }
 
     public RecordingItem getItem(int position) {
-        return mDatabase.getItemAt(position);
+
+        return mDatabase.getItemByFilePath(filePaths.get(position));
     }
 
     @Override
     public void onNewDatabaseEntryAdded() {
         //item added to top of the list
+        filePaths = mDatabase.getFilePaths();
         notifyItemInserted(getItemCount() - 1);
         llm.scrollToPosition(getItemCount() - 1);
     }
@@ -280,6 +286,7 @@ public class FileViewerAdapter extends RecyclerView.Adapter<FileViewerAdapter.Re
     }
 
     public void deleteFileDialog (final int position) {
+
         // File delete confirm
         AlertDialog.Builder confirmDelete = new AlertDialog.Builder(mContext);
         confirmDelete.setTitle(mContext.getString(R.string.dialog_title_delete));
@@ -308,5 +315,17 @@ public class FileViewerAdapter extends RecyclerView.Adapter<FileViewerAdapter.Re
 
         AlertDialog alert = confirmDelete.create();
         alert.show();
+    }
+
+    public void updateFilePaths(){
+
+        filePaths = mDatabase.getFilePaths();
+        this.notifyDataSetChanged();
+    }
+
+    public void updateFilePaths(String clause){
+
+        filePaths = mDatabase.getFilePaths(clause);
+        this.notifyDataSetChanged();
     }
 }

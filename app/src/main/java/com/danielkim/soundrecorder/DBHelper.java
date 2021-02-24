@@ -11,6 +11,7 @@ import android.provider.BaseColumns;
 import com.danielkim.soundrecorder.listeners.OnDatabaseChangedListener;
 
 import java.util.Comparator;
+import java.util.LinkedList;
 
 /**
  * Created by Daniel on 12/29/2014.
@@ -92,6 +93,113 @@ public class DBHelper extends SQLiteOpenHelper {
             return item;
         }
         return null;
+    }
+
+    public RecordingItem getItemByFilePath(String filePath) {
+        SQLiteDatabase db = getReadableDatabase();
+        String[] projection = {
+                DBHelperItem._ID,
+                DBHelperItem.COLUMN_NAME_RECORDING_NAME,
+                DBHelperItem.COLUMN_NAME_RECORDING_FILE_PATH,
+                DBHelperItem.COLUMN_NAME_RECORDING_LENGTH,
+                DBHelperItem.COLUMN_NAME_TIME_ADDED,
+                DBHelperItem.COLUMN_NAME_RECORDING_SIZE
+        };
+
+        Cursor c = db.query(
+                DBHelperItem.TABLE_NAME,
+                projection,
+                DBHelperItem.COLUMN_NAME_RECORDING_FILE_PATH + " like '%" + filePath + "%'",
+                null,
+                null,
+                null,
+                null);
+
+        c.moveToFirst();
+        if (!c.isNull(c.getColumnIndex(DBHelperItem.COLUMN_NAME_RECORDING_FILE_PATH))){
+            RecordingItem item = new RecordingItem();
+            item.setId(c.getInt(c.getColumnIndex(DBHelperItem._ID)));
+            item.setName(c.getString(c.getColumnIndex(DBHelperItem.COLUMN_NAME_RECORDING_NAME)));
+            item.setFilePath(c.getString(c.getColumnIndex(DBHelperItem.COLUMN_NAME_RECORDING_FILE_PATH)));
+            item.setLength(c.getInt(c.getColumnIndex(DBHelperItem.COLUMN_NAME_RECORDING_LENGTH)));
+            item.setTime(c.getLong(c.getColumnIndex(DBHelperItem.COLUMN_NAME_TIME_ADDED)));
+            item.setSize(c.getDouble(c.getColumnIndex(DBHelperItem.COLUMN_NAME_RECORDING_SIZE)));
+
+            c.close();
+            return item;
+        }
+
+        return null;
+    }
+
+    public LinkedList<String> getFilePaths(){
+
+        SQLiteDatabase db = getReadableDatabase();
+        String[] projection = {
+                DBHelperItem._ID,
+                DBHelperItem.COLUMN_NAME_RECORDING_FILE_PATH,
+        };
+
+        Cursor c = db.query(
+                DBHelperItem.TABLE_NAME,
+                projection,
+                null,
+                null,
+                null,
+                null,
+                null);
+
+        LinkedList<String> filePaths;
+        filePaths = new LinkedList<String>();
+        c.moveToFirst();
+        while(!c.isAfterLast()){
+
+            // variables
+            String currentPath;
+
+            currentPath = c.getString(c.getColumnIndex(DBHelperItem.COLUMN_NAME_RECORDING_FILE_PATH));
+
+
+            filePaths.add(currentPath);
+            c.moveToNext();
+        }
+
+        return filePaths;
+    }
+
+    public LinkedList<String> getFilePaths(String clause){
+
+        SQLiteDatabase db = getReadableDatabase();
+        String[] projection = {
+                DBHelperItem._ID,
+                DBHelperItem.COLUMN_NAME_RECORDING_FILE_PATH,
+        };
+
+        Cursor c = db.query(
+                DBHelperItem.TABLE_NAME,
+                projection,
+                clause,
+                null,
+                null,
+                null,
+                null);
+
+        LinkedList<String> filePaths;
+        filePaths = new LinkedList<String>();
+        c.moveToFirst();
+        while(c.isAfterLast()){
+
+            // variables
+            String currentPath;
+
+            currentPath = c.getString(c.getColumnIndex(DBHelperItem.COLUMN_NAME_RECORDING_FILE_PATH));
+
+
+            filePaths.add(currentPath);
+            c.moveToNext();
+        }
+
+        return filePaths;
     }
 
     public void removeItemWithId(int id) {
@@ -218,4 +326,5 @@ public class DBHelper extends SQLiteOpenHelper {
 
         return tableString;
     }
+
 }
