@@ -1,20 +1,12 @@
 package com.danielkim.soundrecorder.activities;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
+import android.app.FragmentTransaction;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
-import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 
@@ -26,7 +18,7 @@ import android.widget.Toast;
 import com.astuetz.PagerSlidingTabStrip;
 import com.danielkim.soundrecorder.R;
 import com.danielkim.soundrecorder.fragments.FileViewerFragment;
-import com.danielkim.soundrecorder.fragments.LicensesFragment;
+import com.danielkim.soundrecorder.fragments.FilterFragment;
 import com.danielkim.soundrecorder.fragments.RecordFragment;
 
 
@@ -36,6 +28,10 @@ public class MainActivity extends AppCompatActivity{
 
     private PagerSlidingTabStrip tabs;
     private ViewPager pager;
+
+    // store fragments
+    private RecordFragment currentRecordFragment;
+    private FileViewerFragment currentFileViewerFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,11 +50,6 @@ public class MainActivity extends AppCompatActivity{
             setSupportActionBar(toolbar);
         }
     }
-
-
-
-
-
 
 
     @Override
@@ -85,15 +76,40 @@ public class MainActivity extends AppCompatActivity{
                 intent = new Intent(this, SqlDebugActivity.class);
                 startActivity(intent);
                 break;
+            case R.id.action_search:
+
+                showFilterFragment();
+                break;
             default:
                 return super.onOptionsItemSelected(item);
         }
         return true;
     }
 
+    public void showFilterFragment(){
+
+
+        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        android.app.Fragment prev = getFragmentManager().findFragmentByTag("dialog");
+        if (prev != null) {
+            ft.remove(prev);
+        }
+        ft.addToBackStack(null);
+
+        // Create and show the dialog.
+        FilterFragment newFragment =
+                FilterFragment.
+                        newInstance(currentFileViewerFragment);
+        newFragment.show(ft, "dialog");
+
+
+        Toast.makeText(MainActivity.this, "TEST", Toast.LENGTH_LONG).show();
+    }
+
+
     public class MyAdapter extends FragmentPagerAdapter {
         private String[] titles = { getString(R.string.tab_title_record),
-                getString(R.string.tab_title_saved_recordings) };
+                getString(R.string.tab_title_saved_recordings)};
 
         public MyAdapter(FragmentManager fm) {
             super(fm);
@@ -103,10 +119,13 @@ public class MainActivity extends AppCompatActivity{
         public Fragment getItem(int position) {
             switch(position){
                 case 0:{
-                    return RecordFragment.newInstance(position);
+
+                    currentRecordFragment = RecordFragment.newInstance(position);
+                    return currentRecordFragment;
                 }
                 case 1:{
-                    return FileViewerFragment.newInstance(position);
+                    currentFileViewerFragment = FileViewerFragment.newInstance(position);
+                    return currentFileViewerFragment;
                 }
             }
             return null;
@@ -123,6 +142,5 @@ public class MainActivity extends AppCompatActivity{
         }
     }
 
-    public MainActivity() {
-    }
+
 }
