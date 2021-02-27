@@ -182,16 +182,15 @@ public class FileViewerAdapter extends RecyclerView.Adapter<FileViewerAdapter.Re
     public void onDatabaseEntryRenamed() {
 
     }
-    public void moveToDeleted(String fileName) {
+    public void moveToDeleted(int position) {
 
-        int position = 0;
         File file = new File(getItem(position).getFilePath());
 
-        File folder = new File(Environment.getExternalStorageDirectory() + "/SoundRecorder/deleted");
+        File folder = new File(Environment.getExternalStorageDirectory() + "/SoundRecorder/deleted" + file);
         if (!folder.exists()) {
             folder.mkdir();
         }
-//Delete not implemented properly
+
         Toast.makeText(
                 mContext,
                 String.format(
@@ -309,7 +308,7 @@ public class FileViewerAdapter extends RecyclerView.Adapter<FileViewerAdapter.Re
                     public void onClick(DialogInterface dialog, int id) {
                         try {
                             //remove item from database, recyclerview, and storage
-                            remove(position);
+                            moveToDeleted(position);
 
                         } catch (Exception e) {
                             Log.e(LOG_TAG, "exception", e);

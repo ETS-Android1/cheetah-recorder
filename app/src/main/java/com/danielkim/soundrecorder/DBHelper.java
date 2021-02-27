@@ -99,9 +99,9 @@ public class DBHelper extends SQLiteOpenHelper {
     public void moveToDeletedFiles(int id) {
         SQLiteDatabase db = getWritableDatabase();
         String[] whereArgs = { String.valueOf(id) };
-// Does directory need file name?
+        String fileName = getItemAt(id).getName();
         ContentValues cv = new ContentValues();
-        cv.put(DBHelperItem.COLUMN_NAME_RECORDING_FILE_PATH, Environment.getExternalStorageDirectory() + "/SoundRecorder/deleted");
+        cv.put(DBHelperItem.COLUMN_NAME_RECORDING_FILE_PATH, Environment.getExternalStorageDirectory() + "/SoundRecorder/deleted" + fileName);
 
         db.update(DBHelperItem.TABLE_NAME, cv, null, whereArgs);
     }

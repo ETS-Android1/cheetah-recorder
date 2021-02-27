@@ -78,11 +78,12 @@ public class FileViewerFragment extends Fragment{
                                 + android.os.Environment.getExternalStorageDirectory().toString()
                                 + "/SoundRecorder" + file + "]");
 
-                        // position of the file deleted
-                        mFileViewerAdapter.moveToDeleted(file);
+                        // remove file from database and recyclerview
+                        mFileViewerAdapter.removeOutOfApp(filePath);
                     }
                 }
             };
+
 }
 
 
