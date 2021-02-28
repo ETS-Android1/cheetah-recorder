@@ -108,7 +108,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public void restoreDeletedFiles() {
         SQLiteDatabase db = getReadableDatabase();
 
-// Does directory need file name?
+
         ContentValues cv = new ContentValues();
         cv.put(DBHelperItem.COLUMN_NAME_RECORDING_FILE_PATH, "/SoundRecorder");
         db.update(DBHelperItem.TABLE_NAME, cv, DBHelperItem.COLUMN_NAME_RECORDING_FILE_PATH + "='/SoundRecorder/deleted'", null);
