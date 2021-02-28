@@ -35,6 +35,14 @@ import java.util.Locale;
 
 public class FilterFragment extends DialogFragment {
 
+    // constants
+    static public final int MIN_FILE_SIZE = 0;
+    static public final int MAX_FILE_SIZE = 1048576 * 2;
+    static public final int LOG_MIN_FILE_SIZE;
+    static public final int LOG_MAX_FILE_SIZE;
+    static public final double LOG_SCALE;
+    static public final String[] UNIT = new String[]{"KB", "MB", "GB", "TB", "PT"};
+
     // store current activity
     FileViewerFragment fileViewerFragment;
 
@@ -54,6 +62,17 @@ public class FilterFragment extends DialogFragment {
     // variables
     SimpleDateFormat sqlLiteDate;
 
+
+    static{
+        if(MIN_FILE_SIZE == 0)
+            LOG_MIN_FILE_SIZE = 0;
+        else
+            LOG_MIN_FILE_SIZE = (int) Math.log(MIN_FILE_SIZE);
+
+        LOG_MAX_FILE_SIZE = (int) Math.log(MAX_FILE_SIZE);
+
+        LOG_SCALE = (double) (LOG_MAX_FILE_SIZE - LOG_MIN_FILE_SIZE) / (MAX_FILE_SIZE - MIN_FILE_SIZE);
+    }
 
     public static FilterFragment newInstance(FileViewerFragment fileViewerFragment) {
         FilterFragment fragment = new FilterFragment();
@@ -144,9 +163,9 @@ public class FilterFragment extends DialogFragment {
 
 
                         // create a standard date object
-                        date = new Date(year,month,dayOfMonth);
+                        date = new Date();
                         parsedDate = sqlLiteDate.format(date);
-                        minDateText.setText(parsedDate);
+                        minDateText.setText(year + "-" + month + "-" + dayOfMonth);
                     }
                 });
             }
@@ -171,10 +190,6 @@ public class FilterFragment extends DialogFragment {
                         Date date;
                         String parsedDate;
 
-
-                        // create a standard date object
-                        //date = new Date(year,month,dayOfMonth);
-                        //parsedDate = sqlLiteDate.format(date);
                         maxDateText.setText(year + "-" + month + "-" + dayOfMonth);
                     }
                 });
@@ -185,15 +200,35 @@ public class FilterFragment extends DialogFragment {
     private void createSizeFunctionality(){
 
         // implement seek bar
-        selectFileSize.setMax(1000000);
+        selectFileSize.setMax(MAX_FILE_SIZE);
         selectFileSize.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
 
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
 
-                sizeText.setText(new String(progress + " kb"));
-                fileSize = progress;
+                // variables
+                int actualSize;
+                int displaySize;
+                int unitOrder;
 
+                String display;
+
+                // apply a logarithmic scale
+                actualSize = (int) Math.exp(LOG_MIN_FILE_SIZE + (LOG_SCALE * (progress - MIN_FILE_SIZE)));
+                displaySize = actualSize;
+
+                // assume kilo bytes to start, divide to find the units order.
+                unitOrder = 0;
+                while (displaySize >= 1024 && unitOrder < UNIT.length - 1){
+
+                    displaySize = displaySize / 1024;
+                    unitOrder++;
+                }
+
+
+                display = "" + displaySize + UNIT[unitOrder];
+                sizeText.setText(display);
+                fileSize = actualSize;
             }
 
             @Override
