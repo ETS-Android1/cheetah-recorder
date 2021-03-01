@@ -1,26 +1,21 @@
 package com.danielkim.soundrecorder.fragments;
 
-import android.Manifest;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.DialogInterface;
-import android.content.pm.PackageManager;
 import android.graphics.ColorFilter;
 import android.graphics.LightingColorFilter;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.DialogFragment;
-import android.support.v4.content.ContextCompat;
+import androidx.annotation.NonNull;
+import androidx.fragment.app.DialogFragment;
+
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.SeekBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.danielkim.soundrecorder.R;
 import com.danielkim.soundrecorder.RecordingItem;

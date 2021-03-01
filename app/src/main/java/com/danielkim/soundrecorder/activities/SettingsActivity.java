@@ -1,17 +1,14 @@
 package com.danielkim.soundrecorder.activities;
 
-import android.app.Activity;
 import android.os.Bundle;
-import android.os.PersistableBundle;
-import android.preference.PreferenceActivity;
-import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
-import android.support.v7.app.ActionBar;
-import android.support.v7.widget.Toolbar;
+
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.widget.Toolbar;
 
 import com.danielkim.soundrecorder.R;
 import com.danielkim.soundrecorder.fragments.SettingsFragment;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 
 
 /**

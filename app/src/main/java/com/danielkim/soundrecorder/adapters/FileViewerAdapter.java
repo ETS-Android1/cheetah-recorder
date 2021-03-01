@@ -7,10 +7,12 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Environment;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+
+import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,6 +27,7 @@ import com.danielkim.soundrecorder.R;
 import com.danielkim.soundrecorder.RecordingItem;
 import com.danielkim.soundrecorder.fragments.PlaybackFragment;
 import com.danielkim.soundrecorder.listeners.OnDatabaseChangedListener;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.storage.FirebaseStorage;
@@ -33,7 +36,6 @@ import com.google.firebase.storage.UploadTask;
 
 import java.io.File;
 import java.util.LinkedList;
-import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 import java.util.ArrayList;
 import java.util.UUID;
@@ -205,24 +207,57 @@ public class FileViewerAdapter extends RecyclerView.Adapter<FileViewerAdapter.Re
     }
 
     public void cloudShare(int position) {
+
+        //location of audio file in internal storage
         File file = new File(getItem(position).getFilePath());
 
+        if(file != null) {
+            String path = "SoundRecorder/" + UUID.randomUUID() + ".mp4";
 
-        String path = "audios/"+ UUID.randomUUID() + ".mp4";
+            final StorageReference storageRef = storage.getReference(path);
+            UploadTask uploadTask = storageRef.putFile(Uri.fromFile(file));
 
-        final StorageReference storageRef = storage.getReference(path);
+            //Showing Progress bar
+            final ProgressDialog progressDialog = new ProgressDialog(mContext);
+            progressDialog.setTitle("Uploading...");
+            progressDialog.show();
+            progressDialog.setCancelable(false);
 
-        UploadTask uploadTask = storageRef.putFile(Uri.fromFile(file));
-        uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                Toast.makeText(mContext, "Success...", Toast.LENGTH_LONG).show();
+            uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    progressDialog.dismiss();
+                    Toast.makeText(mContext, "Success", Toast.LENGTH_LONG).show();
 
-                Task<Uri> url = storageRef.getDownloadUrl();
+                    String downURL = taskSnapshot.getMetadata().getReference().getDownloadUrl().toString();
 
-                System.out.println(url.toString());
-            }
-        });
+
+                    Task<Uri> url = storageRef.getDownloadUrl();
+                    Task<Uri> result = taskSnapshot.getStorage().getDownloadUrl();
+                    result.addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            //URL of audio file
+                            String imageUrl = uri.toString();
+                            System.out.println("\n\n---------------------------------------DB File URL = " + imageUrl + "\n\n");
+                        }
+                    });
+
+
+                }
+            });
+//                    .addOnCompleteListener(new OnCompleteListener<Uri>() {
+//                        @Override
+//                        public void onComplete(@NonNull Task<Uri> task) {
+//                            if (task.isSuccessful()) {
+//                                Uri downloadUri = task.getResult();
+//                                System.out.println("\n\n---------------------------------------DB File URL = " + downloadUri.toString() + "\n\n");
+//                            } else{
+//                                Toast.makeText(mContext, "upload failed: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+//                            }
+//                        }
+//                    });
+        }
 
       /*  if(file != null)
         {
