@@ -15,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.SeekBar;
@@ -43,7 +44,7 @@ public class FilterFragment extends DialogFragment {
     static public final double LOG_SCALE;
     static public final String[] UNIT = new String[]{"KB", "MB", "GB", "TB", "PT"};
 
-    // store current activity
+    // store current activity for updating
     FileViewerFragment fileViewerFragment;
 
     // widgets
@@ -70,7 +71,6 @@ public class FilterFragment extends DialogFragment {
             LOG_MIN_FILE_SIZE = (int) Math.log(MIN_FILE_SIZE);
 
         LOG_MAX_FILE_SIZE = (int) Math.log(MAX_FILE_SIZE);
-
         LOG_SCALE = (double) (LOG_MAX_FILE_SIZE - LOG_MIN_FILE_SIZE) / (MAX_FILE_SIZE - MIN_FILE_SIZE);
     }
 
@@ -119,6 +119,7 @@ public class FilterFragment extends DialogFragment {
         // implement listeners and field updates
         createSizeFunctionality();
         createDateFunctionality();
+        createEnabledFunctionality();
 
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -243,6 +244,53 @@ public class FilterFragment extends DialogFragment {
         });
     }
 
+    private void createEnabledFunctionality(){
+
+        // assume false to start
+        doFilterFileDate.setChecked(false);
+        doFilterTextSize.setChecked(false);
+
+
+        minDateText.setVisibility(View.INVISIBLE);
+        maxDateText.setVisibility(View.INVISIBLE);
+
+
+        doFilterFileDate.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
+                if(isChecked){
+
+                    minDateText.setVisibility(View.VISIBLE);
+                    maxDateText.setVisibility(View.VISIBLE);
+                }
+                else {
+                    minDateText.setVisibility(View.INVISIBLE);
+                    maxDateText.setVisibility(View.INVISIBLE);
+                }
+
+            }
+        });
+
+        doFilterFileDate.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
+                if(isChecked){
+
+                    minDateText.setVisibility(View.VISIBLE);
+                    maxDateText.setVisibility(View.VISIBLE);
+                }
+                else {
+                    minDateText.setVisibility(View.INVISIBLE);
+                    maxDateText.setVisibility(View.INVISIBLE);
+                }
+
+            }
+        });
+
+    }
+
     private String createSelectQuery(){
 
         // variables
@@ -313,7 +361,7 @@ public class FilterFragment extends DialogFragment {
 
 
 
-        
+
         return textClause.toString();
     }
 
