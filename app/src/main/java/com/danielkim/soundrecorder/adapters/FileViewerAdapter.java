@@ -253,6 +253,8 @@ public class FileViewerAdapter extends RecyclerView.Adapter<FileViewerAdapter.Re
             mDatabase.renameItem(getItem(position), name, mFilePath);
             notifyItemChanged(position);
         }
+
+        updateFilePaths();
     }
 
     public void shareFileDialog(int position) {
