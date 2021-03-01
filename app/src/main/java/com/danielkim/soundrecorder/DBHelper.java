@@ -7,9 +7,16 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Environment;
 import android.provider.BaseColumns;
+import android.util.Log;
 
 import com.danielkim.soundrecorder.listeners.OnDatabaseChangedListener;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Comparator;
 
 /**
@@ -96,22 +103,37 @@ public class DBHelper extends SQLiteOpenHelper {
         String[] whereArgs = { String.valueOf(id) };
         db.delete(DBHelperItem.TABLE_NAME, "_ID=?", whereArgs);
     }
+
     public void moveToDeletedFiles(int id) {
+
+        // variables
         SQLiteDatabase db = getWritableDatabase();
-        String[] whereArgs = { String.valueOf(id) };
+        String[] whereArgs = { "_id = " + id };
         String fileName = getItemAt(id).getName();
+        String filePath = getItemAt(id).getFilePath();
+        String newFilePath = Environment.getExternalStorageDirectory() + "/SoundRecorder/deleted/" + fileName;
         ContentValues cv = new ContentValues();
-        cv.put(DBHelperItem.COLUMN_NAME_RECORDING_FILE_PATH, Environment.getExternalStorageDirectory() + "/SoundRecorder/deleted" + fileName);
+
+
+        // assign
+        cv.put(DBHelperItem.COLUMN_NAME_RECORDING_FILE_PATH, newFilePath);
+
+        // move the file to the deleted folder
+        moveFile(filePath, newFilePath);
 
         db.update(DBHelperItem.TABLE_NAME, cv, null, whereArgs);
     }
+
+
     public void restoreDeletedFiles() {
         SQLiteDatabase db = getReadableDatabase();
 
 
         ContentValues cv = new ContentValues();
         cv.put(DBHelperItem.COLUMN_NAME_RECORDING_FILE_PATH, "/SoundRecorder");
-        db.update(DBHelperItem.TABLE_NAME, cv, DBHelperItem.COLUMN_NAME_RECORDING_FILE_PATH + "='/SoundRecorder/deleted'", null);
+        db.update(DBHelperItem.TABLE_NAME, cv, DBHelperItem.COLUMN_NAME_RECORDING_FILE_PATH + "='/SoundRecorder/deleted/'", null);
+
+
 
         if (mOnDatabaseChangedListener != null) {
             mOnDatabaseChangedListener.onDatabaseEntryRenamed();
@@ -181,5 +203,54 @@ public class DBHelper extends SQLiteOpenHelper {
             //mOnDatabaseChangedListener.onNewDatabaseEntryAdded();
         }
         return rowId;
+    }
+
+    private void moveFile(String inputPath, String outputPath) {
+
+        // variables
+        File file;
+        InputStream inputStream;
+        OutputStream outputStream;
+
+        byte[] buffer;
+
+
+        // assign
+        inputStream = null;
+        outputStream = null;
+        buffer = new byte[1024];
+
+        // attempt file operations
+        try {
+
+            //create output directory if it doesn't exist
+            file = new File (outputPath);
+            if (!file.exists())
+                file.mkdirs();
+
+
+            inputStream = new FileInputStream(inputPath);
+            outputStream = new FileOutputStream(outputPath);
+
+
+            int read;
+            while ((read = inputStream.read(buffer)) != -1) {
+                outputStream.write(buffer, 0, read);
+            }
+            inputStream.close();
+
+            // write the output file
+            outputStream.flush();
+            outputStream.close();
+
+            // delete the original file
+            new File(inputPath).delete();
+        }
+        catch (FileNotFoundException e) {
+            Log.e("tag: ", e.getMessage());
+        }
+        catch (Exception e) {
+            Log.e("tag: ", e.getMessage());
+        }
     }
 }

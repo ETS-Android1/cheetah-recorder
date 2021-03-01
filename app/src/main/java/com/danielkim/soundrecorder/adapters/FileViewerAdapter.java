@@ -186,7 +186,7 @@ public class FileViewerAdapter extends RecyclerView.Adapter<FileViewerAdapter.Re
 
         File file = new File(getItem(position).getFilePath());
 
-        File folder = new File(Environment.getExternalStorageDirectory() + "/SoundRecorder/deleted" + file);
+        File folder = new File(Environment.getExternalStorageDirectory() + "/SoundRecorder/deleted/" + file);
         if (!folder.exists()) {
             folder.mkdir();
         }

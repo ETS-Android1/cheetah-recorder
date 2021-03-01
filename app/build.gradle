@@ -1,7 +1,7 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 26
+    compileSdkVersion 28
 
     defaultConfig {
         applicationId "com.danielkim.soundrecorder"
@@ -19,6 +19,7 @@ android {
     lintOptions{
         disable 'MissingTranslation'
     }
+    buildToolsVersion '30.0.3'
 }
 
 dependencies {
