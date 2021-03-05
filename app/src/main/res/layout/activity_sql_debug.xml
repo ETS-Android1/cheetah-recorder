@@ -55,11 +55,12 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="0dp"
+                    android:editable="false"
                     android:ems="10"
                     android:enabled="true"
                     android:fontFamily="monospace"
                     android:gravity="start|top"
-                    android:inputType="textMultiLine"
+                    android:inputType="textLongMessage"
                     android:textSize="10sp" />
             </LinearLayout>
         </ScrollView>

@@ -1,15 +1,18 @@
 package com.danielkim.soundrecorder.adapters;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Environment;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+
+import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,12 +27,18 @@ import com.danielkim.soundrecorder.R;
 import com.danielkim.soundrecorder.RecordingItem;
 import com.danielkim.soundrecorder.fragments.PlaybackFragment;
 import com.danielkim.soundrecorder.listeners.OnDatabaseChangedListener;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.io.File;
 import java.util.LinkedList;
-import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 import java.util.ArrayList;
+import java.util.UUID;
 
 /**
  * Created by Daniel on 12/29/2014.
@@ -41,6 +50,8 @@ public class FileViewerAdapter extends RecyclerView.Adapter<FileViewerAdapter.Re
 
     private DBHelper mDatabase;
     private LinkedList<String> filePaths;
+
+    private FirebaseStorage storage = FirebaseStorage.getInstance();
 
     RecordingItem item;
     Context mContext;
@@ -59,98 +70,87 @@ public class FileViewerAdapter extends RecyclerView.Adapter<FileViewerAdapter.Re
     @Override
     public void onBindViewHolder(final RecordingsViewHolder holder, int position) {
 
-        long itemDuration;
-        long minutes;
-        long seconds;
+        item = getItem(position);
+        long itemDuration = item.getLength();
 
-        try{
+        long minutes = TimeUnit.MILLISECONDS.toMinutes(itemDuration);
+        long seconds = TimeUnit.MILLISECONDS.toSeconds(itemDuration)
+                - TimeUnit.MINUTES.toSeconds(minutes);
 
-            // get time
-            item = this.getItem(position); //mDatabase.getItemByFilePath(filePaths.get(position));
+        holder.vName.setText(item.getName());
+        holder.vLength.setText(String.format("%02d:%02d", minutes, seconds));
+        holder.vFileSize.setText(item.getSizeFormatted());
+        holder.vDateAdded.setText(
+            DateUtils.formatDateTime(
+                mContext,
+                item.getTime(),
+                DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_NUMERIC_DATE | DateUtils.FORMAT_SHOW_TIME | DateUtils.FORMAT_SHOW_YEAR
+            )
+        );
 
-            itemDuration = item.getLength();
+        // define an on click listener to open PlaybackFragment
+        holder.cardView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                try {
+                    PlaybackFragment playbackFragment =
+                            new PlaybackFragment().newInstance(getItem(holder.getPosition()));
 
-            minutes = TimeUnit.MILLISECONDS.toMinutes(itemDuration);
-            seconds = TimeUnit.MILLISECONDS.toSeconds(itemDuration)
-                    - TimeUnit.MINUTES.toSeconds(minutes);
+                    FragmentTransaction transaction = ((FragmentActivity) mContext)
+                            .getSupportFragmentManager()
+                            .beginTransaction();
 
-            holder.vName.setText(item.getName());
-            holder.vLength.setText(String.format("%02d:%02d", minutes, seconds));
-            holder.vFileSize.setText(item.getSizeFormatted());
-            holder.vDateAdded.setText(
-                    DateUtils.formatDateTime(
-                            mContext,
-                            item.getTime(),
-                            DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_NUMERIC_DATE | DateUtils.FORMAT_SHOW_TIME | DateUtils.FORMAT_SHOW_YEAR
-                    )
-            );
+                    playbackFragment.show(transaction, "dialog_playback");
 
-            // define an on click listener to open PlaybackFragment
-            holder.cardView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    try {
-                        PlaybackFragment playbackFragment =
-                                new PlaybackFragment().newInstance(getItem(holder.getPosition()));
-
-                        FragmentTransaction transaction = ((FragmentActivity) mContext)
-                                .getSupportFragmentManager()
-                                .beginTransaction();
-
-                        playbackFragment.show(transaction, "dialog_playback");
-
-                    } catch (Exception e) {
-                        Log.e(LOG_TAG, "exception", e);
-                    }
+                } catch (Exception e) {
+                    Log.e(LOG_TAG, "exception", e);
                 }
-            });
+            }
+        });
 
-            holder.cardView.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View v) {
+        holder.cardView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
 
-                    ArrayList<String> entrys = new ArrayList<String>();
-                    entrys.add(mContext.getString(R.string.dialog_file_share));
-                    entrys.add(
-                            mContext.getString(R.string.dialog_file_rename));
-                    entrys.add(mContext.getString(R.string.dialog_file_delete));
+                ArrayList<String> entrys = new ArrayList<String>();
+                entrys.add(mContext.getString(R.string.dialog_file_share));
+                entrys.add(mContext.getString(R.string.dialog_file_rename));
+                entrys.add(mContext.getString(R.string.dialog_file_delete));
+                entrys.add("Cloud Share");
 
-                    final CharSequence[] items = entrys.toArray(new CharSequence[entrys.size()]);
+                final CharSequence[] items = entrys.toArray(new CharSequence[entrys.size()]);
 
 
-                    // File delete confirm
-                    AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-                    builder.setTitle(mContext.getString(R.string.dialog_title_options));
-                    builder.setItems(items, new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int item) {
-                            if (item == 0) {
-                                shareFileDialog(holder.getPosition());
-                            }
-                            if (item == 1) {
-                                renameFileDialog(holder.getPosition());
-                            } else if (item == 2) {
-                                deleteFileDialog(holder.getPosition());
-                            }
+                // File delete confirm
+                AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+                builder.setTitle(mContext.getString(R.string.dialog_title_options));
+                builder.setItems(items, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int item) {
+                        if (item == 0) {
+                            shareFileDialog(holder.getPosition());
+                        } if (item == 1) {
+                            renameFileDialog(holder.getPosition());
+                        } else if (item == 2) {
+                            deleteFileDialog(holder.getPosition());
+                        } else if( item == 3){
+                            cloudShare(holder.getLayoutPosition());
                         }
-                    });
-                    builder.setCancelable(true);
-                    builder.setNegativeButton(mContext.getString(R.string.dialog_action_cancel),
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int id) {
-                                    dialog.cancel();
-                                }
-                            });
+                    }
+                });
+                builder.setCancelable(true);
+                builder.setNegativeButton(mContext.getString(R.string.dialog_action_cancel),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                            }
+                        });
 
-                    AlertDialog alert = builder.create();
-                    alert.show();
+                AlertDialog alert = builder.create();
+                alert.show();
 
-                    return false;
-                }
-            });
-        }catch (Exception e){
-
-            holder.vName.setText(e.getMessage());
-        }
+                return false;
+            }
+        });
     }
 
     @Override
@@ -203,6 +203,88 @@ public class FileViewerAdapter extends RecyclerView.Adapter<FileViewerAdapter.Re
     @Override
     //TODO
     public void onDatabaseEntryRenamed() {
+
+    }
+
+    public void cloudShare(int position) {
+
+        //location of audio file in internal storage
+        File file = new File(getItem(position).getFilePath());
+
+        if(file != null) {
+            String path = "SoundRecorder/" + UUID.randomUUID() + ".mp4";
+
+            final StorageReference storageRef = storage.getReference(path);
+            UploadTask uploadTask = storageRef.putFile(Uri.fromFile(file));
+
+            //Showing Progress bar
+            final ProgressDialog progressDialog = new ProgressDialog(mContext);
+            progressDialog.setTitle("Uploading...");
+            progressDialog.show();
+            progressDialog.setCancelable(false);
+
+            uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    progressDialog.dismiss();
+                    Toast.makeText(mContext, "Success", Toast.LENGTH_LONG).show();
+
+                    String downURL = taskSnapshot.getMetadata().getReference().getDownloadUrl().toString();
+
+
+                    Task<Uri> url = storageRef.getDownloadUrl();
+                    Task<Uri> result = taskSnapshot.getStorage().getDownloadUrl();
+                    result.addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            //URL of audio file
+                            String imageUrl = uri.toString();
+                            System.out.println("\n\n---------------------------------------DB File URL = " + imageUrl + "\n\n");
+                        }
+                    });
+
+
+                }
+            });
+//                    .addOnCompleteListener(new OnCompleteListener<Uri>() {
+//                        @Override
+//                        public void onComplete(@NonNull Task<Uri> task) {
+//                            if (task.isSuccessful()) {
+//                                Uri downloadUri = task.getResult();
+//                                System.out.println("\n\n---------------------------------------DB File URL = " + downloadUri.toString() + "\n\n");
+//                            } else{
+//                                Toast.makeText(mContext, "upload failed: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+//                            }
+//                        }
+//                    });
+        }
+
+      /*  if(file != null)
+        {
+            Toast.makeText(mContext, "Uploading...", Toast.LENGTH_LONG).show();
+            final ProgressDialog progressDialog = new ProgressDialog(mContext);
+            progressDialog.setTitle("Uploading...");
+            progressDialog.show();
+
+            ref = storageReference.child("audios/"+ UUID.randomUUID().toString());
+            ref.putFile(Uri.fromFile(file))
+                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            progressDialog.dismiss();
+                            String name = taskSnapshot.getMetadata().getName();
+                            String url = ref.getDownloadUrl().toString();
+
+                            System.out.println("\n\n Cloud name = " + name + "\n\n");
+                            System.out.println("\n\n Cloud url = " + url + "\n\n");
+
+                        }
+                    });
+
+        } */
+
+        System.out.println("\nFIle Name = " + file + "\n");
 
     }
 

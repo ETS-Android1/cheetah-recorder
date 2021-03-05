@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "977948423043",
+    "project_id": "soundrecorder-f12a3",
+    "storage_bucket": "soundrecorder-f12a3.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:977948423043:android:610d774403cce36f10bcb6",
+        "android_client_info": {
+          "package_name": "com.danielkim.soundrecorder"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "977948423043-uvkv0h9ucootureugg2l865jjanf28fm.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAawhwfQ2u5-uC2BW4mDWKo18sPD2pzSDQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "977948423043-uvkv0h9ucootureugg2l865jjanf28fm.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
