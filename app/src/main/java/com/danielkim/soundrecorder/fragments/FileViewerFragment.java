@@ -83,6 +83,11 @@ public class FileViewerFragment extends Fragment{
                     }
                 }
             };
+
+    public FileViewerAdapter getAdapter(){
+
+        return this.mFileViewerAdapter;
+    }
 }
 
 

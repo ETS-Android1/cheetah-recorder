@@ -26,6 +26,7 @@ import com.danielkim.soundrecorder.fragments.PlaybackFragment;
 import com.danielkim.soundrecorder.listeners.OnDatabaseChangedListener;
 
 import java.io.File;
+import java.util.LinkedList;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 import java.util.ArrayList;
@@ -39,6 +40,7 @@ public class FileViewerAdapter extends RecyclerView.Adapter<FileViewerAdapter.Re
     private static final String LOG_TAG = "FileViewerAdapter";
 
     private DBHelper mDatabase;
+    private LinkedList<String> filePaths;
 
     RecordingItem item;
     Context mContext;
@@ -50,90 +52,105 @@ public class FileViewerAdapter extends RecyclerView.Adapter<FileViewerAdapter.Re
         mDatabase = new DBHelper(mContext);
         mDatabase.setOnDatabaseChangedListener(this);
         llm = linearLayoutManager;
+
+        filePaths = mDatabase.getFilePaths();
     }
 
     @Override
     public void onBindViewHolder(final RecordingsViewHolder holder, int position) {
 
-        item = getItem(position);
-        long itemDuration = item.getLength();
+        long itemDuration;
+        long minutes;
+        long seconds;
 
-        long minutes = TimeUnit.MILLISECONDS.toMinutes(itemDuration);
-        long seconds = TimeUnit.MILLISECONDS.toSeconds(itemDuration)
-                - TimeUnit.MINUTES.toSeconds(minutes);
+        try{
 
-        holder.vName.setText(item.getName());
-        holder.vLength.setText(String.format("%02d:%02d", minutes, seconds));
-        holder.vFileSize.setText(item.getSizeFormatted());
-        holder.vDateAdded.setText(
-            DateUtils.formatDateTime(
-                mContext,
-                item.getTime(),
-                DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_NUMERIC_DATE | DateUtils.FORMAT_SHOW_TIME | DateUtils.FORMAT_SHOW_YEAR
-            )
-        );
+            // get time
+            item = this.getItem(position); //mDatabase.getItemByFilePath(filePaths.get(position));
 
-        // define an on click listener to open PlaybackFragment
-        holder.cardView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                try {
-                    PlaybackFragment playbackFragment =
-                            new PlaybackFragment().newInstance(getItem(holder.getPosition()));
+            itemDuration = item.getLength();
 
-                    FragmentTransaction transaction = ((FragmentActivity) mContext)
-                            .getSupportFragmentManager()
-                            .beginTransaction();
+            minutes = TimeUnit.MILLISECONDS.toMinutes(itemDuration);
+            seconds = TimeUnit.MILLISECONDS.toSeconds(itemDuration)
+                    - TimeUnit.MINUTES.toSeconds(minutes);
 
-                    playbackFragment.show(transaction, "dialog_playback");
+            holder.vName.setText(item.getName());
+            holder.vLength.setText(String.format("%02d:%02d", minutes, seconds));
+            holder.vFileSize.setText(item.getSizeFormatted());
+            holder.vDateAdded.setText(
+                    DateUtils.formatDateTime(
+                            mContext,
+                            item.getTime(),
+                            DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_NUMERIC_DATE | DateUtils.FORMAT_SHOW_TIME | DateUtils.FORMAT_SHOW_YEAR
+                    )
+            );
 
-                } catch (Exception e) {
-                    Log.e(LOG_TAG, "exception", e);
-                }
-            }
-        });
+            // define an on click listener to open PlaybackFragment
+            holder.cardView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    try {
+                        PlaybackFragment playbackFragment =
+                                new PlaybackFragment().newInstance(getItem(holder.getPosition()));
 
-        holder.cardView.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
+                        FragmentTransaction transaction = ((FragmentActivity) mContext)
+                                .getSupportFragmentManager()
+                                .beginTransaction();
 
-                ArrayList<String> entrys = new ArrayList<String>();
-                entrys.add(mContext.getString(R.string.dialog_file_share));
-                entrys.add(
-             mContext.getString(R.string.dialog_file_rename));
-                entrys.add(mContext.getString(R.string.dialog_file_delete));
+                        playbackFragment.show(transaction, "dialog_playback");
 
-                final CharSequence[] items = entrys.toArray(new CharSequence[entrys.size()]);
-
-
-                // File delete confirm
-                AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-                builder.setTitle(mContext.getString(R.string.dialog_title_options));
-                builder.setItems(items, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int item) {
-                        if (item == 0) {
-                            shareFileDialog(holder.getPosition());
-                        } if (item == 1) {
-                            renameFileDialog(holder.getPosition());
-                        } else if (item == 2) {
-                            deleteFileDialog(holder.getPosition());
-                        }
+                    } catch (Exception e) {
+                        Log.e(LOG_TAG, "exception", e);
                     }
-                });
-                builder.setCancelable(true);
-                builder.setNegativeButton(mContext.getString(R.string.dialog_action_cancel),
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                dialog.cancel();
+                }
+            });
+
+            holder.cardView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+
+                    ArrayList<String> entrys = new ArrayList<String>();
+                    entrys.add(mContext.getString(R.string.dialog_file_share));
+                    entrys.add(
+                            mContext.getString(R.string.dialog_file_rename));
+                    entrys.add(mContext.getString(R.string.dialog_file_delete));
+
+                    final CharSequence[] items = entrys.toArray(new CharSequence[entrys.size()]);
+
+
+                    // File delete confirm
+                    AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+                    builder.setTitle(mContext.getString(R.string.dialog_title_options));
+                    builder.setItems(items, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int item) {
+                            if (item == 0) {
+                                shareFileDialog(holder.getPosition());
                             }
-                        });
+                            if (item == 1) {
+                                renameFileDialog(holder.getPosition());
+                            } else if (item == 2) {
+                                deleteFileDialog(holder.getPosition());
+                            }
+                        }
+                    });
+                    builder.setCancelable(true);
+                    builder.setNegativeButton(mContext.getString(R.string.dialog_action_cancel),
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    dialog.cancel();
+                                }
+                            });
 
-                AlertDialog alert = builder.create();
-                alert.show();
+                    AlertDialog alert = builder.create();
+                    alert.show();
 
-                return false;
-            }
-        });
+                    return false;
+                }
+            });
+        }catch (Exception e){
+
+            holder.vName.setText(e.getMessage());
+        }
     }
 
     @Override
@@ -167,16 +184,18 @@ public class FileViewerAdapter extends RecyclerView.Adapter<FileViewerAdapter.Re
 
     @Override
     public int getItemCount() {
-        return mDatabase.getCount();
+        return filePaths.size();
     }
 
     public RecordingItem getItem(int position) {
-        return mDatabase.getItemAt(position);
+
+        return mDatabase.getItemByFilePath(filePaths.get(position));
     }
 
     @Override
     public void onNewDatabaseEntryAdded() {
         //item added to top of the list
+        filePaths = mDatabase.getFilePaths();
         notifyItemInserted(getItemCount() - 1);
         llm.scrollToPosition(getItemCount() - 1);
     }
@@ -205,6 +224,8 @@ public class FileViewerAdapter extends RecyclerView.Adapter<FileViewerAdapter.Re
 
         mDatabase.removeItemWithId(getItem(position).getId());
         notifyItemRemoved(position);
+
+        updateFilePaths();
     }
 
     //TODO
@@ -232,6 +253,8 @@ public class FileViewerAdapter extends RecyclerView.Adapter<FileViewerAdapter.Re
             mDatabase.renameItem(getItem(position), name, mFilePath);
             notifyItemChanged(position);
         }
+
+        updateFilePaths();
     }
 
     public void shareFileDialog(int position) {
@@ -240,6 +263,8 @@ public class FileViewerAdapter extends RecyclerView.Adapter<FileViewerAdapter.Re
         shareIntent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(new File(getItem(position).getFilePath())));
         shareIntent.setType("audio/mp4");
         mContext.startActivity(Intent.createChooser(shareIntent, mContext.getText(R.string.send_to)));
+
+        updateFilePaths();
     }
 
     public void renameFileDialog (final int position) {
@@ -277,9 +302,12 @@ public class FileViewerAdapter extends RecyclerView.Adapter<FileViewerAdapter.Re
         renameFileBuilder.setView(view);
         AlertDialog alert = renameFileBuilder.create();
         alert.show();
+
+        updateFilePaths();
     }
 
     public void deleteFileDialog (final int position) {
+
         // File delete confirm
         AlertDialog.Builder confirmDelete = new AlertDialog.Builder(mContext);
         confirmDelete.setTitle(mContext.getString(R.string.dialog_title_delete));
@@ -308,5 +336,20 @@ public class FileViewerAdapter extends RecyclerView.Adapter<FileViewerAdapter.Re
 
         AlertDialog alert = confirmDelete.create();
         alert.show();
+
+        updateFilePaths();
     }
+
+    public void updateFilePaths(){
+
+        filePaths = mDatabase.getFilePaths();
+        this.notifyDataSetChanged();
+    }
+
+    public void updateFilePaths(String clause){
+
+        filePaths = mDatabase.getFilePaths(clause);
+        this.notifyDataSetChanged();
+    }
+
 }
