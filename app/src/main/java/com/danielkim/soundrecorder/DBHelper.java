@@ -189,7 +189,8 @@ public class DBHelper extends SQLiteOpenHelper {
         LinkedList<String> filePaths;
         filePaths = new LinkedList<String>();
         c.moveToFirst();
-        while(c.isAfterLast()){
+
+        while(!c.isAfterLast()){
 
             // variables
             String currentPath;
