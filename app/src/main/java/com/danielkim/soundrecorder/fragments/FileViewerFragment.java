@@ -2,10 +2,7 @@ package com.danielkim.soundrecorder.fragments;
 
 import android.os.Bundle;
 import android.os.FileObserver;
-import android.support.v4.app.Fragment;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,10 +11,15 @@ import android.view.ViewGroup;
 import com.danielkim.soundrecorder.R;
 import com.danielkim.soundrecorder.adapters.FileViewerAdapter;
 
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 /**
  * Created by Daniel on 12/23/2014.
  */
-public class FileViewerFragment extends Fragment{
+public class FileViewerFragment extends Fragment {
     private static final String ARG_POSITION = "position";
     private static final String LOG_TAG = "FileViewerFragment";
 
