@@ -88,7 +88,7 @@ public class MainActivity extends AppCompatActivity{
 
     public void showFilterFragment(){
 
-
+        // create the filter fragment
         FragmentTransaction ft = getFragmentManager().beginTransaction();
         android.app.Fragment prev = getFragmentManager().findFragmentByTag("dialog");
         if (prev != null) {

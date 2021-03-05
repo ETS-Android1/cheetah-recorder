@@ -69,6 +69,7 @@ public class DBHelper extends SQLiteOpenHelper {
         mOnDatabaseChangedListener = listener;
     }
 
+
     public RecordingItem getItemAt(int position) {
         SQLiteDatabase db = getReadableDatabase();
         String[] projection = {
@@ -116,6 +117,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 null);
 
         c.moveToFirst();
+
         if (!c.isNull(c.getColumnIndex(DBHelperItem.COLUMN_NAME_RECORDING_FILE_PATH))){
             RecordingItem item = new RecordingItem();
             item.setId(c.getInt(c.getColumnIndex(DBHelperItem._ID)));
@@ -187,7 +189,8 @@ public class DBHelper extends SQLiteOpenHelper {
         LinkedList<String> filePaths;
         filePaths = new LinkedList<String>();
         c.moveToFirst();
-        while(c.isAfterLast()){
+
+        while(!c.isAfterLast()){
 
             // variables
             String currentPath;

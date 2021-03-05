@@ -306,6 +306,8 @@ public class FileViewerAdapter extends RecyclerView.Adapter<FileViewerAdapter.Re
 
         mDatabase.removeItemWithId(getItem(position).getId());
         notifyItemRemoved(position);
+
+        updateFilePaths();
     }
 
     //TODO
@@ -333,6 +335,8 @@ public class FileViewerAdapter extends RecyclerView.Adapter<FileViewerAdapter.Re
             mDatabase.renameItem(getItem(position), name, mFilePath);
             notifyItemChanged(position);
         }
+
+        updateFilePaths();
     }
 
     public void shareFileDialog(int position) {
@@ -341,6 +345,8 @@ public class FileViewerAdapter extends RecyclerView.Adapter<FileViewerAdapter.Re
         shareIntent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(new File(getItem(position).getFilePath())));
         shareIntent.setType("audio/mp4");
         mContext.startActivity(Intent.createChooser(shareIntent, mContext.getText(R.string.send_to)));
+
+        updateFilePaths();
     }
 
     public void renameFileDialog (final int position) {
@@ -378,6 +384,8 @@ public class FileViewerAdapter extends RecyclerView.Adapter<FileViewerAdapter.Re
         renameFileBuilder.setView(view);
         AlertDialog alert = renameFileBuilder.create();
         alert.show();
+
+        updateFilePaths();
     }
 
     public void deleteFileDialog (final int position) {
@@ -410,6 +418,8 @@ public class FileViewerAdapter extends RecyclerView.Adapter<FileViewerAdapter.Re
 
         AlertDialog alert = confirmDelete.create();
         alert.show();
+
+        updateFilePaths();
     }
 
     public void updateFilePaths(){
@@ -423,4 +433,5 @@ public class FileViewerAdapter extends RecyclerView.Adapter<FileViewerAdapter.Re
         filePaths = mDatabase.getFilePaths(clause);
         this.notifyDataSetChanged();
     }
+
 }

@@ -22,9 +22,10 @@
             android:inputType="textPersonName"
             app:layout_constraintBottom_toBottomOf="@+id/searchButton"
             app:layout_constraintEnd_toStartOf="@+id/searchButton"
-            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="1.0" />
 
         <Button
             android:id="@+id/searchButton"
@@ -84,16 +85,27 @@
             app:layout_constraintStart_toEndOf="@+id/textMaxDisplay"
             app:layout_constraintTop_toBottomOf="@+id/minDateText" />
 
+        <Switch
+            android:id="@+id/doFilterFileSize"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:text="File Size"
+            android:textSize="24sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/maxDateText" />
+
         <RadioGroup
             android:id="@+id/radioSelectSize"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/doFilterTextSize">
+            app:layout_constraintTop_toBottomOf="@+id/doFilterFileSize">
 
             <RadioButton
                 android:id="@+id/radioLessThan"
+                android:checked="true"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Less Than" />
@@ -104,16 +116,6 @@
                 android:layout_height="wrap_content"
                 android:text="Greater than" />
         </RadioGroup>
-
-        <Switch
-            android:id="@+id/doFilterTextSize"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:text="File Size"
-            android:textSize="24sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/maxDateText" />
 
         <TextView
             android:id="@+id/textSmallestSize"
@@ -128,7 +130,7 @@
             android:id="@+id/textLargestSize"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="1Gb"
+            android:text="1Mb"
             app:layout_constraintBottom_toBottomOf="@+id/selectFileSize"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/selectFileSize" />
