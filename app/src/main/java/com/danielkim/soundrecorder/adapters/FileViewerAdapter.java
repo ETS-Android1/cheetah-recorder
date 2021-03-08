@@ -5,20 +5,22 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Environment;
 
-import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Button;
 import android.widget.Toast;
 import android.text.format.DateUtils;
 
@@ -27,7 +29,6 @@ import com.danielkim.soundrecorder.R;
 import com.danielkim.soundrecorder.RecordingItem;
 import com.danielkim.soundrecorder.fragments.PlaybackFragment;
 import com.danielkim.soundrecorder.listeners.OnDatabaseChangedListener;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.storage.FirebaseStorage;
@@ -87,6 +88,8 @@ public class FileViewerAdapter extends RecyclerView.Adapter<FileViewerAdapter.Re
                 DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_NUMERIC_DATE | DateUtils.FORMAT_SHOW_TIME | DateUtils.FORMAT_SHOW_YEAR
             )
         );
+        holder.vTag.setText(item.getTag());
+        holder.vTag.setBackgroundColor(Color.parseColor(item.getColour()));
 
         // define an on click listener to open PlaybackFragment
         holder.cardView.setOnClickListener(new View.OnClickListener() {
@@ -117,6 +120,7 @@ public class FileViewerAdapter extends RecyclerView.Adapter<FileViewerAdapter.Re
                 entrys.add(mContext.getString(R.string.dialog_file_rename));
                 entrys.add(mContext.getString(R.string.dialog_file_delete));
                 entrys.add("Cloud Share");
+                entrys.add("Edit Tag");
 
                 final CharSequence[] items = entrys.toArray(new CharSequence[entrys.size()]);
 
@@ -134,6 +138,8 @@ public class FileViewerAdapter extends RecyclerView.Adapter<FileViewerAdapter.Re
                             deleteFileDialog(holder.getPosition());
                         } else if( item == 3){
                             cloudShare(holder.getLayoutPosition());
+                        } else if( item == 4){
+                            addTagDialog(holder.getLayoutPosition());
                         }
                     }
                 });
@@ -170,6 +176,7 @@ public class FileViewerAdapter extends RecyclerView.Adapter<FileViewerAdapter.Re
         protected TextView vLength;
         protected TextView vDateAdded;
         protected TextView vFileSize;
+        protected Button vTag;
         protected View cardView;
 
         public RecordingsViewHolder(View v) {
@@ -178,6 +185,7 @@ public class FileViewerAdapter extends RecyclerView.Adapter<FileViewerAdapter.Re
             vLength = (TextView) v.findViewById(R.id.file_length_text);
             vDateAdded = (TextView) v.findViewById(R.id.file_date_added_text);
             vFileSize = (TextView) v.findViewById((R.id.file_size_text));
+            vTag = (Button) v.findViewById((R.id.recordingTag));
             cardView = v.findViewById(R.id.card_view);
         }
     }
@@ -292,16 +300,19 @@ public class FileViewerAdapter extends RecyclerView.Adapter<FileViewerAdapter.Re
         //remove item from database, recyclerview and storage
 
         //delete file from storage
+        //remove item from database, recyclerview and storage
+
+        //delete file from storage
         File file = new File(getItem(position).getFilePath());
         file.delete();
 
         Toast.makeText(
-            mContext,
-            String.format(
-                mContext.getString(R.string.toast_file_delete),
-                getItem(position).getName()
-            ),
-            Toast.LENGTH_SHORT
+                mContext,
+                String.format(
+                        mContext.getString(R.string.toast_file_delete),
+                        getItem(position).getName()
+                ),
+                Toast.LENGTH_SHORT
         ).show();
 
         mDatabase.removeItemWithId(getItem(position).getId());
@@ -312,7 +323,6 @@ public class FileViewerAdapter extends RecyclerView.Adapter<FileViewerAdapter.Re
 
     //TODO
     public void removeOutOfApp(String filePath) {
-        //user deletes a saved recording out of the application through another application
     }
 
     public void rename(int position, String name) {
@@ -338,7 +348,28 @@ public class FileViewerAdapter extends RecyclerView.Adapter<FileViewerAdapter.Re
 
         updateFilePaths();
     }
-
+    public void editTag(int position, String tagName)
+    {
+        String tagColour = "#FFFFFF";
+        if(tagName.equalsIgnoreCase("School"))
+        {
+            tagColour = "#FFFF00";
+        }
+        else if(tagName.equalsIgnoreCase("Work"))
+        {
+            tagColour = "#FF0000";
+        }
+        else if(tagName.equalsIgnoreCase("Sports"))
+        {
+            tagColour = "#0000FF";
+        }
+        else if(tagName.equalsIgnoreCase("Groceries"))
+        {
+            tagColour = "#00FF00";
+        }
+        mDatabase.changeTag(getItem(position),tagName.toLowerCase(),tagColour);
+        notifyItemChanged(position);
+    }
     public void shareFileDialog(int position) {
         Intent shareIntent = new Intent();
         shareIntent.setAction(Intent.ACTION_SEND);
@@ -348,7 +379,37 @@ public class FileViewerAdapter extends RecyclerView.Adapter<FileViewerAdapter.Re
 
         updateFilePaths();
     }
+    public void addTagDialog(final int position)
+    {
+        AlertDialog.Builder addTagBuilder = new AlertDialog.Builder(mContext);
+        LayoutInflater inflater = LayoutInflater.from(mContext);
+        View view = inflater.inflate(R.layout.dialog_add_tag,null);
 
+        final EditText input = (EditText) view.findViewById(R.id.tag_entry);
+        addTagBuilder.setTitle("Edit Tag");
+        addTagBuilder.setCancelable(true);
+        addTagBuilder.setPositiveButton("OK",new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                try {
+                    String value = input.getText().toString().trim();
+                    editTag(position, value);
+
+                } catch (Exception e) {
+                    Log.e(LOG_TAG, "exception", e);
+                }
+                dialog.cancel();
+            }
+        });
+        addTagBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int id) {
+                dialog.cancel();
+            }
+        });
+        addTagBuilder.setView(view);
+        AlertDialog alert = addTagBuilder.create();
+        alert.show();
+    }
     public void renameFileDialog (final int position) {
         // File rename dialog
         AlertDialog.Builder renameFileBuilder = new AlertDialog.Builder(mContext);
@@ -356,7 +417,7 @@ public class FileViewerAdapter extends RecyclerView.Adapter<FileViewerAdapter.Re
         LayoutInflater inflater = LayoutInflater.from(mContext);
         View view = inflater.inflate(R.layout.dialog_rename_file, null);
 
-        final EditText input = (EditText) view.findViewById(R.id.new_name);
+        final EditText input = (EditText) view.findViewById(R.id.tag_entry);
 
         renameFileBuilder.setTitle(mContext.getString(R.string.dialog_title_rename));
         renameFileBuilder.setCancelable(true);
@@ -364,7 +425,7 @@ public class FileViewerAdapter extends RecyclerView.Adapter<FileViewerAdapter.Re
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         try {
-                            String value = input.getText().toString().trim() + ".mp4";
+                            String value = input.getText().toString().trim();
                             rename(position, value);
 
                         } catch (Exception e) {
