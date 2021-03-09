@@ -20,4 +20,10 @@
         android:id="@+id/action_debug"
         android:orderInCategory="102"
         android:title="Debug" />
+
+    <item
+        android:id="@+id/action_cloudDownload"
+        android:orderInCategory="103"
+        android:title="Cloud Download"
+        />
 </menu>

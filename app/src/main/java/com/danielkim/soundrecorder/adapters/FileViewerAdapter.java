@@ -231,7 +231,6 @@ public class FileViewerAdapter extends RecyclerView.Adapter<FileViewerAdapter.Re
 
                     String downURL = taskSnapshot.getMetadata().getReference().getDownloadUrl().toString();
 
-
                     Task<Uri> url = storageRef.getDownloadUrl();
                     Task<Uri> result = taskSnapshot.getStorage().getDownloadUrl();
                     result.addOnSuccessListener(new OnSuccessListener<Uri>() {
@@ -242,51 +241,13 @@ public class FileViewerAdapter extends RecyclerView.Adapter<FileViewerAdapter.Re
                             System.out.println("\n\n---------------------------------------DB File URL = " + imageUrl + "\n\n");
                         }
                     });
-
-
                 }
             });
-//                    .addOnCompleteListener(new OnCompleteListener<Uri>() {
-//                        @Override
-//                        public void onComplete(@NonNull Task<Uri> task) {
-//                            if (task.isSuccessful()) {
-//                                Uri downloadUri = task.getResult();
-//                                System.out.println("\n\n---------------------------------------DB File URL = " + downloadUri.toString() + "\n\n");
-//                            } else{
-//                                Toast.makeText(mContext, "upload failed: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-//                            }
-//                        }
-//                    });
         }
-
-      /*  if(file != null)
-        {
-            Toast.makeText(mContext, "Uploading...", Toast.LENGTH_LONG).show();
-            final ProgressDialog progressDialog = new ProgressDialog(mContext);
-            progressDialog.setTitle("Uploading...");
-            progressDialog.show();
-
-            ref = storageReference.child("audios/"+ UUID.randomUUID().toString());
-            ref.putFile(Uri.fromFile(file))
-                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-
-                        @Override
-                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                            progressDialog.dismiss();
-                            String name = taskSnapshot.getMetadata().getName();
-                            String url = ref.getDownloadUrl().toString();
-
-                            System.out.println("\n\n Cloud name = " + name + "\n\n");
-                            System.out.println("\n\n Cloud url = " + url + "\n\n");
-
-                        }
-                    });
-
-        } */
-
         System.out.println("\nFIle Name = " + file + "\n");
-
     }
+
+
 
     public void remove(int position) {
         //remove item from database, recyclerview and storage
