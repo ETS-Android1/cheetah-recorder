@@ -183,14 +183,19 @@ public class FileViewerAdapter extends RecyclerView.Adapter<FileViewerAdapter.Re
 
     }
     public void moveToDeleted(int position) {
-
-        File file = new File(getItem(position).getFilePath());
-
-        File folder = new File(Environment.getExternalStorageDirectory() + "/SoundRecorder/deleted/" + file);
+        // Make a folder for deleted files named Deleted
+        File folder = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/SoundRecorder/Deleted/");
         if (!folder.exists()) {
             folder.mkdir();
         }
+        String name = getItem(position).getName();
+//        File file = new File(getItem(position).getFilePath());
+        String mFilePath = Environment.getExternalStorageDirectory().getAbsolutePath();
+        mFilePath += "/SoundRecorder/Deleted" + name;
+        File f = new File(mFilePath);
 
+
+//        file.delete();
         Toast.makeText(
                 mContext,
                 String.format(
@@ -200,7 +205,13 @@ public class FileViewerAdapter extends RecyclerView.Adapter<FileViewerAdapter.Re
                 Toast.LENGTH_SHORT
         ).show();
 
-        mDatabase.moveToDeletedFiles(getItem(position).getId());
+
+        File oldFilePath = new File(getItem(position).getFilePath());
+        oldFilePath.renameTo(f);
+        mDatabase.renameItem(getItem(position), name, mFilePath);
+        notifyItemChanged(position);
+
+//        mDatabase.moveToDeletedFiles(getItem(position).getId());
         notifyItemRemoved(position);
     }
 
@@ -307,7 +318,7 @@ public class FileViewerAdapter extends RecyclerView.Adapter<FileViewerAdapter.Re
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         try {
-                            //remove item from database, recyclerview, and storage
+                            //move file to deleted folder
                             moveToDeleted(position);
 
                         } catch (Exception e) {

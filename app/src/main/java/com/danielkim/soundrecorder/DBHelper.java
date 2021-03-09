@@ -104,25 +104,28 @@ public class DBHelper extends SQLiteOpenHelper {
         db.delete(DBHelperItem.TABLE_NAME, "_ID=?", whereArgs);
     }
 
-    public void moveToDeletedFiles(int id) {
-
-        // variables
-        SQLiteDatabase db = getWritableDatabase();
-        String[] whereArgs = { "_id = " + id };
-        String fileName = getItemAt(id).getName();
-        String filePath = getItemAt(id).getFilePath();
-        String newFilePath = Environment.getExternalStorageDirectory() + "/SoundRecorder/deleted/" + fileName;
-        ContentValues cv = new ContentValues();
-
-
-        // assign
-        cv.put(DBHelperItem.COLUMN_NAME_RECORDING_FILE_PATH, newFilePath);
-
-        // move the file to the deleted folder
-        moveFile(filePath, newFilePath);
-
-        db.update(DBHelperItem.TABLE_NAME, cv, null, whereArgs);
-    }
+//    public void moveToDeletedFiles(int id) {
+//
+//        // variables
+//        SQLiteDatabase db = getWritableDatabase();
+//        String[] whereArgs = { String.valueOf(id) };
+//        String fileName = getItemAt(id).getName();
+//        String filePath = getItemAt(id).getFilePath();
+//        String newFilePath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/SoundRecorder/deleted/" + fileName;
+//        ContentValues cv = new ContentValues();
+//
+//
+//        // assign
+//        cv.put(DBHelperItem.COLUMN_NAME_RECORDING_FILE_PATH, newFilePath);
+//
+//        // move the file to the deleted folder
+//        moveFile(filePath, newFilePath);
+//
+//        db.update(DBHelperItem.TABLE_NAME, cv, null, whereArgs);
+//        if (mOnDatabaseChangedListener != null) {
+//            mOnDatabaseChangedListener.onNewDatabaseEntryAdded();
+//        }
+//    }
 
 
     public void restoreDeletedFiles() {
