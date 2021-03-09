@@ -27,7 +27,10 @@ import android.text.format.DateUtils;
 import com.danielkim.soundrecorder.DBHelper;
 import com.danielkim.soundrecorder.R;
 import com.danielkim.soundrecorder.RecordingItem;
+import com.danielkim.soundrecorder.activities.MainActivity;
+import com.danielkim.soundrecorder.fragments.FilterFragment;
 import com.danielkim.soundrecorder.fragments.PlaybackFragment;
+import com.danielkim.soundrecorder.fragments.TagViewerFragment;
 import com.danielkim.soundrecorder.listeners.OnDatabaseChangedListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -49,6 +52,8 @@ public class FileViewerAdapter extends RecyclerView.Adapter<FileViewerAdapter.Re
 
     private static final String LOG_TAG = "FileViewerAdapter";
 
+    private MainActivity mMainActivity;
+
     private DBHelper mDatabase;
     private LinkedList<String> filePaths;
 
@@ -58,12 +63,13 @@ public class FileViewerAdapter extends RecyclerView.Adapter<FileViewerAdapter.Re
     Context mContext;
     LinearLayoutManager llm;
 
-    public FileViewerAdapter(Context context, LinearLayoutManager linearLayoutManager) {
+    public FileViewerAdapter(Context context, LinearLayoutManager linearLayoutManager, MainActivity mainActivity) {
         super();
         mContext = context;
         mDatabase = new DBHelper(mContext);
         mDatabase.setOnDatabaseChangedListener(this);
         llm = linearLayoutManager;
+        mMainActivity = mainActivity;
 
         filePaths = mDatabase.getFilePaths();
     }
@@ -88,8 +94,17 @@ public class FileViewerAdapter extends RecyclerView.Adapter<FileViewerAdapter.Re
                 DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_NUMERIC_DATE | DateUtils.FORMAT_SHOW_TIME | DateUtils.FORMAT_SHOW_YEAR
             )
         );
-        holder.vTag.setText(item.getTag());
-        holder.vTag.setBackgroundColor(Color.parseColor(item.getColour()));
+        holder.recordingFilePath = item.getFilePath();
+        //if the tag is not empty display the text and color
+        //if(!item.getTag().equals("")) {
+
+            holder.vTag.setText(item.getTag());
+            holder.vTag.setBackgroundColor(Color.parseColor(item.getColour()));
+        // }
+        //else{
+
+            //holder.vTag.setVisibility(View.INVISIBLE);
+        //}
 
         // define an on click listener to open PlaybackFragment
         holder.cardView.setOnClickListener(new View.OnClickListener() {
@@ -116,11 +131,11 @@ public class FileViewerAdapter extends RecyclerView.Adapter<FileViewerAdapter.Re
             public boolean onLongClick(View v) {
 
                 ArrayList<String> entrys = new ArrayList<String>();
-                entrys.add(mContext.getString(R.string.dialog_file_share));
                 entrys.add(mContext.getString(R.string.dialog_file_rename));
                 entrys.add(mContext.getString(R.string.dialog_file_delete));
-                entrys.add("Cloud Share");
                 entrys.add("Edit Tag");
+                entrys.add("Cloud Share");
+
 
                 final CharSequence[] items = entrys.toArray(new CharSequence[entrys.size()]);
 
@@ -131,18 +146,21 @@ public class FileViewerAdapter extends RecyclerView.Adapter<FileViewerAdapter.Re
                 builder.setItems(items, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int item) {
                         if (item == 0) {
-                            shareFileDialog(holder.getPosition());
-                        } if (item == 1) {
+
                             renameFileDialog(holder.getPosition());
-                        } else if (item == 2) {
+                        } if (item == 1) {
+
                             deleteFileDialog(holder.getPosition());
-                        } else if( item == 3){
+                        } else if (item == 2) {
+
+                            addTagDialog(holder.recordingFilePath);
+                        } else if( item == 3) {
+
                             cloudShare(holder.getLayoutPosition());
-                        } else if( item == 4){
-                            addTagDialog(holder.getLayoutPosition());
                         }
                     }
                 });
+
                 builder.setCancelable(true);
                 builder.setNegativeButton(mContext.getString(R.string.dialog_action_cancel),
                         new DialogInterface.OnClickListener() {
@@ -178,6 +196,7 @@ public class FileViewerAdapter extends RecyclerView.Adapter<FileViewerAdapter.Re
         protected TextView vFileSize;
         protected Button vTag;
         protected View cardView;
+        protected String recordingFilePath;
 
         public RecordingsViewHolder(View v) {
             super(v);
@@ -200,18 +219,27 @@ public class FileViewerAdapter extends RecyclerView.Adapter<FileViewerAdapter.Re
         return mDatabase.getItemByFilePath(filePaths.get(position));
     }
 
+    public int getItemID(int position) {
+
+        return mDatabase.getItemByFilePath(filePaths.get(position)).getId();
+    }
+
     @Override
     public void onNewDatabaseEntryAdded() {
         //item added to top of the list
-        filePaths = mDatabase.getFilePaths();
-        notifyItemInserted(getItemCount() - 1);
-        llm.scrollToPosition(getItemCount() - 1);
+
+        //if(getItemCount() < 0) {
+        //    notifyItemInserted(getItemCount());
+        //    llm.scrollToPosition(getItemCount());
+        //}
+
+        updateFilePaths();
     }
 
     @Override
     //TODO
     public void onDatabaseEntryRenamed() {
-
+        updateFilePaths();
     }
 
     public void cloudShare(int position) {
@@ -348,28 +376,8 @@ public class FileViewerAdapter extends RecyclerView.Adapter<FileViewerAdapter.Re
 
         updateFilePaths();
     }
-    public void editTag(int position, String tagName)
-    {
-        String tagColour = "#FFFFFF";
-        if(tagName.equalsIgnoreCase("School"))
-        {
-            tagColour = "#FFFF00";
-        }
-        else if(tagName.equalsIgnoreCase("Work"))
-        {
-            tagColour = "#FF0000";
-        }
-        else if(tagName.equalsIgnoreCase("Sports"))
-        {
-            tagColour = "#0000FF";
-        }
-        else if(tagName.equalsIgnoreCase("Groceries"))
-        {
-            tagColour = "#00FF00";
-        }
-        mDatabase.changeTag(getItem(position),tagName.toLowerCase(),tagColour);
-        notifyItemChanged(position);
-    }
+
+    @Deprecated
     public void shareFileDialog(int position) {
         Intent shareIntent = new Intent();
         shareIntent.setAction(Intent.ACTION_SEND);
@@ -379,37 +387,24 @@ public class FileViewerAdapter extends RecyclerView.Adapter<FileViewerAdapter.Re
 
         updateFilePaths();
     }
-    public void addTagDialog(final int position)
-    {
-        AlertDialog.Builder addTagBuilder = new AlertDialog.Builder(mContext);
-        LayoutInflater inflater = LayoutInflater.from(mContext);
-        View view = inflater.inflate(R.layout.dialog_add_tag,null);
 
-        final EditText input = (EditText) view.findViewById(R.id.tag_entry);
-        addTagBuilder.setTitle("Edit Tag");
-        addTagBuilder.setCancelable(true);
-        addTagBuilder.setPositiveButton("OK",new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                try {
-                    String value = input.getText().toString().trim();
-                    editTag(position, value);
+    public void addTagDialog(String recordingFilePath) {
 
-                } catch (Exception e) {
-                    Log.e(LOG_TAG, "exception", e);
-                }
-                dialog.cancel();
-            }
-        });
-        addTagBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int id) {
-                dialog.cancel();
-            }
-        });
-        addTagBuilder.setView(view);
-        AlertDialog alert = addTagBuilder.create();
-        alert.show();
+        // code for upadating a tag
+
+        // create the filter fragment
+        android.app.FragmentTransaction ft = mMainActivity.getFragmentManager().beginTransaction();
+        android.app.Fragment prev = mMainActivity.getFragmentManager().findFragmentByTag("dialog");
+        if (prev != null) {
+            ft.remove(prev);
+        }
+        ft.addToBackStack(null);
+
+        // Create and show the dialog.
+        TagViewerFragment newFragment = TagViewerFragment.newInstance(recordingFilePath);
+        newFragment.show(ft, "dialog");
     }
+
     public void renameFileDialog (final int position) {
         // File rename dialog
         AlertDialog.Builder renameFileBuilder = new AlertDialog.Builder(mContext);
