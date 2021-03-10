@@ -103,6 +103,9 @@ public class MainActivity extends AppCompatActivity{
                 break;
             case R.id.action_search:
                 showFilterFragment();
+            case R.id.action_refresh:
+
+                currentFileViewerFragment.getAdapter().updateFilePaths();
                 break;
             case R.id.action_cloudDownload:
                 CloudDownloadDialog();
@@ -315,9 +318,6 @@ public class MainActivity extends AppCompatActivity{
                 FilterFragment.
                         newInstance(currentFileViewerFragment);
         newFragment.show(ft, "dialog");
-
-
-        Toast.makeText(MainActivity.this, "TEST", Toast.LENGTH_LONG).show();
     }
 
 

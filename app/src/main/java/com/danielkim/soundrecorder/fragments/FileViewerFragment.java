@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.danielkim.soundrecorder.R;
+import com.danielkim.soundrecorder.activities.MainActivity;
 import com.danielkim.soundrecorder.adapters.FileViewerAdapter;
 
 import androidx.fragment.app.Fragment;
@@ -58,7 +59,7 @@ public class FileViewerFragment extends Fragment {
         mRecyclerView.setLayoutManager(llm);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
 
-        mFileViewerAdapter = new FileViewerAdapter(getActivity(), llm);
+        mFileViewerAdapter = new FileViewerAdapter(getActivity(), llm, (MainActivity) getActivity());
         mRecyclerView.setAdapter(mFileViewerAdapter);
 
         return v;
