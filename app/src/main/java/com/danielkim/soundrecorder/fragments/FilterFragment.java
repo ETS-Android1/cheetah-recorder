@@ -21,6 +21,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import com.danielkim.soundrecorder.DBHelper;
 import com.danielkim.soundrecorder.R;
+import com.danielkim.soundrecorder.adapters.FileViewerAdapter;
 
 import java.sql.Date;
 import java.text.SimpleDateFormat;
@@ -139,12 +140,10 @@ public class FilterFragment extends DialogFragment {
                 // variables
                 String query;
 
-                query = createSelectQuery();
+                query = createSelectQuery() + DBHelper.DELETED;
 
-                if(!query.equals(""))
-                    fileViewerFragment.getAdapter().updateFilePaths(query);
-                else
-                    fileViewerFragment.getAdapter().updateFilePaths("");
+                fileViewerFragment.getAdapter().updateFilePaths(query);
+
             }
         });
 
