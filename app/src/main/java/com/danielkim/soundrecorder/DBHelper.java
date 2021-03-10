@@ -6,12 +6,19 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteStatement;
+import android.os.Environment;
 import android.provider.BaseColumns;
 import android.util.Log;
 
 import com.danielkim.soundrecorder.adapters.TagItem;
 import com.danielkim.soundrecorder.listeners.OnDatabaseChangedListener;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Comparator;
 import java.util.LinkedList;
 
@@ -28,6 +35,8 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final int DATABASE_VERSION = 1;
     private static final String TEXT_TYPE = " TEXT";
     private static final String COMMA_SEP = ",";
+    public static final String DELETED = DBHelper.DBHelperItem.SAVED_RECORDING_RECORDING_FILE_PATH + " not like '%/deleted/%'";
+    public static final String NOT_DELETED = DBHelper.DBHelperItem.SAVED_RECORDING_RECORDING_FILE_PATH + " like '%/deleted/%'";
 
     // public variables
     public static final String DATABASE_NAME = "saved_recordings.db";
@@ -440,6 +449,7 @@ public class DBHelper extends SQLiteOpenHelper {
         return tagList;
     }
 
+    @Deprecated
     public long restoreRecording(RecordingItem item) {
         SQLiteDatabase db = getWritableDatabase();
         ContentValues cv = new ContentValues();
@@ -447,15 +457,58 @@ public class DBHelper extends SQLiteOpenHelper {
         cv.put(DBHelperItem.SAVED_RECORDING_RECORDING_FILE_PATH, item.getFilePath());
         cv.put(DBHelperItem.SAVED_RECORDING_RECORDING_LENGTH, item.getLength());
         cv.put(DBHelperItem.SAVED_RECORDING_TIME_ADDED, item.getTime());
-        cv.put(DBHelperItem.SAVED_RECORDING_RECORDING_SIZE, item.getSize());
-        cv.put(DBHelperItem.SAVED_RECORDING_TAG, item.getTag());
-        cv.put(DBHelperItem.SAVED_RECORDING_TAG_COLOUR, item.getColour());
         cv.put(DBHelperItem._ID, item.getId());
         long rowId = db.insert(DBHelperItem.SAVED_RECORDINGS_NAME, null, cv);
         if (mOnDatabaseChangedListener != null) {
             //mOnDatabaseChangedListener.onNewDatabaseEntryAdded();
         }
         return rowId;
+    }
+
+    public void restoreDeletedFiles() {
+        SQLiteDatabase db = getReadableDatabase();
+        String[] projection = {
+                DBHelperItem._ID,
+                DBHelperItem.SAVED_RECORDING_RECORDING_NAME,
+                DBHelperItem.SAVED_RECORDING_RECORDING_FILE_PATH,
+                DBHelperItem.SAVED_RECORDING_RECORDING_LENGTH,
+                DBHelperItem.SAVED_RECORDING_TIME_ADDED,
+                DBHelperItem.SAVED_RECORDING_RECORDING_SIZE,
+                DBHelperItem.SAVED_RECORDING_TAG,
+                DBHelperItem.SAVED_RECORDING_TAG_COLOUR
+
+        };
+
+        Cursor c = db.query(
+                DBHelperItem.SAVED_RECORDINGS_NAME,
+                projection,
+                NOT_DELETED,
+                null,
+                null,
+                null,
+                null);
+
+
+        c.moveToFirst();
+        while(!c.isAfterLast()){
+
+            // variables
+            ContentValues cv = new ContentValues();
+            cv.put(DBHelperItem.SAVED_RECORDING_RECORDING_FILE_PATH, Environment.getExternalStorageDirectory() + "/SoundRecorder/" + c.getString(c.getColumnIndex(DBHelperItem.SAVED_RECORDING_RECORDING_NAME)));
+            db.update(
+                    DBHelperItem.SAVED_RECORDINGS_NAME,
+                    cv,
+                    DBHelperItem._ID +
+                            " = " + c.getInt(c.getColumnIndex(DBHelperItem._ID)), null);
+
+            c.moveToNext();
+        }
+
+
+
+        if (mOnDatabaseChangedListener != null) {
+            mOnDatabaseChangedListener.onDatabaseEntryRenamed();
+        }
     }
 
     public void injectString(String string) {
@@ -509,5 +562,52 @@ public class DBHelper extends SQLiteOpenHelper {
         return tableString;
     }
 
+    private void moveFile(String inputPath, String outputPath) {
 
+        // variables
+        File file;
+        InputStream inputStream;
+        OutputStream outputStream;
+
+        byte[] buffer;
+
+
+        // assign
+        inputStream = null;
+        outputStream = null;
+        buffer = new byte[1024];
+
+        // attempt file operations
+        try {
+
+            //create output directory if it doesn't exist
+            file = new File (outputPath);
+            if (!file.exists())
+                file.mkdirs();
+
+
+            inputStream = new FileInputStream(inputPath);
+            outputStream = new FileOutputStream(outputPath);
+
+
+            int read;
+            while ((read = inputStream.read(buffer)) != -1) {
+                outputStream.write(buffer, 0, read);
+            }
+            inputStream.close();
+
+            // write the output file
+            outputStream.flush();
+            outputStream.close();
+
+            // delete the original file
+            new File(inputPath).delete();
+        }
+        catch (FileNotFoundException e) {
+            Log.e("tag: ", e.getMessage());
+        }
+        catch (Exception e) {
+            Log.e("tag: ", e.getMessage());
+        }
+    }
 }

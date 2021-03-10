@@ -81,7 +81,7 @@ public class MainActivity extends AppCompatActivity{
                 showFilterFragment();
             case R.id.action_refresh:
 
-                currentFileViewerFragment.getAdapter().updateFilePaths("");
+                currentFileViewerFragment.getAdapter().updateFilePaths();
                 break;
 
 

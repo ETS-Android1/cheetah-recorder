@@ -1,5 +1,6 @@
 package com.danielkim.soundrecorder.fragments;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.Preference;
@@ -7,6 +8,7 @@ import android.preference.PreferenceFragment;
 import androidx.annotation.Nullable;
 
 import com.danielkim.soundrecorder.BuildConfig;
+import com.danielkim.soundrecorder.DBHelper;
 import com.danielkim.soundrecorder.MySharedPreferences;
 import com.danielkim.soundrecorder.R;
 import com.danielkim.soundrecorder.activities.SettingsActivity;
@@ -16,10 +18,14 @@ import com.danielkim.soundrecorder.activities.SettingsActivity;
  */
 
 public class SettingsFragment extends PreferenceFragment {
+    private DBHelper mDatabase;
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.preferences);
+
+        Context mContext = getContext();
+        mDatabase = new DBHelper(mContext);
 
         CheckBoxPreference highQualityPref = (CheckBoxPreference) findPreference(getResources().getString(R.string.pref_high_quality_key));
         highQualityPref.setChecked(MySharedPreferences.getPrefHighQuality(getActivity()));
@@ -38,6 +44,17 @@ public class SettingsFragment extends PreferenceFragment {
             public boolean onPreferenceClick(Preference preference) {
                 LicensesFragment licensesFragment = new LicensesFragment();
                 licensesFragment.show(((SettingsActivity)getActivity()).getSupportFragmentManager().beginTransaction(), "dialog_licenses");
+                return true;
+            }
+        });
+
+        Preference deletedPref = findPreference(getString(R.string.pref_deleted_key));
+        deletedPref.setSummary(getString(R.string.pref_deleted_desc));
+        deletedPref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+
+                mDatabase.restoreDeletedFiles();
                 return true;
             }
         });

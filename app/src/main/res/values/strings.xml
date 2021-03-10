@@ -51,6 +51,9 @@
     <string name="pref_about_key">pref_about</string>
     <string name="pref_about_title">About</string>
     <string name="pref_about_desc">v%s</string>
+    <string name="pref_deleted_key">pref_deleted</string>
+    <string name="pref_deleted_title">Restore Deleted Files</string>
+    <string name="pref_deleted_desc">Recover all deteled files</string>
     <string name="execute">Execute</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
