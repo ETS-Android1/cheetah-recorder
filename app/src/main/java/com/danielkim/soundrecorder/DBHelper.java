@@ -386,7 +386,7 @@ public class DBHelper extends SQLiteOpenHelper {
             cv.put(DBHelperItem.SAVED_RECORDING_TAG, tagName);
             cv.put(DBHelperItem.SAVED_RECORDING_TAG_COLOUR, tagColor);
             db.update(DBHelperItem.SAVED_RECORDINGS_NAME, cv,
-                    DBHelperItem.SAVED_RECORDING_RECORDING_FILE_PATH + " like '" + recordingFilePath + "'", null);
+                    DBHelperItem.SAVED_RECORDING_RECORDING_FILE_PATH + " = '" + recordingFilePath + "'", null);
 
             c.close();
 

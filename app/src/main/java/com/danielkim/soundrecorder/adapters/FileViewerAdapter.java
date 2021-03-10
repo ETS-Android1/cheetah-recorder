@@ -56,10 +56,12 @@ public class FileViewerAdapter extends RecyclerView.Adapter<FileViewerAdapter.Re
 
     private DBHelper mDatabase;
     private LinkedList<String> filePaths;
+    private String secondLastClause;
+    private String lastClause;
 
     private FirebaseStorage storage = FirebaseStorage.getInstance();
+    private boolean doQuickFilter;
 
-    RecordingItem item;
     Context mContext;
     LinearLayoutManager llm;
 
@@ -70,6 +72,7 @@ public class FileViewerAdapter extends RecyclerView.Adapter<FileViewerAdapter.Re
         mDatabase.setOnDatabaseChangedListener(this);
         llm = linearLayoutManager;
         mMainActivity = mainActivity;
+        doQuickFilter = false;
 
         filePaths = mDatabase.getFilePaths();
     }
@@ -77,13 +80,15 @@ public class FileViewerAdapter extends RecyclerView.Adapter<FileViewerAdapter.Re
     @Override
     public void onBindViewHolder(final RecordingsViewHolder holder, int position) {
 
-        item = getItem(position);
+        // variables
+        RecordingItem item = getItem(position);
         long itemDuration = item.getLength();
-
         long minutes = TimeUnit.MILLISECONDS.toMinutes(itemDuration);
         long seconds = TimeUnit.MILLISECONDS.toSeconds(itemDuration)
                 - TimeUnit.MINUTES.toSeconds(minutes);
 
+
+        // assign
         holder.vName.setText(item.getName());
         holder.vLength.setText(String.format("%02d:%02d", minutes, seconds));
         holder.vFileSize.setText(item.getSizeFormatted());
@@ -95,12 +100,37 @@ public class FileViewerAdapter extends RecyclerView.Adapter<FileViewerAdapter.Re
             )
         );
         holder.recordingFilePath = item.getFilePath();
+
         //if the tag is not empty display the text and color
         //if(!item.getTag().equals("")) {
 
             holder.vTag.setText(item.getTag());
             holder.vTag.setBackgroundColor(Color.parseColor(item.getColour()));
-        // }
+            final String temp = item.getTag();
+
+            // do quickfilter
+            holder.vTag.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    if(!doQuickFilter) {
+                        updateFilePaths(DBHelper.DBHelperItem.SAVED_RECORDING_TAG + " = '" + temp + "'");
+                        doQuickFilter = !doQuickFilter;
+                    }
+                    else{
+
+                        // variables
+                        String temp;
+
+                        temp = lastClause;
+                        lastClause = secondLastClause;
+                        secondLastClause = temp;
+                        updateFilePaths();
+                        doQuickFilter = !doQuickFilter;
+                    }
+                }
+            });
+        //}
         //else{
 
             //holder.vTag.setVisibility(View.INVISIBLE);
@@ -185,6 +215,8 @@ public class FileViewerAdapter extends RecyclerView.Adapter<FileViewerAdapter.Re
                 inflate(R.layout.card_view, parent, false);
 
         mContext = parent.getContext();
+        lastClause = "";
+        secondLastClause = "";
 
         return new RecordingsViewHolder(itemView);
     }
@@ -480,13 +512,22 @@ public class FileViewerAdapter extends RecyclerView.Adapter<FileViewerAdapter.Re
 
     public void updateFilePaths(){
 
-        filePaths = mDatabase.getFilePaths();
+        if(!lastClause.equals(""))
+            filePaths = mDatabase.getFilePaths(lastClause);
+        else
+            filePaths =  mDatabase.getFilePaths();
+
         this.notifyDataSetChanged();
     }
 
     public void updateFilePaths(String clause){
 
-        filePaths = mDatabase.getFilePaths(clause);
+        secondLastClause = lastClause;
+        lastClause = clause;
+        if(!lastClause.equals(""))
+            filePaths = mDatabase.getFilePaths(lastClause);
+        else
+            filePaths =  mDatabase.getFilePaths();
         this.notifyDataSetChanged();
     }
 

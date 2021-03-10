@@ -79,7 +79,12 @@ public class MainActivity extends AppCompatActivity{
             case R.id.action_search:
 
                 showFilterFragment();
+            case R.id.action_refresh:
+
+                currentFileViewerFragment.getAdapter().updateFilePaths("");
                 break;
+
+
             default:
                 return super.onOptionsItemSelected(item);
         }

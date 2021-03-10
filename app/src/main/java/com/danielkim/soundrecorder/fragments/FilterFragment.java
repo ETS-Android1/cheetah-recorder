@@ -141,14 +141,10 @@ public class FilterFragment extends DialogFragment {
 
                 query = createSelectQuery();
 
-                Toast.makeText(getContext(), query, Toast.LENGTH_LONG).show();
-                Log.d(">>>>>>>>>>", query);
-
-
                 if(!query.equals(""))
                     fileViewerFragment.getAdapter().updateFilePaths(query);
                 else
-                    fileViewerFragment.getAdapter().updateFilePaths();
+                    fileViewerFragment.getAdapter().updateFilePaths("");
             }
         });
 
