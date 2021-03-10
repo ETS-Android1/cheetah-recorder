@@ -4,11 +4,13 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.DownloadManager;
 import android.app.FragmentTransaction;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.media.MediaMetadataRetriever;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
@@ -36,6 +38,10 @@ import com.danielkim.soundrecorder.fragments.FilterFragment;
 import com.danielkim.soundrecorder.fragments.RecordFragment;
 
 import java.io.File;
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 
 public class MainActivity extends AppCompatActivity{
@@ -118,25 +124,36 @@ public class MainActivity extends AppCompatActivity{
 
         final EditText input = (EditText) view.findViewById(R.id.url_input);
 
-        final String tempUrl = "https://firebasestorage.googleapis.com/v0/b/soundrecorder-f12a3.appspot.com/o/SoundRecorder%2Fbf3680c3-f31e-45e6-a5b4-c7460d7431ff.mp4?alt=media&token=e33d48d2-b825-45b9-8305-f4cb00c7f5c5";
+        final String tempUrl = "https://firebasestorage.googleapis.com/v0/b/soundrecorder-f12a3.appspot.com/o/SoundRecorder%2Ffd2ea7ee-5c0b-45d8-be28-8a4856bbd9c8.mp4?alt=media&token=c9092b68-de83-4294-9ad2-625dfb3e543e";
 
         renameFileBuilder.setTitle("Download from Cloud");
         renameFileBuilder.setCancelable(true);
         renameFileBuilder.setPositiveButton("Download",
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
+                        String value = input.getText().toString().trim();
+
                         try {
-                            String value = input.getText().toString().trim();
 //
-                            //download code goes here
-                            //saveToInternalStorage(tempUrl);
-                            doInBackground(tempUrl);
+                            System.out.println("----------------------INPUIT = " + value);
+                            System.out.println("-----------------------------LENGTH = " + value.length());
+
+                            //urlReachable is only for get Requests. Look into alternative for url audio file checking
+//                            if (value.length() <= 0 || !(urlReachable(value)))
+
+                            //input validation & url reachable flag
+
+                                if (value.length() <= 0) {
+                                Toast.makeText(MainActivity.this, "Invalid URL", Toast.LENGTH_SHORT).show();
+                                return;
+                            }
+                                    doInBackground(value);
+                                    dialog.cancel();
 
                         } catch (Exception e) {
                             Log.e(LOG_TAG, "exception", e);
+                            Toast.makeText(MainActivity.this, "Invalid URL", Toast.LENGTH_SHORT).show();
                         }
-
-                        dialog.cancel();
                     }
                 });
         renameFileBuilder.setNegativeButton(this.getString(R.string.dialog_action_cancel),
@@ -153,82 +170,60 @@ public class MainActivity extends AppCompatActivity{
         //updateFilePaths();
     }
 
-    private void saveToInternalStorage(String url) {
-        File folder = new File(Environment.getExternalStorageDirectory() + "/SoundRecorder");
+//    private boolean urlReachable(String file_url)  {
+//        try {
+//            URL url = new URL(file_url);
+//
+//            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+//            int code = connection.getResponseCode();
+//            if (code == 200)
+//                return true;
+//        }catch (Exception e) {
+//            return false;
+//        }
+//        return false;
+//    }
 
-        if (!folder.exists()) {
-            folder.mkdir();
-        }
-
-        int count = 0;
-        File f;
-        mDatabase = new DBHelper(getApplicationContext());
-
-        do{
-            count++;
-
-            //file name
-            String mFileName = "Cloud_Recording"
-                    + "_" + (mDatabase.getCount() + count) + ".mp4";
-
-            //Need absolute path to see if file exists
-            String mFilePath = Environment.getExternalStorageDirectory().getAbsolutePath();
-            mFilePath += "/SoundRecorder/" + mFileName;
-
-            //temp url
-            Uri file_uri = Uri.parse(url);
-            DownloadManager downloadManager = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
-            DownloadManager.Request request = new DownloadManager.Request(file_uri);
-
-            //Setting title of request
-            request.setTitle("Audio Download");
-
-            //Setting description of request
-            request.setDescription("Android Audio download using DownloadManager.");
-
-            //Set the local destination for the downloaded file to a path within the application's external files directory
-            request.setDestinationInExternalPublicDir("/SoundRecorder/", mFileName);
-
-            //Enqueue download
-            downloadManager.enqueue(request);
-
-
-            //NOT working...
-            f = new File("/SoundRecorder/" + mFileName);
-
-            double mFileSize = f.length();
-            mFileSize = mFileSize / 1024;
-
-            System.out.println("------------------------------Length = " + f.length());
-            System.out.println("------------------------------Size = "+ mFileSize);
-
-
-            //Add file to database
-            try {
-
-                mDatabase.addRecording(mFileName, mFilePath, 23, mFileSize);
-
-            } catch (Exception e){
-                Log.e(LOG_TAG, "exception", e);
-            }
-
-
-
-        }while (f.exists() && !f.isDirectory());
-
-    }
 
 
     protected Boolean doInBackground(String url) {
         boolean flag = true;
         boolean downloading =true;
+        mDatabase = new DBHelper(getApplicationContext());
+        int count = 0;
+        File f;
+        String mFilePath;
+        String mFileName;
+        MediaPlayer mediaPlayer;
+
+        final ProgressDialog progressDialog = new ProgressDialog(this);
+        progressDialog.setTitle("Downloading...");
+        progressDialog.show();
+        progressDialog.setCancelable(false);
+
         try{
+
             DownloadManager mManager = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
             DownloadManager.Request mRqRequest = new DownloadManager.Request(
                     Uri.parse(url));
-            mRqRequest.setDestinationInExternalPublicDir("/SoundRecorder/", "Cloud123.mp4");
 
+            do{
+                count++;
+
+                //file name
+                mFileName = "Cloud_Recording" + "_" + (mDatabase.getCount() + count) + ".mp4";
+
+                mFilePath = Environment.getExternalStorageDirectory().getAbsolutePath();
+                mFilePath += "/SoundRecorder/" + mFileName;
+
+                f = new File("/SoundRecorder/" + mFileName);
+
+            }while (f.exists() && !f.isDirectory());
+
+
+            mRqRequest.setDestinationInExternalPublicDir("/SoundRecorder/", mFileName);
             long idDownLoad=mManager.enqueue(mRqRequest);
+
 
             DownloadManager.Query query = null;
             query = new DownloadManager.Query();
@@ -246,22 +241,41 @@ public class MainActivity extends AppCompatActivity{
                     int status =c.getInt(c.getColumnIndex(DownloadManager.COLUMN_STATUS));
 
                     if (status==DownloadManager.STATUS_SUCCESSFUL) {
+
                         Log.i ("FLAG","done");
-                        downloading = false;
-                        flag=true;
-                        File f = new File("/SoundRecorder/" + "Cloud_Recording_12.mp4");
 
-                        double mFileSize = f.length();
-                        mFileSize = mFileSize / 1024;
+                        MediaMetadataRetriever retriever = new MediaMetadataRetriever();
+                        retriever.setDataSource(this,Uri.parse(mFilePath));
+                        String duration = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
 
-                        System.out.println("------------------------------Length = " + f.length());
-                        System.out.println("------------------------------Size = "+ mFileSize);
+
+
+                        File newfile = new File(mFilePath);
+                        double mFileSize = newfile.length() /1024;
+                        int millSecond = Integer.parseInt(duration);
+
+                        //Add file to database
+                        try {
+                            mDatabase.addRecording(mFileName, mFilePath, millSecond, mFileSize);
+                        } catch (Exception e){
+                            progressDialog.dismiss();
+                            Toast.makeText(this, "Failed: " + e, Toast.LENGTH_LONG).show();
+
+                            Log.e(LOG_TAG, "exception", e);
+                        }
+
+                        progressDialog.dismiss();
+                        Toast.makeText(this, "Success ", Toast.LENGTH_LONG).show();
+
                         break;
                     }
                     if (status==DownloadManager.STATUS_FAILED) {
                         Log.i ("FLAG","Fail");
                         downloading = false;
                         flag=false;
+
+                        progressDialog.dismiss();
+                        Toast.makeText(this, "Failed to download ", Toast.LENGTH_LONG).show();
                         break;
                     }
                 }
@@ -275,18 +289,15 @@ public class MainActivity extends AppCompatActivity{
     }
 
 
-    private static void getDuration(File file) {
-        MediaMetadataRetriever mediaMetadataRetriever = new MediaMetadataRetriever();
-        mediaMetadataRetriever.setDataSource(file.getAbsolutePath());
-        String durationStr = mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
-
-        System.out.println("------------------------------------" + durationStr);
-
-        // return Utils.formateMilliSeccond(Long.parseLong(durationStr));
-    }
-
-
-
+//    private static void getDuration(File file) {
+//        MediaMetadataRetriever mediaMetadataRetriever = new MediaMetadataRetriever();
+//        mediaMetadataRetriever.setDataSource(file.getAbsolutePath());
+//        String durationStr = mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
+//
+//        System.out.println("------------------------------------" + durationStr);
+//
+//        // return Utils.formateMilliSeccond(Long.parseLong(durationStr));
+//    }
 
 
     public void showFilterFragment(){
