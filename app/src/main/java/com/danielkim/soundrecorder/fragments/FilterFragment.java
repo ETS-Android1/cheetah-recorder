@@ -141,14 +141,10 @@ public class FilterFragment extends DialogFragment {
 
                 query = createSelectQuery();
 
-                Toast.makeText(getContext(), query, Toast.LENGTH_LONG).show();
-                Log.d(">>>>>>>>>>", query);
-
-
                 if(!query.equals(""))
                     fileViewerFragment.getAdapter().updateFilePaths(query);
                 else
-                    fileViewerFragment.getAdapter().updateFilePaths();
+                    fileViewerFragment.getAdapter().updateFilePaths("");
             }
         });
 
@@ -341,7 +337,7 @@ public class FilterFragment extends DialogFragment {
         // create text search
         if(!searchText.getText().toString().equals("")){
 
-            textClause.append(DBHelper.DBHelperItem.COLUMN_NAME_RECORDING_NAME);
+            textClause.append(DBHelper.DBHelperItem.SAVED_RECORDING_RECORDING_NAME);
             textClause.append(" like '%");
             textClause.append(searchText.getText().toString());
             textClause.append("%' ");
@@ -351,7 +347,7 @@ public class FilterFragment extends DialogFragment {
         if(filterDate) {
             if (!minDateText.getText().toString().equals("")) {
 
-                dateClause.append(DBHelper.DBHelperItem.COLUMN_NAME_TIME_ADDED);
+                dateClause.append(DBHelper.DBHelperItem.SAVED_RECORDING_TIME_ADDED);
                 dateClause.append(" between '");
                 dateClause.append(minDate.getTimeInMillis());
                 dateClause.append("' and '");
@@ -367,7 +363,7 @@ public class FilterFragment extends DialogFragment {
                 }
             } else if (!maxDateText.getText().toString().equals("")) {
 
-                dateClause.append(DBHelper.DBHelperItem.COLUMN_NAME_TIME_ADDED);
+                dateClause.append(DBHelper.DBHelperItem.SAVED_RECORDING_TIME_ADDED);
                 dateClause.append(" between '");
                 dateClause.append(0);
                 dateClause.append("' and '");
@@ -378,7 +374,7 @@ public class FilterFragment extends DialogFragment {
 
         // sizeClause
         if(filterSize) {
-            sizeClause.append(DBHelper.DBHelperItem.COLUMN_NAME_RECORDING_SIZE);
+            sizeClause.append(DBHelper.DBHelperItem.SAVED_RECORDING_RECORDING_SIZE);
 
             if(lessThan.isChecked())
                 sizeClause.append(" < ");

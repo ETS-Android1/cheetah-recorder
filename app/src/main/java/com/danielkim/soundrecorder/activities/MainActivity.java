@@ -79,7 +79,12 @@ public class MainActivity extends AppCompatActivity{
             case R.id.action_search:
 
                 showFilterFragment();
+            case R.id.action_refresh:
+
+                currentFileViewerFragment.getAdapter().updateFilePaths("");
                 break;
+
+
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -101,9 +106,6 @@ public class MainActivity extends AppCompatActivity{
                 FilterFragment.
                         newInstance(currentFileViewerFragment);
         newFragment.show(ft, "dialog");
-
-
-        Toast.makeText(MainActivity.this, "TEST", Toast.LENGTH_LONG).show();
     }
 
 

@@ -41,6 +41,8 @@ public class RecordingService extends Service {
     private long mStartingTimeMillis = 0;
     private long mElapsedMillis = 0;
     private int mElapsedSeconds = 0;
+    private String mTagName = null;
+    private String mColour = null;
     private OnTimerChangedListener onTimerChangedListener = null;
     private static final SimpleDateFormat mTimerFormat = new SimpleDateFormat("mm:ss", Locale.getDefault());
 
@@ -143,9 +145,11 @@ public class RecordingService extends Service {
         }
 
         mRecorder = null;
+        mTagName = "";
+        mColour = "#FFFFFF";
 
         try {
-            mDatabase.addRecording(mFileName, mFilePath, mElapsedMillis, mFileSize);
+            mDatabase.addRecording(mFileName, mFilePath, mElapsedMillis, mFileSize, mTagName, mColour);
 
         } catch (Exception e){
             Log.e(LOG_TAG, "exception", e);

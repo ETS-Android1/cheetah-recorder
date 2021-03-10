@@ -5,29 +5,33 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Environment;
 
-import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Button;
 import android.widget.Toast;
 import android.text.format.DateUtils;
 
 import com.danielkim.soundrecorder.DBHelper;
 import com.danielkim.soundrecorder.R;
 import com.danielkim.soundrecorder.RecordingItem;
+import com.danielkim.soundrecorder.activities.MainActivity;
+import com.danielkim.soundrecorder.fragments.FilterFragment;
 import com.danielkim.soundrecorder.fragments.PlaybackFragment;
+import com.danielkim.soundrecorder.fragments.TagViewerFragment;
 import com.danielkim.soundrecorder.listeners.OnDatabaseChangedListener;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.storage.FirebaseStorage;
@@ -48,21 +52,27 @@ public class FileViewerAdapter extends RecyclerView.Adapter<FileViewerAdapter.Re
 
     private static final String LOG_TAG = "FileViewerAdapter";
 
+    private MainActivity mMainActivity;
+
     private DBHelper mDatabase;
     private LinkedList<String> filePaths;
+    private String secondLastClause;
+    private String lastClause;
 
     private FirebaseStorage storage = FirebaseStorage.getInstance();
+    private boolean doQuickFilter;
 
-    RecordingItem item;
     Context mContext;
     LinearLayoutManager llm;
 
-    public FileViewerAdapter(Context context, LinearLayoutManager linearLayoutManager) {
+    public FileViewerAdapter(Context context, LinearLayoutManager linearLayoutManager, MainActivity mainActivity) {
         super();
         mContext = context;
         mDatabase = new DBHelper(mContext);
         mDatabase.setOnDatabaseChangedListener(this);
         llm = linearLayoutManager;
+        mMainActivity = mainActivity;
+        doQuickFilter = false;
 
         filePaths = mDatabase.getFilePaths();
     }
@@ -70,13 +80,15 @@ public class FileViewerAdapter extends RecyclerView.Adapter<FileViewerAdapter.Re
     @Override
     public void onBindViewHolder(final RecordingsViewHolder holder, int position) {
 
-        item = getItem(position);
+        // variables
+        RecordingItem item = getItem(position);
         long itemDuration = item.getLength();
-
         long minutes = TimeUnit.MILLISECONDS.toMinutes(itemDuration);
         long seconds = TimeUnit.MILLISECONDS.toSeconds(itemDuration)
                 - TimeUnit.MINUTES.toSeconds(minutes);
 
+
+        // assign
         holder.vName.setText(item.getName());
         holder.vLength.setText(String.format("%02d:%02d", minutes, seconds));
         holder.vFileSize.setText(item.getSizeFormatted());
@@ -87,6 +99,42 @@ public class FileViewerAdapter extends RecyclerView.Adapter<FileViewerAdapter.Re
                 DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_NUMERIC_DATE | DateUtils.FORMAT_SHOW_TIME | DateUtils.FORMAT_SHOW_YEAR
             )
         );
+        holder.recordingFilePath = item.getFilePath();
+
+        //if the tag is not empty display the text and color
+        //if(!item.getTag().equals("")) {
+
+            holder.vTag.setText(item.getTag());
+            holder.vTag.setBackgroundColor(Color.parseColor(item.getColour()));
+            final String temp = item.getTag();
+
+            // do quickfilter
+            holder.vTag.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    if(!doQuickFilter) {
+                        updateFilePaths(DBHelper.DBHelperItem.SAVED_RECORDING_TAG + " = '" + temp + "'");
+                        doQuickFilter = !doQuickFilter;
+                    }
+                    else{
+
+                        // variables
+                        String temp;
+
+                        temp = lastClause;
+                        lastClause = secondLastClause;
+                        secondLastClause = temp;
+                        updateFilePaths();
+                        doQuickFilter = !doQuickFilter;
+                    }
+                }
+            });
+        //}
+        //else{
+
+            //holder.vTag.setVisibility(View.INVISIBLE);
+        //}
 
         // define an on click listener to open PlaybackFragment
         holder.cardView.setOnClickListener(new View.OnClickListener() {
@@ -113,10 +161,11 @@ public class FileViewerAdapter extends RecyclerView.Adapter<FileViewerAdapter.Re
             public boolean onLongClick(View v) {
 
                 ArrayList<String> entrys = new ArrayList<String>();
-                entrys.add(mContext.getString(R.string.dialog_file_share));
                 entrys.add(mContext.getString(R.string.dialog_file_rename));
                 entrys.add(mContext.getString(R.string.dialog_file_delete));
+                entrys.add("Edit Tag");
                 entrys.add("Cloud Share");
+
 
                 final CharSequence[] items = entrys.toArray(new CharSequence[entrys.size()]);
 
@@ -127,16 +176,21 @@ public class FileViewerAdapter extends RecyclerView.Adapter<FileViewerAdapter.Re
                 builder.setItems(items, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int item) {
                         if (item == 0) {
-                            shareFileDialog(holder.getPosition());
-                        } if (item == 1) {
+
                             renameFileDialog(holder.getPosition());
-                        } else if (item == 2) {
+                        } if (item == 1) {
+
                             deleteFileDialog(holder.getPosition());
-                        } else if( item == 3){
+                        } else if (item == 2) {
+
+                            addTagDialog(holder.recordingFilePath);
+                        } else if( item == 3) {
+
                             cloudShare(holder.getLayoutPosition());
                         }
                     }
                 });
+
                 builder.setCancelable(true);
                 builder.setNegativeButton(mContext.getString(R.string.dialog_action_cancel),
                         new DialogInterface.OnClickListener() {
@@ -161,6 +215,8 @@ public class FileViewerAdapter extends RecyclerView.Adapter<FileViewerAdapter.Re
                 inflate(R.layout.card_view, parent, false);
 
         mContext = parent.getContext();
+        lastClause = "";
+        secondLastClause = "";
 
         return new RecordingsViewHolder(itemView);
     }
@@ -170,7 +226,9 @@ public class FileViewerAdapter extends RecyclerView.Adapter<FileViewerAdapter.Re
         protected TextView vLength;
         protected TextView vDateAdded;
         protected TextView vFileSize;
+        protected Button vTag;
         protected View cardView;
+        protected String recordingFilePath;
 
         public RecordingsViewHolder(View v) {
             super(v);
@@ -178,6 +236,7 @@ public class FileViewerAdapter extends RecyclerView.Adapter<FileViewerAdapter.Re
             vLength = (TextView) v.findViewById(R.id.file_length_text);
             vDateAdded = (TextView) v.findViewById(R.id.file_date_added_text);
             vFileSize = (TextView) v.findViewById((R.id.file_size_text));
+            vTag = (Button) v.findViewById((R.id.recordingTag));
             cardView = v.findViewById(R.id.card_view);
         }
     }
@@ -192,18 +251,27 @@ public class FileViewerAdapter extends RecyclerView.Adapter<FileViewerAdapter.Re
         return mDatabase.getItemByFilePath(filePaths.get(position));
     }
 
+    public int getItemID(int position) {
+
+        return mDatabase.getItemByFilePath(filePaths.get(position)).getId();
+    }
+
     @Override
     public void onNewDatabaseEntryAdded() {
         //item added to top of the list
-        filePaths = mDatabase.getFilePaths();
-        notifyItemInserted(getItemCount() - 1);
-        llm.scrollToPosition(getItemCount() - 1);
+
+        //if(getItemCount() < 0) {
+        //    notifyItemInserted(getItemCount());
+        //    llm.scrollToPosition(getItemCount());
+        //}
+
+        updateFilePaths();
     }
 
     @Override
     //TODO
     public void onDatabaseEntryRenamed() {
-
+        updateFilePaths();
     }
 
     public void cloudShare(int position) {
@@ -292,16 +360,19 @@ public class FileViewerAdapter extends RecyclerView.Adapter<FileViewerAdapter.Re
         //remove item from database, recyclerview and storage
 
         //delete file from storage
+        //remove item from database, recyclerview and storage
+
+        //delete file from storage
         File file = new File(getItem(position).getFilePath());
         file.delete();
 
         Toast.makeText(
-            mContext,
-            String.format(
-                mContext.getString(R.string.toast_file_delete),
-                getItem(position).getName()
-            ),
-            Toast.LENGTH_SHORT
+                mContext,
+                String.format(
+                        mContext.getString(R.string.toast_file_delete),
+                        getItem(position).getName()
+                ),
+                Toast.LENGTH_SHORT
         ).show();
 
         mDatabase.removeItemWithId(getItem(position).getId());
@@ -312,7 +383,6 @@ public class FileViewerAdapter extends RecyclerView.Adapter<FileViewerAdapter.Re
 
     //TODO
     public void removeOutOfApp(String filePath) {
-        //user deletes a saved recording out of the application through another application
     }
 
     public void rename(int position, String name) {
@@ -339,6 +409,7 @@ public class FileViewerAdapter extends RecyclerView.Adapter<FileViewerAdapter.Re
         updateFilePaths();
     }
 
+    @Deprecated
     public void shareFileDialog(int position) {
         Intent shareIntent = new Intent();
         shareIntent.setAction(Intent.ACTION_SEND);
@@ -349,6 +420,23 @@ public class FileViewerAdapter extends RecyclerView.Adapter<FileViewerAdapter.Re
         updateFilePaths();
     }
 
+    public void addTagDialog(String recordingFilePath) {
+
+        // code for upadating a tag
+
+        // create the filter fragment
+        android.app.FragmentTransaction ft = mMainActivity.getFragmentManager().beginTransaction();
+        android.app.Fragment prev = mMainActivity.getFragmentManager().findFragmentByTag("dialog");
+        if (prev != null) {
+            ft.remove(prev);
+        }
+        ft.addToBackStack(null);
+
+        // Create and show the dialog.
+        TagViewerFragment newFragment = TagViewerFragment.newInstance(recordingFilePath);
+        newFragment.show(ft, "dialog");
+    }
+
     public void renameFileDialog (final int position) {
         // File rename dialog
         AlertDialog.Builder renameFileBuilder = new AlertDialog.Builder(mContext);
@@ -356,7 +444,7 @@ public class FileViewerAdapter extends RecyclerView.Adapter<FileViewerAdapter.Re
         LayoutInflater inflater = LayoutInflater.from(mContext);
         View view = inflater.inflate(R.layout.dialog_rename_file, null);
 
-        final EditText input = (EditText) view.findViewById(R.id.new_name);
+        final EditText input = (EditText) view.findViewById(R.id.tag_entry);
 
         renameFileBuilder.setTitle(mContext.getString(R.string.dialog_title_rename));
         renameFileBuilder.setCancelable(true);
@@ -364,7 +452,7 @@ public class FileViewerAdapter extends RecyclerView.Adapter<FileViewerAdapter.Re
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         try {
-                            String value = input.getText().toString().trim() + ".mp4";
+                            String value = input.getText().toString().trim();
                             rename(position, value);
 
                         } catch (Exception e) {
@@ -424,13 +512,22 @@ public class FileViewerAdapter extends RecyclerView.Adapter<FileViewerAdapter.Re
 
     public void updateFilePaths(){
 
-        filePaths = mDatabase.getFilePaths();
+        if(!lastClause.equals(""))
+            filePaths = mDatabase.getFilePaths(lastClause);
+        else
+            filePaths =  mDatabase.getFilePaths();
+
         this.notifyDataSetChanged();
     }
 
     public void updateFilePaths(String clause){
 
-        filePaths = mDatabase.getFilePaths(clause);
+        secondLastClause = lastClause;
+        lastClause = clause;
+        if(!lastClause.equals(""))
+            filePaths = mDatabase.getFilePaths(lastClause);
+        else
+            filePaths =  mDatabase.getFilePaths();
         this.notifyDataSetChanged();
     }
 
