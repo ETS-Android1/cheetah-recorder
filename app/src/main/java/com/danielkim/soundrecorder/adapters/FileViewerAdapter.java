@@ -208,6 +208,7 @@ public class FileViewerAdapter extends RecyclerView.Adapter<FileViewerAdapter.Re
 
     public void cloudShare(int position) {
 
+
         //location of audio file in internal storage
         File file = new File(getItem(position).getFilePath());
 
@@ -237,8 +238,22 @@ public class FileViewerAdapter extends RecyclerView.Adapter<FileViewerAdapter.Re
                         @Override
                         public void onSuccess(Uri uri) {
                             //URL of audio file
-                            String imageUrl = uri.toString();
-                            System.out.println("\n\n---------------------------------------DB File URL = " + imageUrl + "\n\n");
+                            final String audioURL = uri.toString();
+                            System.out.println("\n\n---------------------------------------audioURL URL = " + audioURL + "\n\n");
+
+                            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(mContext);
+                            alertDialogBuilder.setTitle("Audio file URL");
+                            alertDialogBuilder.setMessage(audioURL);
+                            alertDialogBuilder.setPositiveButton("Copy", new DialogInterface.OnClickListener(){
+                                public void onClick(DialogInterface dialog, int id) {
+                                    android.content.ClipboardManager clipboard = (android.content.ClipboardManager) mContext.getSystemService(Context.CLIPBOARD_SERVICE);
+                                    android.content.ClipData clip = android.content.ClipData.newPlainText("Cloud URL", audioURL);
+                                    clipboard.setPrimaryClip(clip);
+                                    Toast.makeText(mContext, "Copied", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                            alertDialogBuilder.create().show();
+
                         }
                     });
                 }
