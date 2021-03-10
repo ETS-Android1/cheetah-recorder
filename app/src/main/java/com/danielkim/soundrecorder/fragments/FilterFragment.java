@@ -140,10 +140,12 @@ public class FilterFragment extends DialogFragment {
                 // variables
                 String query;
 
-                query = createSelectQuery() + DBHelper.DELETED;
+                query = createSelectQuery();
 
-                fileViewerFragment.getAdapter().updateFilePaths(query);
-
+                if(!query.equals(""))
+                    fileViewerFragment.getAdapter().updateFilePaths(query + " and " + DBHelper.DELETED);
+                else
+                    fileViewerFragment.getAdapter().updateFilePaths();
             }
         });
 

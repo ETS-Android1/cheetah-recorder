@@ -190,7 +190,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 DBHelperItem.SAVED_RECORDING_TAG_COLOUR
         };
 
-        Cursor c = db.query(
+         Cursor c = db.query(
                 DBHelperItem.SAVED_RECORDINGS_NAME,
                 projection,
                 DBHelperItem.SAVED_RECORDING_RECORDING_FILE_PATH + " like '%" + filePath + "%'",
@@ -348,6 +348,7 @@ public class DBHelper extends SQLiteOpenHelper {
         if (mOnDatabaseChangedListener != null) {
             mOnDatabaseChangedListener.onDatabaseEntryRenamed();
         }
+        Log.d("TEST", "RENNAMED" + recordingName + " " + filePath);
     }
 
     @Deprecated
