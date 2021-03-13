@@ -13,7 +13,8 @@ public class RecordingItem implements Parcelable {
     private int mLength; // length of recording in seconds
     private long mTime; // date/time of the recording
     private double mSize; // file size of the recording
-
+    private String mTag;
+    private String mColour;
     public RecordingItem() {
     }
 
@@ -24,6 +25,8 @@ public class RecordingItem implements Parcelable {
         mLength = in.readInt();
         mTime = in.readLong();
         mSize = in.readDouble();
+        mTag = in.readString();
+        mColour = in.readString();
     }
 
     public String getFilePath() {
@@ -69,6 +72,20 @@ public class RecordingItem implements Parcelable {
     public double getSize() {
 
         return mSize;
+    }
+    public void setTag(String tagName) {
+        mTag = tagName;
+    }
+    public String getTag()
+    {
+        return mTag;
+    }
+    public void setColour(String tagColour)
+    {
+        mColour = tagColour;
+    }
+    public String getColour(){
+        return mColour;
     }
 
     public String getSizeFormatted() {

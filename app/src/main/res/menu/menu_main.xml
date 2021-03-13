@@ -5,6 +5,14 @@
     tools:context=".MainActivity">
 
     <item
+        android:id="@+id/action_refresh"
+        android:icon="@drawable/ic_action_refresh"
+        android:orderInCategory="100"
+        android:title="Search"
+        app:showAsAction="always"
+        />
+
+    <item
         android:id="@+id/action_search"
         android:icon="@drawable/ic_action_search"
         android:orderInCategory="100"
@@ -20,4 +28,10 @@
         android:id="@+id/action_debug"
         android:orderInCategory="102"
         android:title="Debug" />
+
+    <item
+        android:id="@+id/action_cloudDownload"
+        android:orderInCategory="103"
+        android:title="Cloud Download"
+        />
 </menu>
