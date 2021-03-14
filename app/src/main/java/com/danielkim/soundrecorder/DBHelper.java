@@ -511,6 +511,7 @@ public class DBHelper extends SQLiteOpenHelper {
     }
     public void emptyTrash() {
         SQLiteDatabase db = getReadableDatabase();
+        RecordingItem item;
 
         String[] projection = {
                 DBHelperItem._ID,
@@ -535,7 +536,10 @@ public class DBHelper extends SQLiteOpenHelper {
 
         c.moveToFirst();
         while(!c.isAfterLast()){
-            removeItemWithId(c.getInt(c.getColumnIndex(DBHelperItem._ID)));
+            item = getItemByFilePath(c.getString(c.getColumnIndex(DBHelperItem.SAVED_RECORDING_RECORDING_FILE_PATH)));
+            File file = new File(item.getFilePath());
+            removeItemWithId(item.getId());
+            file.delete();
 
             c.moveToNext();
         }
