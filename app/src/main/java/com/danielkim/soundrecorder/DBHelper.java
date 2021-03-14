@@ -489,29 +489,61 @@ public class DBHelper extends SQLiteOpenHelper {
                 null,
                 null);
 
-
         c.moveToFirst();
         while(!c.isAfterLast()){
 
-            // variables
+
             ContentValues cv = new ContentValues();
             cv.put(DBHelperItem.SAVED_RECORDING_RECORDING_FILE_PATH, Environment.getExternalStorageDirectory() + "/SoundRecorder/" + c.getString(c.getColumnIndex(DBHelperItem.SAVED_RECORDING_RECORDING_NAME)));
             db.update(
                     DBHelperItem.SAVED_RECORDINGS_NAME,
                     cv,
-                    DBHelperItem._ID +
-                            " = " + c.getInt(c.getColumnIndex(DBHelperItem._ID)), null);
+                    DBHelperItem._ID + " = " + c.getInt(c.getColumnIndex(DBHelperItem._ID)),
+                    null
+            );
 
             c.moveToNext();
         }
-
-
 
         if (mOnDatabaseChangedListener != null) {
             mOnDatabaseChangedListener.onDatabaseEntryRenamed();
         }
     }
+    public void emptyTrash() {
+        SQLiteDatabase db = getReadableDatabase();
 
+        String[] projection = {
+                DBHelperItem._ID,
+                DBHelperItem.SAVED_RECORDING_RECORDING_NAME,
+                DBHelperItem.SAVED_RECORDING_RECORDING_FILE_PATH,
+                DBHelperItem.SAVED_RECORDING_RECORDING_LENGTH,
+                DBHelperItem.SAVED_RECORDING_TIME_ADDED,
+                DBHelperItem.SAVED_RECORDING_RECORDING_SIZE,
+                DBHelperItem.SAVED_RECORDING_TAG,
+                DBHelperItem.SAVED_RECORDING_TAG_COLOUR
+        };
+
+        Cursor c = db.query(
+                DBHelperItem.SAVED_RECORDINGS_NAME,
+                projection,
+                NOT_DELETED,
+                null,
+                null,
+                null,
+                null);
+
+
+        c.moveToFirst();
+        while(!c.isAfterLast()){
+            removeItemWithId(c.getInt(c.getColumnIndex(DBHelperItem._ID)));
+
+            c.moveToNext();
+        }
+
+        if (mOnDatabaseChangedListener != null) {
+            mOnDatabaseChangedListener.onDatabaseEntryRenamed();
+        }
+    }
     public void injectString(String string) {
         SQLiteDatabase db = getWritableDatabase();
 

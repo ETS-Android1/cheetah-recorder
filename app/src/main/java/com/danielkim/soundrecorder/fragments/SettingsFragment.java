@@ -58,5 +58,15 @@ public class SettingsFragment extends PreferenceFragment {
                 return true;
             }
         });
+        Preference emptyTrash = findPreference(getString(R.string.pref_empty_trash_key));
+        deletedPref.setSummary(getString(R.string.pref_empty_trash_desc));
+        deletedPref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+
+                mDatabase.emptyTrash();
+                return true;
+            }
+        });
     }
 }

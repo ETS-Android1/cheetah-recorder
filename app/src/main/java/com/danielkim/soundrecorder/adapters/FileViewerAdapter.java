@@ -274,7 +274,7 @@ public class FileViewerAdapter extends RecyclerView.Adapter<FileViewerAdapter.Re
         updateFilePaths();
     }
 
-    public void moveToDeleted(int position) {
+    public void moveToTrash(int position) {
         // Make a folder for deleted files named Deleted
         File folder = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/SoundRecorder/Deleted/");
         if (!folder.exists()) {
@@ -503,7 +503,7 @@ public class FileViewerAdapter extends RecyclerView.Adapter<FileViewerAdapter.Re
                     public void onClick(DialogInterface dialog, int id) {
                         try {
                             //move file to deleted folder
-                            moveToDeleted(position);
+                            moveToTrash(position);
 
                         } catch (Exception e) {
                             Log.e(LOG_TAG, "exception", e);
