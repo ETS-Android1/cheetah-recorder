@@ -54,6 +54,8 @@ public class DBHelper extends SQLiteOpenHelper {
         public static final String SAVED_RECORDING_RECORDING_SIZE ="file_size";
         public static final String SAVED_RECORDING_TAG ="tag";
         public static final String SAVED_RECORDING_TAG_COLOUR="colour";
+        public static final String SAVED_RECORDING_URL = "url";
+        public static final String SAVED_RECORDING_CLOUD = "is_cloud";
 
         // tag system table
         public static final String TAG_SYSTEM_NAME = "tag_system";
@@ -71,7 +73,10 @@ public class DBHelper extends SQLiteOpenHelper {
                     DBHelperItem.SAVED_RECORDING_TIME_ADDED + " INTEGER " + COMMA_SEP +
                     DBHelperItem.SAVED_RECORDING_RECORDING_SIZE+ " DOUBLE " + COMMA_SEP +
                     DBHelperItem.SAVED_RECORDING_TAG + TEXT_TYPE + COMMA_SEP +
-                    DBHelperItem.SAVED_RECORDING_TAG_COLOUR + TEXT_TYPE + ")";
+                    DBHelperItem.SAVED_RECORDING_TAG_COLOUR + TEXT_TYPE + COMMA_SEP +
+                    DBHelperItem.SAVED_RECORDING_URL + TEXT_TYPE + COMMA_SEP +
+                    DBHelperItem.SAVED_RECORDING_CLOUD + " INTEGER " + ")";
+
 
     private static final String SQL_CREATE_TAG_SYSTEM_TABLE =
             "CREATE TABLE " + DBHelperItem.TAG_SYSTEM_NAME + " (" +
@@ -157,7 +162,9 @@ public class DBHelper extends SQLiteOpenHelper {
                 DBHelperItem.SAVED_RECORDING_TIME_ADDED,
                 DBHelperItem.SAVED_RECORDING_RECORDING_SIZE,
                 DBHelperItem.SAVED_RECORDING_TAG,
-                DBHelperItem.SAVED_RECORDING_TAG_COLOUR
+                DBHelperItem.SAVED_RECORDING_TAG_COLOUR,
+                DBHelperItem.SAVED_RECORDING_URL,
+                DBHelperItem.SAVED_RECORDING_CLOUD
         };
         Cursor c = db.query(DBHelperItem.SAVED_RECORDINGS_NAME, projection, null, null, null, null, null);
         if (c.moveToPosition(position)) {
@@ -170,6 +177,8 @@ public class DBHelper extends SQLiteOpenHelper {
             item.setSize(c.getDouble(c.getColumnIndex(DBHelperItem.SAVED_RECORDING_RECORDING_SIZE)));
             item.setTag(c.getString(c.getColumnIndex(DBHelperItem.SAVED_RECORDING_TAG)));
             item.setColour(c.getString(c.getColumnIndex(DBHelperItem.SAVED_RECORDING_TAG_COLOUR)));
+            item.setUrl(c.getString(c.getColumnIndex(DBHelperItem.SAVED_RECORDING_URL)));
+            item.setIsCloud(c.getInt(c.getColumnIndex(DBHelperItem.SAVED_RECORDING_CLOUD)));
 
             c.close();
             return item;
@@ -187,7 +196,9 @@ public class DBHelper extends SQLiteOpenHelper {
                 DBHelperItem.SAVED_RECORDING_TIME_ADDED,
                 DBHelperItem.SAVED_RECORDING_RECORDING_SIZE,
                 DBHelperItem.SAVED_RECORDING_TAG,
-                DBHelperItem.SAVED_RECORDING_TAG_COLOUR
+                DBHelperItem.SAVED_RECORDING_TAG_COLOUR,
+                DBHelperItem.SAVED_RECORDING_URL,
+                DBHelperItem.SAVED_RECORDING_CLOUD
         };
 
          Cursor c = db.query(
@@ -211,6 +222,8 @@ public class DBHelper extends SQLiteOpenHelper {
             item.setSize(c.getDouble(c.getColumnIndex(DBHelperItem.SAVED_RECORDING_RECORDING_SIZE)));
             item.setTag(c.getString(c.getColumnIndex(DBHelperItem.SAVED_RECORDING_TAG)));
             item.setColour(c.getString(c.getColumnIndex(DBHelperItem.SAVED_RECORDING_TAG_COLOUR)));
+            item.setUrl(c.getString(c.getColumnIndex(DBHelperItem.SAVED_RECORDING_URL)));
+            item.setIsCloud(c.getInt(c.getColumnIndex(DBHelperItem.SAVED_RECORDING_CLOUD)));
 
             c.close();
             return item;
@@ -250,7 +263,7 @@ public class DBHelper extends SQLiteOpenHelper {
             filePaths.add(currentPath);
             c.moveToNext();
         }
-
+        c.close();
         return filePaths;
     }
 
@@ -286,6 +299,7 @@ public class DBHelper extends SQLiteOpenHelper {
             filePaths.add(currentPath);
             c.moveToNext();
         }
+        c.close();
 
         return filePaths;
     }
@@ -317,7 +331,7 @@ public class DBHelper extends SQLiteOpenHelper {
         }
     }
 
-    public long addRecording(String recordingName, String filePath, long length, double fileSize, String tag, String tagColour) {
+    public long addRecording(String recordingName, String filePath, long length, double fileSize, String tag, String tagColour, String url, int cloud) {
 
         SQLiteDatabase db = getWritableDatabase();
         ContentValues cv = new ContentValues();
@@ -328,6 +342,8 @@ public class DBHelper extends SQLiteOpenHelper {
         cv.put(DBHelperItem.SAVED_RECORDING_RECORDING_SIZE, fileSize);
         cv.put(DBHelperItem.SAVED_RECORDING_TAG, tag);
         cv.put(DBHelperItem.SAVED_RECORDING_TAG_COLOUR, tagColour);
+        cv.put(DBHelperItem.SAVED_RECORDING_URL, url);
+        cv.put(DBHelperItem.SAVED_RECORDING_CLOUD, cloud);
         long rowId = db.insert(DBHelperItem.SAVED_RECORDINGS_NAME, null, cv);
 
         if (mOnDatabaseChangedListener != null) {
@@ -363,7 +379,17 @@ public class DBHelper extends SQLiteOpenHelper {
             mOnDatabaseChangedListener.onDatabaseEntryRenamed();
         }
     }
-
+    public void changeUrl(RecordingItem item, String url)
+    {
+        SQLiteDatabase db = getReadableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put(DBHelperItem.SAVED_RECORDING_URL, url);
+        db.update(DBHelperItem.SAVED_RECORDINGS_NAME,cv,
+                DBHelperItem._ID + "=" + item.getId(), null);
+        if (mOnDatabaseChangedListener != null) {
+            mOnDatabaseChangedListener.onDatabaseEntryRenamed();
+        }
+    }
     public void setTag(String recordingFilePath, int tagId){
         SQLiteDatabase db = getReadableDatabase();
         String[] projection = {
@@ -446,7 +472,7 @@ public class DBHelper extends SQLiteOpenHelper {
             tagList.add(currentTagItem);
             c.moveToNext();
         }
-
+        c.close();
         return tagList;
     }
 
@@ -458,6 +484,11 @@ public class DBHelper extends SQLiteOpenHelper {
         cv.put(DBHelperItem.SAVED_RECORDING_RECORDING_FILE_PATH, item.getFilePath());
         cv.put(DBHelperItem.SAVED_RECORDING_RECORDING_LENGTH, item.getLength());
         cv.put(DBHelperItem.SAVED_RECORDING_TIME_ADDED, item.getTime());
+        cv.put(DBHelperItem.SAVED_RECORDING_RECORDING_SIZE,item.getSize());
+        cv.put(DBHelperItem.SAVED_RECORDING_TAG, item.getTag());
+        cv.put(DBHelperItem.SAVED_RECORDING_TAG_COLOUR,item.getColour());
+        cv.put(DBHelperItem.SAVED_RECORDING_URL, item.getUrl());
+        cv.put(DBHelperItem.SAVED_RECORDING_CLOUD,item.getIsCloud());
         cv.put(DBHelperItem._ID, item.getId());
         long rowId = db.insert(DBHelperItem.SAVED_RECORDINGS_NAME, null, cv);
         if (mOnDatabaseChangedListener != null) {
@@ -476,7 +507,9 @@ public class DBHelper extends SQLiteOpenHelper {
                 DBHelperItem.SAVED_RECORDING_TIME_ADDED,
                 DBHelperItem.SAVED_RECORDING_RECORDING_SIZE,
                 DBHelperItem.SAVED_RECORDING_TAG,
-                DBHelperItem.SAVED_RECORDING_TAG_COLOUR
+                DBHelperItem.SAVED_RECORDING_TAG_COLOUR,
+                DBHelperItem.SAVED_RECORDING_URL,
+                DBHelperItem.SAVED_RECORDING_CLOUD
 
         };
 
@@ -505,7 +538,7 @@ public class DBHelper extends SQLiteOpenHelper {
             c.moveToNext();
         }
 
-
+        c.close();
 
         if (mOnDatabaseChangedListener != null) {
             mOnDatabaseChangedListener.onDatabaseEntryRenamed();
@@ -558,7 +591,7 @@ public class DBHelper extends SQLiteOpenHelper {
             // enter a newline
             tableString += "\n";
         }
-
+        cursor.close();
 
         return tableString;
     }
@@ -611,4 +644,6 @@ public class DBHelper extends SQLiteOpenHelper {
             Log.e("tag: ", e.getMessage());
         }
     }
+
+
 }

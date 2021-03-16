@@ -259,7 +259,7 @@ public class MainActivity extends AppCompatActivity{
 
                         //Add file to database
                         try {
-                            mDatabase.addRecording(mFileName, mFilePath, millSecond, mFileSize, "Cloud", "#95D9DA");
+                            mDatabase.addRecording(mFileName, mFilePath, millSecond, mFileSize, "Cloud", "#95D9DA", url, 1);
                         } catch (Exception e){
                             progressDialog.dismiss();
                             Toast.makeText(this, "Failed: " + e, Toast.LENGTH_LONG).show();
