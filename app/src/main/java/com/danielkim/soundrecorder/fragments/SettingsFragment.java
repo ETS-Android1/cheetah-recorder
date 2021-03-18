@@ -48,8 +48,8 @@ public class SettingsFragment extends PreferenceFragment {
             }
         });
 
-        Preference deletedPref = findPreference(getString(R.string.pref_deleted_key));
-        deletedPref.setSummary(getString(R.string.pref_deleted_desc));
+        Preference deletedPref = findPreference(getString(R.string.pref_restore_deleted_key));
+        deletedPref.setSummary(getString(R.string.pref_restore_deleted_desc));
         deletedPref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
@@ -59,8 +59,8 @@ public class SettingsFragment extends PreferenceFragment {
             }
         });
         Preference emptyTrash = findPreference(getString(R.string.pref_empty_trash_key));
-        deletedPref.setSummary(getString(R.string.pref_empty_trash_desc));
-        deletedPref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+        emptyTrash.setSummary(getString(R.string.pref_empty_trash_desc));
+        emptyTrash.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
 

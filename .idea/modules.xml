@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/cheetah.iml" filepath="$PROJECT_DIR$/.idea/modules/cheetah.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/CIS3760.cheetah.iml" filepath="$PROJECT_DIR$/.idea/modules/CIS3760.cheetah.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/cheetah.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/cheetah.app.iml" />
     </modules>
   </component>
