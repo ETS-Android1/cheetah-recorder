@@ -232,6 +232,55 @@ public class DBHelper extends SQLiteOpenHelper {
         return null;
     }
 
+
+    public RecordingItem getCloudUploads() {
+        SQLiteDatabase db = getReadableDatabase();
+        String[] projection = {
+                DBHelperItem._ID,
+                DBHelperItem.SAVED_RECORDING_RECORDING_NAME,
+                DBHelperItem.SAVED_RECORDING_RECORDING_FILE_PATH,
+                DBHelperItem.SAVED_RECORDING_RECORDING_LENGTH,
+                DBHelperItem.SAVED_RECORDING_TIME_ADDED,
+                DBHelperItem.SAVED_RECORDING_RECORDING_SIZE,
+                DBHelperItem.SAVED_RECORDING_TAG,
+                DBHelperItem.SAVED_RECORDING_TAG_COLOUR,
+                DBHelperItem.SAVED_RECORDING_URL,
+                DBHelperItem.SAVED_RECORDING_CLOUD
+        };
+
+        Cursor c = db.query(
+                DBHelperItem.SAVED_RECORDINGS_NAME,
+                projection,
+                DBHelperItem.SAVED_RECORDING_RECORDING_FILE_PATH + "\"\"",
+                null,
+                null,
+                null,
+                null);
+
+        c.moveToFirst();
+
+        if ((c.isNull(c.getColumnIndex(DBHelperItem.SAVED_RECORDING_RECORDING_FILE_PATH))) && ((c.getColumnIndex(DBHelperItem.SAVED_RECORDING_RECORDING_LENGTH)) == 0)){
+            RecordingItem item = new RecordingItem();
+            item.setId(c.getInt(c.getColumnIndex(DBHelperItem._ID)));
+            item.setName(c.getString(c.getColumnIndex(DBHelperItem.SAVED_RECORDING_RECORDING_NAME)));
+            item.setFilePath(c.getString(c.getColumnIndex(DBHelperItem.SAVED_RECORDING_RECORDING_FILE_PATH)));
+            item.setLength(c.getInt(c.getColumnIndex(DBHelperItem.SAVED_RECORDING_RECORDING_LENGTH)));
+            item.setTime(c.getLong(c.getColumnIndex(DBHelperItem.SAVED_RECORDING_TIME_ADDED)));
+            item.setSize(c.getDouble(c.getColumnIndex(DBHelperItem.SAVED_RECORDING_RECORDING_SIZE)));
+            item.setTag(c.getString(c.getColumnIndex(DBHelperItem.SAVED_RECORDING_TAG)));
+            item.setColour(c.getString(c.getColumnIndex(DBHelperItem.SAVED_RECORDING_TAG_COLOUR)));
+            item.setUrl(c.getString(c.getColumnIndex(DBHelperItem.SAVED_RECORDING_URL)));
+            item.setIsCloud(c.getInt(c.getColumnIndex(DBHelperItem.SAVED_RECORDING_CLOUD)));
+
+            c.close();
+            return item;
+        }
+
+        return null;
+    }
+
+
+
     public LinkedList<String> getFilePaths(){
 
         SQLiteDatabase db = getReadableDatabase();

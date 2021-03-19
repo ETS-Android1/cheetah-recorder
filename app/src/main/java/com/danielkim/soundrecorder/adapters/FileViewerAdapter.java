@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Environment;
 
@@ -19,6 +18,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -30,7 +30,6 @@ import com.danielkim.soundrecorder.DBHelper;
 import com.danielkim.soundrecorder.R;
 import com.danielkim.soundrecorder.RecordingItem;
 import com.danielkim.soundrecorder.activities.MainActivity;
-import com.danielkim.soundrecorder.fragments.FilterFragment;
 import com.danielkim.soundrecorder.fragments.PlaybackFragment;
 import com.danielkim.soundrecorder.fragments.TagViewerFragment;
 import com.danielkim.soundrecorder.listeners.OnDatabaseChangedListener;
@@ -246,6 +245,7 @@ public class FileViewerAdapter extends RecyclerView.Adapter<FileViewerAdapter.Re
         });
     }
 
+
     @Override
     public RecordingsViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
@@ -260,6 +260,7 @@ public class FileViewerAdapter extends RecyclerView.Adapter<FileViewerAdapter.Re
         return new RecordingsViewHolder(itemView);
     }
 
+
     public static class RecordingsViewHolder extends RecyclerView.ViewHolder {
         protected TextView vName;
         protected TextView vLength;
@@ -270,15 +271,16 @@ public class FileViewerAdapter extends RecyclerView.Adapter<FileViewerAdapter.Re
         protected View cardView;
         protected String recordingFilePath;
 
+
         public RecordingsViewHolder(View v) {
             super(v);
-            vName = (TextView) v.findViewById(R.id.file_name_text);
+            vName = (TextView) v.findViewById(R.id.upload_file_name);
             vLength = (TextView) v.findViewById(R.id.file_length_text);
-            vDateAdded = (TextView) v.findViewById(R.id.file_date_added_text);
+            vDateAdded = (TextView) v.findViewById(R.id.upload_url);
             vFileSize = (TextView) v.findViewById((R.id.file_size_text));
             vTag = (Button) v.findViewById((R.id.recordingTag));
             vClipart = (ImageView) v.findViewById((R.id.imageView));
-            cardView = v.findViewById(R.id.card_view);
+            cardView = v.findViewById(R.id.upload_card_view);
         }
     }
 
@@ -353,8 +355,13 @@ public class FileViewerAdapter extends RecyclerView.Adapter<FileViewerAdapter.Re
 
 
         //location of audio file in internal storage
+        RecordingItem item = getItem(position);
 
-        File file = new File(getItem(position).getFilePath());
+        File file = new File(item.getFilePath());
+        final String fileName = item.getName();
+
+        System.out.println("---------fileName = " + fileName);
+
         positionHelper = position;
         if(file != null) {
             String path = "SoundRecorder/" + UUID.randomUUID() + ".mp4";
@@ -399,6 +406,8 @@ public class FileViewerAdapter extends RecyclerView.Adapter<FileViewerAdapter.Re
                                 }
                             });
                             alertDialogBuilder.create().show();
+
+                            mDatabase.addRecording(fileName, null, 0, 0, "Cloud", "#95D9DA", audioURL, 1);
 
                         }
                     });
