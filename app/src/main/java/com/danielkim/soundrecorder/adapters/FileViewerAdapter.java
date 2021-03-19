@@ -407,8 +407,7 @@ public class FileViewerAdapter extends RecyclerView.Adapter<FileViewerAdapter.Re
                             });
                             alertDialogBuilder.create().show();
 
-                            mDatabase.addRecording(fileName, null, 0, 0, "Cloud", "#95D9DA", audioURL, 1);
-
+                            mDatabase.addCloudUpload(getItem(positionHelper).getName(),audioURL);
                         }
                     });
                 }
