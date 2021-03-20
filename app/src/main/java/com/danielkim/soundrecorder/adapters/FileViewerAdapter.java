@@ -37,6 +37,7 @@ import com.danielkim.soundrecorder.fragments.TagViewerFragment;
 import com.danielkim.soundrecorder.listeners.OnDatabaseChangedListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.FirebaseApp;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -63,7 +64,8 @@ public class FileViewerAdapter extends RecyclerView.Adapter<FileViewerAdapter.Re
     private String secondLastClause;
     private String lastClause;
 
-    private FirebaseStorage storage = FirebaseStorage.getInstance();
+    private static FirebaseStorage storage;
+
     private boolean doQuickFilter;
 
     Context mContext;
@@ -80,6 +82,9 @@ public class FileViewerAdapter extends RecyclerView.Adapter<FileViewerAdapter.Re
 
         lastClause = DBHelper.DELETED;
         secondLastClause = DBHelper.DELETED;
+
+        FirebaseApp.initializeApp(mContext);
+        storage = FirebaseStorage.getInstance();
 
         updateFilePaths();
     }

@@ -1,22 +1,30 @@
 <resources>
     <style name="AppTheme.Base" parent="Theme.AppCompat.Light">
 
-        <item name="windowActionBar">false</item>
+        <item name="windowActionBar">true</item>
         <item name="windowNoTitle">true</item>
 
     </style>
 
-    <style name="AppTheme" parent="AppTheme.Base">
+    <style name="CheetahAppTheme" parent="AppTheme.Base">
         <item name="colorPrimary">@color/primary</item>
         <item name="colorPrimaryDark">@color/primary_dark</item>
+        <item name="android:colorBackground">@color/white</item>
+        <item name="android:colorLongPressedHighlight">@color/accent</item>
+        <item name="android:colorSecondary">@color/primary_light</item>
+        <item name="colorAccent">@color/accent</item>
 
     </style>
 
-    <style name="Theme.AppCompat.Light.NoActionBar.FullScreen" parent="@style/Theme.AppCompat.Light.NoActionBar">
-        <item name="android:windowNoTitle">true</item>
-        <item name="android:windowActionBar">false</item>
-        <item name="android:windowFullscreen">true</item>
-        <item name="android:windowContentOverlay">@null</item>
+    <style name="CheetahSplashTheme" parent="@style/Theme.AppCompat.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorPrimaryDark">@color/primary_dark</item>
+        <item name="android:colorBackground">@color/white</item>
+        <item name="android:colorLongPressedHighlight">@color/accent</item>
+        <item name="android:colorSecondary">@color/primary_light</item>
+        <item name="colorAccent">@color/accent</item>
+
     </style>
+
 
 </resources>
