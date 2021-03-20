@@ -24,12 +24,12 @@
 
             <ImageView
                 android:id="@+id/imageView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="62dp"
+                android:layout_height="62dp"
                 android:layout_gravity="center_vertical"
                 android:layout_marginLeft="7dp"
                 android:layout_marginRight="7dp"
-                android:src="@drawable/ic_fileviewer" />
+                android:src="@mipmap/ic_fileviewer_round" />
 
             <LinearLayout
                 android:layout_width="wrap_content"

@@ -24,8 +24,9 @@
                                             <option name="values">
                                               <map>
                                                 <entry key="color" value="000000" />
-                                                <entry key="imagePath" value="/private/var/folders/0p/s3h_9m8s3y91zdxcbxb_2v000000gn/T/baseline_refresh_24.xml" />
+                                                <entry key="imagePath" value="/private/var/folders/0p/s3h_9m8s3y91zdxcbxb_2v000000gn/T/baseline_search_24.xml" />
                                                 <entry key="opacityPercent" value="80" />
+                                                <entry key="paddingPercent" value="5" />
                                               </map>
                                             </option>
                                           </PersistentState>
@@ -36,7 +37,7 @@
                                           <PersistentState>
                                             <option name="values">
                                               <map>
-                                                <entry key="url" value="file:$USER_HOME$/Library/Android/sdk/icons/material/materialicons/refresh/baseline_refresh_24.xml" />
+                                                <entry key="url" value="file:$USER_HOME$/Library/Android/sdk/icons/material/materialicons/search/baseline_search_24.xml" />
                                               </map>
                                             </option>
                                           </PersistentState>
@@ -80,7 +81,7 @@
                                   </option>
                                   <option name="values">
                                     <map>
-                                      <entry key="outputName" value="ic_action_refresh" />
+                                      <entry key="outputName" value="ic_action_search" />
                                       <entry key="theme" value="HOLO_DARK" />
                                     </map>
                                   </option>
@@ -97,7 +98,20 @@
                                           <PersistentState>
                                             <option name="values">
                                               <map>
-                                                <entry key="imagePath" value="/private/var/folders/0p/s3h_9m8s3y91zdxcbxb_2v000000gn/T/ic_android_black_24dp.xml" />
+                                                <entry key="color" value="fdffff" />
+                                                <entry key="imagePath" value="/private/var/folders/0p/s3h_9m8s3y91zdxcbxb_2v000000gn/T/baseline_mic_none_24.xml" />
+                                                <entry key="scalingPercent" value="93" />
+                                              </map>
+                                            </option>
+                                          </PersistentState>
+                                        </value>
+                                      </entry>
+                                      <entry key="foregroundClipartAsset">
+                                        <value>
+                                          <PersistentState>
+                                            <option name="values">
+                                              <map>
+                                                <entry key="url" value="file:$USER_HOME$/Library/Android/sdk/icons/material/materialicons/mic_none/baseline_mic_none_24.xml" />
                                               </map>
                                             </option>
                                           </PersistentState>
@@ -136,6 +150,15 @@
                                           </PersistentState>
                                         </value>
                                       </entry>
+                                    </map>
+                                  </option>
+                                  <option name="values">
+                                    <map>
+                                      <entry key="backgroundAssetType" value="COLOR" />
+                                      <entry key="backgroundColor" value="f59140" />
+                                      <entry key="foregroundAssetType" value="CLIP_ART" />
+                                      <entry key="legacyIconShape" value="CIRCLE" />
+                                      <entry key="outputName" value="ic_fileviewer" />
                                     </map>
                                   </option>
                                 </PersistentState>
@@ -306,9 +329,41 @@
                             </entry>
                           </map>
                         </option>
+                      </PersistentState>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </PersistentState>
+          </value>
+        </entry>
+        <entry key="vectorWizard">
+          <value>
+            <PersistentState>
+              <option name="children">
+                <map>
+                  <entry key="vectorAssetStep">
+                    <value>
+                      <PersistentState>
+                        <option name="children">
+                          <map>
+                            <entry key="clipartAsset">
+                              <value>
+                                <PersistentState>
+                                  <option name="values">
+                                    <map>
+                                      <entry key="url" value="file:$USER_HOME$/Library/Android/sdk/icons/material/materialicons/pets/baseline_pets_24.xml" />
+                                    </map>
+                                  </option>
+                                </PersistentState>
+                              </value>
+                            </entry>
+                          </map>
+                        </option>
                         <option name="values">
                           <map>
-                            <entry key="outputIconType" value="ACTIONBAR" />
+                            <entry key="color" value="fdffff" />
+                            <entry key="outputName" value="ic_baseline_cheetah" />
                           </map>
                         </option>
                       </PersistentState>
