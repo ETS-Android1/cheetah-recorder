@@ -6,6 +6,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.GradientDrawable;
+import android.graphics.drawable.LayerDrawable;
 import android.net.Uri;
 import android.os.Environment;
 
@@ -19,6 +21,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Button;
 import android.widget.Toast;
@@ -109,7 +112,11 @@ public class FileViewerAdapter extends RecyclerView.Adapter<FileViewerAdapter.Re
         //if(!item.getTag().equals("")) {
 
             holder.vTag.setText(item.getTag());
-            holder.vTag.setBackgroundColor(Color.parseColor(item.getColour()));
+            //holder.vTag.setBackgroundColor(Color.parseColor(item.getColour()));
+            //holder.vTag.setDrawingCacheBackgroundColor(Color.parseColor(item.getColour()));
+            LayerDrawable layers = (LayerDrawable) holder.vTag.getBackground();
+            GradientDrawable shape = (GradientDrawable) (layers.findDrawableByLayerId(R.id.clr));
+            shape.setColor(Color.parseColor(item.getColour()));
             final String temp = item.getTag();
 
             // do quickfilter
