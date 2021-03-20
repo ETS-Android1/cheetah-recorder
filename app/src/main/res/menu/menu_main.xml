@@ -36,8 +36,7 @@
         />
 
     <item android:id="@+id/action_cloud_uploads"
-        android:titleCondensed="Uploads"
+        android:orderInCategory="105"
         android:title="Show Uploads"
-        android:icon="@android:drawable/ic_menu_preferences"
-        android:checkable="true" />
+        />
 </menu>

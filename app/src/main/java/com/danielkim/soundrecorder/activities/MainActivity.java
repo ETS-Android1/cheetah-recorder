@@ -110,8 +110,9 @@ public class MainActivity extends AppCompatActivity{
                 CloudDownloadDialog();
                 break;
             case R.id.action_cloud_uploads:
-                intent = new Intent (this, MyUploadsActivity.class);
+                intent = new Intent(this, MyUploadsActivity.class);
                 startActivity(intent);
+                break;
             default:
                 return super.onOptionsItemSelected(item);
         }
