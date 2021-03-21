@@ -47,6 +47,11 @@ public class FilterFragment extends DialogFragment {
     EditText    searchText;
     Button      searchButton;
 
+
+    // Text View - need to set to GONE when Date is not selected
+    TextView textMinDisplay;
+    TextView textMaxDisplay;
+
     Switch      doFilterFileDate;
     boolean     filterDate;
     EditText    minDateText;
@@ -104,6 +109,8 @@ public class FilterFragment extends DialogFragment {
 
         // date search
         doFilterFileDate = filterView.findViewById(R.id.doFilterFileDate);
+        textMinDisplay = filterView.findViewById(R.id.textMinDisplay);
+        textMaxDisplay = filterView.findViewById(R.id.textMaxDisplay);
         minDateText = filterView.findViewById(R.id.minDateText);
         minDateText.setFocusable(false);
         maxDateText = filterView.findViewById(R.id.maxDateText);
@@ -253,18 +260,20 @@ public class FilterFragment extends DialogFragment {
         // assume false to start
         doFilterFileDate.setChecked(false);
         filterDate = false;
-        minDateText.setVisibility(View.INVISIBLE);
-        maxDateText.setVisibility(View.INVISIBLE);
+        minDateText.setVisibility(View.GONE);
+        maxDateText.setVisibility(View.GONE);
+        textMinDisplay.setVisibility(View.GONE);
+        textMaxDisplay.setVisibility(View.GONE);
 
         doFilterFileSize.setChecked(false);
         filterSize = false;
         filterSize = false;
-        lessThan.setVisibility(View.INVISIBLE);
-        greaterThan.setVisibility(View.INVISIBLE);
-        sizeText.setVisibility(View.INVISIBLE);
-        selectFileSize.setVisibility(View.INVISIBLE);
-        textSmallestSize.setVisibility(View.INVISIBLE);
-        textLargestSize.setVisibility(View.INVISIBLE);
+        lessThan.setVisibility(View.GONE);
+        greaterThan.setVisibility(View.GONE);
+        sizeText.setVisibility(View.GONE);
+        selectFileSize.setVisibility(View.GONE);
+        textSmallestSize.setVisibility(View.GONE);
+        textLargestSize.setVisibility(View.GONE);
 
 
         // create listener functionality
@@ -277,12 +286,16 @@ public class FilterFragment extends DialogFragment {
                     filterDate = true;
                     minDateText.setVisibility(View.VISIBLE);
                     maxDateText.setVisibility(View.VISIBLE);
+                    textMinDisplay.setVisibility(View.VISIBLE);
+                    textMaxDisplay.setVisibility(View.VISIBLE);
                 }
                 else {
 
                     filterDate = false;
-                    minDateText.setVisibility(View.INVISIBLE);
-                    maxDateText.setVisibility(View.INVISIBLE);
+                    minDateText.setVisibility(View.GONE);
+                    maxDateText.setVisibility(View.GONE);
+                    textMinDisplay.setVisibility(View.GONE);
+                    textMaxDisplay.setVisibility(View.GONE);
                 }
 
             }
@@ -305,12 +318,12 @@ public class FilterFragment extends DialogFragment {
                 else {
 
                     filterSize = false;
-                    lessThan.setVisibility(View.INVISIBLE);
-                    greaterThan.setVisibility(View.INVISIBLE);
-                    sizeText.setVisibility(View.INVISIBLE);
-                    selectFileSize.setVisibility(View.INVISIBLE);
-                    textSmallestSize.setVisibility(View.INVISIBLE);
-                    textLargestSize.setVisibility(View.INVISIBLE);
+                    lessThan.setVisibility(View.GONE);
+                    greaterThan.setVisibility(View.GONE);
+                    sizeText.setVisibility(View.GONE);
+                    selectFileSize.setVisibility(View.GONE);
+                    textSmallestSize.setVisibility(View.GONE);
+                    textLargestSize.setVisibility(View.GONE);
                 }
 
             }
