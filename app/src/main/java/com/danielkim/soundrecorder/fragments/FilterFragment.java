@@ -153,6 +153,10 @@ public class FilterFragment extends DialogFragment {
                     fileViewerFragment.getAdapter().updateFilePaths(query + " and " + DBHelper.DELETED);
                 else
                     fileViewerFragment.getAdapter().updateFilePaths();
+
+                getActivity().getFragmentManager().popBackStack();
+
+
             }
         });
 
