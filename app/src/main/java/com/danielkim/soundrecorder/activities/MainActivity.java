@@ -108,12 +108,14 @@ public class MainActivity extends AppCompatActivity{
             case R.id.action_search:
                 showFilterFragment();
             case R.id.action_refresh:
-
                 currentFileViewerFragment.getAdapter().updateFilePaths();
                 break;
             case R.id.action_cloudDownload:
                 CloudDownloadDialog();
                 break;
+            case R.id.action_cloud_uploads:
+                intent = new Intent (this, MyUploadsActivity.class);
+                startActivity(intent);
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -263,7 +265,7 @@ public class MainActivity extends AppCompatActivity{
 
                         //Add file to database
                         try {
-                            mDatabase.addRecording(mFileName, mFilePath, millSecond, mFileSize, "Cloud", "#95D9DA");
+                            mDatabase.addRecording(mFileName, mFilePath, millSecond, mFileSize, "Cloud", "#95D9DA", url, 1);
                         } catch (Exception e){
                             progressDialog.dismiss();
                             Toast.makeText(this, "Failed: " + e, Toast.LENGTH_LONG).show();
@@ -294,17 +296,6 @@ public class MainActivity extends AppCompatActivity{
             return flag;
         }
     }
-
-
-//    private static void getDuration(File file) {
-//        MediaMetadataRetriever mediaMetadataRetriever = new MediaMetadataRetriever();
-//        mediaMetadataRetriever.setDataSource(file.getAbsolutePath());
-//        String durationStr = mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
-//
-//        System.out.println("------------------------------------" + durationStr);
-//
-//        // return Utils.formateMilliSeccond(Long.parseLong(durationStr));
-//    }
 
 
     public void showFilterFragment(){
