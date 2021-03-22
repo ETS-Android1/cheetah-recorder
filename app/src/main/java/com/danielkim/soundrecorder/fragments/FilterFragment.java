@@ -48,7 +48,7 @@ public class FilterFragment extends DialogFragment {
     Button      searchButton;
 
 
-    // Text View - need to set to GONE when Date is not selected
+    // Text View - set to GONE when Date is not selected
     TextView textMinDisplay;
     TextView textMaxDisplay;
 
@@ -274,6 +274,8 @@ public class FilterFragment extends DialogFragment {
         selectFileSize.setVisibility(View.GONE);
         textSmallestSize.setVisibility(View.GONE);
         textLargestSize.setVisibility(View.GONE);
+        minDateText.setText("");
+        maxDateText.setText("");
 
 
         // create listener functionality
@@ -296,6 +298,8 @@ public class FilterFragment extends DialogFragment {
                     maxDateText.setVisibility(View.GONE);
                     textMinDisplay.setVisibility(View.GONE);
                     textMaxDisplay.setVisibility(View.GONE);
+                    minDateText.setText("");
+                    maxDateText.setText("");
                 }
 
             }
