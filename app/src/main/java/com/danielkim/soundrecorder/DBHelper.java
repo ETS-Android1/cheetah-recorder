@@ -35,8 +35,8 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final int DATABASE_VERSION = 1;
     private static final String TEXT_TYPE = " TEXT";
     private static final String COMMA_SEP = ",";
-    public static final String NOT_DELETED = DBHelper.DBHelperItem.SAVED_RECORDING_RECORDING_FILE_PATH + " not like '%/deleted/%'";
-    public static final String DELETED = DBHelper.DBHelperItem.SAVED_RECORDING_RECORDING_FILE_PATH + " like '%/deleted/%'";
+    public static final String DELETED = DBHelper.DBHelperItem.SAVED_RECORDING_RECORDING_FILE_PATH + " not like '%/deleted/%'";
+    public static final String NOT_DELETED = DBHelper.DBHelperItem.SAVED_RECORDING_RECORDING_FILE_PATH + " like '%/deleted/%'";
 
     // public variables
     public static final String DATABASE_NAME = "saved_recordings.db";
@@ -483,7 +483,7 @@ public class DBHelper extends SQLiteOpenHelper {
         Cursor c = db.query(
                 DBHelperItem.SAVED_RECORDINGS_NAME,
                 projection,
-                DELETED,
+                NOT_DELETED,
                 null,
                 null,
                 null,
@@ -537,7 +537,7 @@ public class DBHelper extends SQLiteOpenHelper {
         Cursor c = db.query(
                 DBHelperItem.SAVED_RECORDINGS_NAME,
                 projection,
-                DELETED,
+                NOT_DELETED,
                 null,
                 null,
                 null,

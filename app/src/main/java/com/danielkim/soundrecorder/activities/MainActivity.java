@@ -110,7 +110,7 @@ public class MainActivity extends AppCompatActivity{
                 CloudDownloadDialog();
                 break;
             case R.id.action_view_trash:
-                currentFileViewerFragment.getAdapter().updateFilePaths(DBHelper.DELETED);
+                currentFileViewerFragment.getAdapter().updateFilePaths(DBHelper.NOT_DELETED);
                 viewTrash();
                 break;
             default:
