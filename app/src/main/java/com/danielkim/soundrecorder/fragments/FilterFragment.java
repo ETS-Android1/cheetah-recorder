@@ -373,8 +373,6 @@ public class FilterFragment extends DialogFragment {
 
             }
         });
-
-
     }
 
     private String createSelectQuery(){
@@ -383,6 +381,7 @@ public class FilterFragment extends DialogFragment {
         StringBuilder textClause;
         StringBuilder dateClause;
         StringBuilder sizeClause;
+        StringBuilder tagClause;
         LinkedList<String> clauseGrouper;
         StringBuilder finalClause;
 
@@ -391,6 +390,7 @@ public class FilterFragment extends DialogFragment {
         textClause = new StringBuilder();
         dateClause = new StringBuilder();
         sizeClause = new StringBuilder();
+        tagClause = new StringBuilder();
         finalClause = new StringBuilder();
 
 
@@ -444,6 +444,14 @@ public class FilterFragment extends DialogFragment {
         }
 
         // tagClause
+        if (filterTag){
+            if(!tagEditText.getText().toString().equals("")){
+                tagClause.append(DBHelper.DBHelperItem.SAVED_RECORDING_TAG);
+                tagClause.append(" like '%");
+                tagClause.append(tagEditText.getText().toString());
+                tagClause.append("%' ");
+            }
+        }
 
 
 
@@ -458,14 +466,17 @@ public class FilterFragment extends DialogFragment {
         if(!dateClause.toString().equals(""))
             clauseGrouper.add(dateClause.toString());
 
+        if(!tagClause.toString().equals(""))
+            clauseGrouper.add(tagClause.toString());
+
         for (int i = 0; i < clauseGrouper.size(); i++) {
 
             finalClause.append(clauseGrouper.get(i));
-            if (i < clauseGrouper.size() - 1)
+
+            if (i < clauseGrouper.size() - 1){
                 finalClause.append(" and ");
+            }
         }
-
-
         return finalClause.toString();
     }
 
