@@ -104,11 +104,14 @@ public class MainActivity extends AppCompatActivity{
             case R.id.action_search:
                 showFilterFragment();
             case R.id.action_refresh:
-
                 currentFileViewerFragment.getAdapter().updateFilePaths();
                 break;
             case R.id.action_cloudDownload:
                 CloudDownloadDialog();
+                break;
+            case R.id.action_view_trash:
+                currentFileViewerFragment.getAdapter().updateFilePaths(DBHelper.NOT_DELETED);
+                viewTrash();
                 break;
             default:
                 return super.onOptionsItemSelected(item);
@@ -116,7 +119,9 @@ public class MainActivity extends AppCompatActivity{
         return true;
     }
 
+    public void viewTrash(){
 
+    }
 
     public void CloudDownloadDialog () {
         // File rename dialog
