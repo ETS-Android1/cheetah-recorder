@@ -47,7 +47,6 @@ public class FilterFragment extends DialogFragment {
     EditText    searchText;
     Button      searchButton;
 
-
     // Text View - set to GONE when Date is not selected
     TextView textMinDisplay;
     TextView textMaxDisplay;
@@ -69,6 +68,12 @@ public class FilterFragment extends DialogFragment {
     int         fileSize;
     TextView    textSmallestSize;
     TextView    textLargestSize;
+
+    // Tag
+    boolean     filterTag;
+    Switch      doFilterTag;
+    TextView    tagText;
+    EditText    tagEditText;
 
     // variables
     SimpleDateFormat sqlLiteDate;
@@ -124,6 +129,12 @@ public class FilterFragment extends DialogFragment {
         selectFileSize = filterView.findViewById(R.id.selectFileSize);
         textSmallestSize =  filterView.findViewById(R.id.textSmallestSize);
         textLargestSize = filterView.findViewById(R.id.textLargestSize);
+
+
+        // tag search
+        doFilterTag = filterView.findViewById(R.id.doFilterTag);
+        tagText = filterView.findViewById(R.id.tagTextView);
+        tagEditText = filterView.findViewById(R.id.tagEditView);
 
 
         // create date format
@@ -271,7 +282,6 @@ public class FilterFragment extends DialogFragment {
 
         doFilterFileSize.setChecked(false);
         filterSize = false;
-        filterSize = false;
         lessThan.setVisibility(View.GONE);
         greaterThan.setVisibility(View.GONE);
         sizeText.setVisibility(View.GONE);
@@ -281,6 +291,11 @@ public class FilterFragment extends DialogFragment {
         minDateText.setText("");
         maxDateText.setText("");
 
+        // tag
+        filterTag = false;
+        doFilterTag.setChecked(false);
+        tagText.setVisibility(View.GONE);
+        tagEditText.setVisibility(View.GONE);
 
         // create listener functionality
         doFilterFileDate.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -336,6 +351,29 @@ public class FilterFragment extends DialogFragment {
 
             }
         });
+
+        doFilterTag.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
+                if(isChecked){
+
+                    filterTag = true;
+                    tagText.setVisibility(View.VISIBLE);
+                    tagEditText.setVisibility(View.VISIBLE);
+
+                }
+                else {
+
+                    filterTag = false;
+                    tagText.setVisibility(View.GONE);
+                    tagEditText.setVisibility(View.GONE);
+
+                }
+
+            }
+        });
+
 
     }
 
@@ -404,6 +442,8 @@ public class FilterFragment extends DialogFragment {
                 sizeClause.append(" > ");
             sizeClause.append(fileSize);
         }
+
+        // tagClause
 
 
 
