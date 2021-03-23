@@ -622,9 +622,8 @@ public class DBHelper extends SQLiteOpenHelper {
             c.moveToNext();
         }
 
-<<<<<<< HEAD
         c.close();
-=======
+
         if (mOnDatabaseChangedListener != null) {
             mOnDatabaseChangedListener.onDatabaseEntryRenamed();
         }
@@ -663,7 +662,6 @@ public class DBHelper extends SQLiteOpenHelper {
 
             c.moveToNext();
         }
->>>>>>> backup_ui
 
         if (mOnDatabaseChangedListener != null) {
             mOnDatabaseChangedListener.onDatabaseEntryRenamed();

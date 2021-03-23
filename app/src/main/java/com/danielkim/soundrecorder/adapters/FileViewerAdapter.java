@@ -117,7 +117,7 @@ public class FileViewerAdapter extends RecyclerView.Adapter<FileViewerAdapter.Re
             holder.vClipart.setImageDrawable(mContext.getDrawable(R.drawable.ic_action_cloud_done));
         }else
         {
-            holder.vClipart.setImageDrawable(mContext.getDrawable(R.mipmap.ic_fileviewer_round));
+            holder.vClipart.setImageDrawable(mContext.getDrawable(R.drawable.ic_fileviewer_round));
         }
         //if the tag is not empty display the text and color
         //if(!item.getTag().equals("")) {

@@ -113,16 +113,13 @@ public class MainActivity extends AppCompatActivity{
             case R.id.action_cloudDownload:
                 CloudDownloadDialog();
                 break;
-<<<<<<< HEAD
             case R.id.action_cloud_uploads:
                 intent = new Intent (this, MyUploadsActivity.class);
                 startActivity(intent);
-=======
             case R.id.action_view_trash:
                 currentFileViewerFragment.getAdapter().updateFilePaths(DBHelper.NOT_DELETED);
                 viewTrash();
                 break;
->>>>>>> backup_ui
             default:
                 return super.onOptionsItemSelected(item);
         }
