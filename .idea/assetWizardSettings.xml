@@ -24,7 +24,11 @@
                                             <option name="values">
                                               <map>
                                                 <entry key="color" value="000000" />
+<<<<<<< HEAD
                                                 <entry key="imagePath" value="/private/var/folders/0p/s3h_9m8s3y91zdxcbxb_2v000000gn/T/baseline_search_24.xml" />
+=======
+                                                <entry key="imagePath" value="/private/var/folders/7g/9sp7kpdn4ml12zhhgp1q510w0000gn/T/baseline_delete_outline_24.xml" />
+>>>>>>> backup_ui
                                                 <entry key="opacityPercent" value="80" />
                                                 <entry key="paddingPercent" value="5" />
                                               </map>
@@ -37,7 +41,11 @@
                                           <PersistentState>
                                             <option name="values">
                                               <map>
+<<<<<<< HEAD
                                                 <entry key="url" value="file:$USER_HOME$/Library/Android/sdk/icons/material/materialicons/search/baseline_search_24.xml" />
+=======
+                                                <entry key="url" value="jar:file:/Applications/Android%20Studio.app/Contents/plugins/android/lib/android.jar!/images/material/icons/materialicons/delete_outline/baseline_delete_outline_24.xml" />
+>>>>>>> backup_ui
                                               </map>
                                             </option>
                                           </PersistentState>
@@ -81,7 +89,11 @@
                                   </option>
                                   <option name="values">
                                     <map>
+<<<<<<< HEAD
                                       <entry key="outputName" value="ic_action_search" />
+=======
+                                      <entry key="outputName" value="ic_action_delete_outline" />
+>>>>>>> backup_ui
                                       <entry key="theme" value="HOLO_DARK" />
                                     </map>
                                   </option>
@@ -98,6 +110,7 @@
                                           <PersistentState>
                                             <option name="values">
                                               <map>
+<<<<<<< HEAD
                                                 <entry key="color" value="fdffff" />
                                                 <entry key="imagePath" value="/private/var/folders/0p/s3h_9m8s3y91zdxcbxb_2v000000gn/T/baseline_mic_none_24.xml" />
                                                 <entry key="scalingPercent" value="93" />
@@ -112,6 +125,9 @@
                                             <option name="values">
                                               <map>
                                                 <entry key="url" value="file:$USER_HOME$/Library/Android/sdk/icons/material/materialicons/mic_none/baseline_mic_none_24.xml" />
+=======
+                                                <entry key="imagePath" value="/private/var/folders/7g/9sp7kpdn4ml12zhhgp1q510w0000gn/T/ic_android_black_24dp.xml" />
+>>>>>>> backup_ui
                                               </map>
                                             </option>
                                           </PersistentState>
@@ -175,7 +191,7 @@
                                             <option name="values">
                                               <map>
                                                 <entry key="color" value="000000" />
-                                                <entry key="imagePath" value="/private/var/folders/0p/s3h_9m8s3y91zdxcbxb_2v000000gn/T/ic_android_black_24dp.xml" />
+                                                <entry key="imagePath" value="/private/var/folders/7g/9sp7kpdn4ml12zhhgp1q510w0000gn/T/ic_android_black_24dp.xml" />
                                               </map>
                                             </option>
                                           </PersistentState>
@@ -219,7 +235,7 @@
                                             <option name="values">
                                               <map>
                                                 <entry key="color" value="000000" />
-                                                <entry key="imagePath" value="/private/var/folders/0p/s3h_9m8s3y91zdxcbxb_2v000000gn/T/ic_android_black_24dp.xml" />
+                                                <entry key="imagePath" value="/private/var/folders/7g/9sp7kpdn4ml12zhhgp1q510w0000gn/T/ic_android_black_24dp.xml" />
                                               </map>
                                             </option>
                                           </PersistentState>
@@ -283,7 +299,7 @@
                                           <PersistentState>
                                             <option name="values">
                                               <map>
-                                                <entry key="imagePath" value="/private/var/folders/0p/s3h_9m8s3y91zdxcbxb_2v000000gn/T/ic_android_black_24dp.xml" />
+                                                <entry key="imagePath" value="/private/var/folders/7g/9sp7kpdn4ml12zhhgp1q510w0000gn/T/ic_android_black_24dp.xml" />
                                               </map>
                                             </option>
                                           </PersistentState>

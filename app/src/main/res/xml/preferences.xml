@@ -9,7 +9,11 @@
         android:title="@string/pref_about_title"
         android:summary="@string/pref_about_desc"/>
     <Preference
-        android:key="@string/pref_deleted_key"
-        android:summary="@string/pref_about_title"
-        android:title="@string/pref_deleted_desc" />
+        android:key="@string/pref_restore_deleted_key"
+        android:summary="@string/pref_restore_deleted_title"
+        android:title="@string/pref_restore_deleted_desc" />
+    <Preference
+        android:key="@string/pref_empty_trash_key"
+        android:summary="@string/pref_empty_trash_title"
+        android:title="@string/pref_empty_trash_desc" />
 </PreferenceScreen>

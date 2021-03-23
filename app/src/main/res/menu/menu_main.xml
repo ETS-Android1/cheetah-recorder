@@ -20,6 +20,13 @@
         app:showAsAction="always"/>
 
     <item
+        android:id="@+id/action_view_trash"
+        android:icon="@drawable/ic_action_delete_outline"
+        android:orderInCategory="100"
+        android:title="See Deleted Files"
+        app:showAsAction="always"/>
+        />
+    <item
         android:id="@+id/action_settings"
         android:orderInCategory="102"
         android:title="@string/action_settings" />
