@@ -54,6 +54,7 @@ public class FilterFragment extends DialogFragment {
     Switch      doFilterFileDate;
     boolean     filterDate;
     EditText    minDateText;
+    EditText    minDateTitle;
     Calendar    minDate;
     EditText    maxDateText;
     Calendar    maxDate;
@@ -457,6 +458,7 @@ public class FilterFragment extends DialogFragment {
 
         // create grouping for final clause
         clauseGrouper = new LinkedList<String>();
+
         if(!textClause.toString().equals(""))
             clauseGrouper.add(textClause.toString());
 
