@@ -19,6 +19,11 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="4dp"
             android:ems="10"
+            android:hint="File Name"
+            android:padding="12dp"
+            android:drawableStart="@drawable/ic_baseline_text_format_24"
+            android:drawablePadding="12dp"
+            android:background="@drawable/custom_input"
             android:inputType="textPersonName"
             app:layout_constraintBottom_toBottomOf="@+id/searchButton"
             app:layout_constraintEnd_toStartOf="@+id/searchButton"
@@ -86,6 +91,37 @@
             app:layout_constraintTop_toBottomOf="@+id/minDateText" />
 
         <Switch
+            android:id="@+id/doFilterTag"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="Tag"
+            android:textSize="24sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/maxDateText" />
+
+        <TextView
+            android:id="@+id/tagTextView"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:text="Tag Name:"
+            android:textSize="18sp"
+            app:layout_constraintBottom_toBottomOf="@+id/tagEditView"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/tagEditView" />
+
+        <EditText
+            android:id="@+id/tagEditView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/tagTextView"
+            app:layout_constraintTop_toBottomOf="@+id/doFilterTag" />
+
+        <Switch
             android:id="@+id/doFilterFileSize"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -93,21 +129,24 @@
             android:text="File Size"
             android:textSize="24sp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/maxDateText" />
+            app:layout_constraintTop_toBottomOf="@+id/tagTextView" />
 
         <RadioGroup
             android:id="@+id/radioSelectSize"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            tools:layout_editor_absoluteX="12dp"
+            tools:layout_editor_absoluteY="268dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/doFilterFileSize">
+            app:layout_constraintTop_toBottomOf="@+id/doFilterFileSize"
+            >
 
             <RadioButton
                 android:id="@+id/radioLessThan"
-                android:checked="true"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:checked="true"
                 android:text="Less Than" />
 
             <RadioButton
@@ -153,6 +192,11 @@
             app:layout_constraintEnd_toStartOf="@+id/textLargestSize"
             app:layout_constraintStart_toEndOf="@+id/textSmallestSize"
             app:layout_constraintTop_toBottomOf="@+id/sizeText" />
+
+
+
+
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
