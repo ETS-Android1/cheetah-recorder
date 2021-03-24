@@ -35,6 +35,14 @@ public class SplashScreenActivity extends AppCompatActivity {
         Intent myIntent;
 
         myIntent = new Intent(this, MainActivity.class);
+        myIntent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
         this.startActivity(myIntent);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        runMain();
+
     }
 }

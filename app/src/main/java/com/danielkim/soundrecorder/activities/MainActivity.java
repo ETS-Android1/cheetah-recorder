@@ -110,12 +110,13 @@ public class MainActivity extends AppCompatActivity{
             case R.id.action_refresh:
                 currentFileViewerFragment.getAdapter().updateFilePaths();
                 break;
-            case R.id.action_cloudDownload:
-                CloudDownloadDialog();
-                break;
+            //case R.id.action_cloudDownload:
+            //    CloudDownloadDialog();
+            //    break;
             case R.id.action_cloud_uploads:
                 intent = new Intent (this, MyUploadsActivity.class);
                 startActivity(intent);
+                currentFileViewerFragment.getAdapter().updateFilePaths();
             case R.id.action_view_trash:
                 currentFileViewerFragment.getAdapter().updateFilePaths(DBHelper.NOT_DELETED);
                 viewTrash();
@@ -130,62 +131,13 @@ public class MainActivity extends AppCompatActivity{
 
     }
 
-    public void CloudDownloadDialog () {
-        // File rename dialog
-        AlertDialog.Builder renameFileBuilder = new AlertDialog.Builder(this);
+    @Override
+    protected void onResume() {
+        super.onResume();
 
-        LayoutInflater inflater = LayoutInflater.from(this);
-        View view = inflater.inflate(R.layout.dialog_cloud_download, null);
-
-        final EditText input = (EditText) view.findViewById(R.id.url_input);
-
-        final String tempUrl = "https://firebasestorage.googleapis.com/v0/b/soundrecorder-f12a3.appspot.com/o/SoundRecorder%2Ffd2ea7ee-5c0b-45d8-be28-8a4856bbd9c8.mp4?alt=media&token=c9092b68-de83-4294-9ad2-625dfb3e543e";
-
-        renameFileBuilder.setTitle("Download from Cloud");
-        renameFileBuilder.setCancelable(true);
-        renameFileBuilder.setPositiveButton("Download",
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        String value = input.getText().toString().trim();
-
-                        try {
-//
-                            System.out.println("----------------------INPUIT = " + value);
-                            System.out.println("-----------------------------LENGTH = " + value.length());
-
-                            //urlReachable is only for get Requests. Look into alternative for url audio file checking
-//                            if (value.length() <= 0 || !(urlReachable(value)))
-
-                            //input validation & url reachable flag
-
-                                if (value.length() <= 0) {
-                                Toast.makeText(MainActivity.this, "Invalid URL", Toast.LENGTH_SHORT).show();
-                                return;
-                            }
-                                    doInBackground(value);
-                                    dialog.cancel();
-
-                        } catch (Exception e) {
-                            Log.e(LOG_TAG, "exception", e);
-                            Toast.makeText(MainActivity.this, "Invalid URL", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
-        renameFileBuilder.setNegativeButton(this.getString(R.string.dialog_action_cancel),
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        dialog.cancel();
-                    }
-                });
-
-        renameFileBuilder.setView(view);
-        AlertDialog alert = renameFileBuilder.create();
-        alert.show();
-
-        //updateFilePaths();
     }
 
-//    private boolean urlReachable(String file_url)  {
+    //    private boolean urlReachable(String file_url)  {
 //        try {
 //            URL url = new URL(file_url);
 //

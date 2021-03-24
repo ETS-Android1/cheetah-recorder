@@ -36,15 +36,14 @@
         android:orderInCategory="103"
         android:title="Debug" />
 
-    <item
+    <!--<item
         android:id="@+id/action_cloudDownload"
         android:orderInCategory="104"
         android:title="Cloud Download"
-        />
+        />-->
 
     <item android:id="@+id/action_cloud_uploads"
         android:titleCondensed="Uploads"
         android:title="Show Uploads"
-        android:icon="@android:drawable/ic_menu_preferences"
         android:checkable="true" />
 </menu>

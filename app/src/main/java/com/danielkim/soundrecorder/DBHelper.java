@@ -138,7 +138,7 @@ public class DBHelper extends SQLiteOpenHelper {
         cvGrocery.put(DBHelperItem.TAG_SYSTEM_TAG_COLOR, "#68DF95");
 
         cvMemo.put(DBHelperItem.TAG_SYSTEM_TAG_NAME, "Memo");
-        cvMemo.put(DBHelperItem.TAG_SYSTEM_TAG_COLOR, "#F47E3E");
+        cvMemo.put(DBHelperItem.TAG_SYSTEM_TAG_COLOR, "#F43E80");
 
 
         // add tags to the system
@@ -280,10 +280,8 @@ public class DBHelper extends SQLiteOpenHelper {
         // variables
         LinkedList<RecordingItem> items;
         items = new LinkedList<RecordingItem>();
-
         c.moveToFirst();
-
-        if(!c.isAfterLast()){
+        while(!c.isAfterLast()){
 
             // variables
             RecordingItem item;
@@ -296,7 +294,6 @@ public class DBHelper extends SQLiteOpenHelper {
             item.setUrl(c.getString(c.getColumnIndex(DBHelperItem.UPLOAD_URL)));
 
             items.add(item);
-
             c.moveToNext();
         }
 

@@ -11,9 +11,7 @@
         <item name="colorPrimaryDark">@color/primary_dark</item>
         <item name="android:colorBackground">@color/white</item>
         <item name="android:colorLongPressedHighlight">@color/accent</item>
-        <item name="android:colorSecondary">@color/primary_light</item>
         <item name="colorAccent">@color/accent</item>
-
     </style>
 
     <style name="CheetahSplashTheme" parent="@style/Theme.AppCompat.DayNight.NoActionBar">
@@ -21,9 +19,7 @@
         <item name="colorPrimaryDark">@color/primary_dark</item>
         <item name="android:colorBackground">@color/white</item>
         <item name="android:colorLongPressedHighlight">@color/accent</item>
-        <item name="android:colorSecondary">@color/primary_light</item>
         <item name="colorAccent">@color/accent</item>
-
     </style>
 
 
