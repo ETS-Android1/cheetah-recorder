@@ -118,6 +118,7 @@ public class MainActivity extends AppCompatActivity{
                 startActivity(intent);
                 currentFileViewerFragment.getAdapter().updateFilePaths();
             case R.id.action_view_trash:
+                currentFileViewerFragment.getAdapter().updateFilePaths();
                 currentFileViewerFragment.getAdapter().updateFilePaths(DBHelper.NOT_DELETED);
                 viewTrash();
                 break;

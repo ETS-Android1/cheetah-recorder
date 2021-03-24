@@ -179,80 +179,81 @@ public class FileViewerAdapter extends RecyclerView.Adapter<FileViewerAdapter.Re
                 }
             }
         });
-
-        holder.cardView.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                RecordingItem recording = getItem(position);
-                ArrayList<String> entrys = new ArrayList<String>();
-                entrys.add(mContext.getString(R.string.dialog_file_rename));
-                entrys.add(mContext.getString(R.string.dialog_file_delete));
-                entrys.add("Edit Tag");
-                if(recording.getUrl().equals(""))
-                {
-                    entrys.add("Cloud Share");
-                }
-
+            holder.cardView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    RecordingItem recording = getItem(position);
+                    ArrayList<String> entrys = new ArrayList<String>();
+                    entrys.add(mContext.getString(R.string.dialog_file_rename));
+                    entrys.add(mContext.getString(R.string.dialog_file_delete));
+                    entrys.add("Edit Tag");
+                    if(recording.getUrl().equals(""))
+                    {
+                        entrys.add("Cloud Share");
+                    }
 
 
-                final CharSequence[] items = entrys.toArray(new CharSequence[entrys.size()]);
+
+                    final CharSequence[] items = entrys.toArray(new CharSequence[entrys.size()]);
 
 
-                // File delete confirm
+                    // File delete confirm
                 AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
                 builder.setTitle(mContext.getString(R.string.dialog_title_options));
-                if(recording.getUrl().equals(""))
-                {
-                    builder.setItems(items, new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int item) {
-                            if (item == 0) {
 
-                                renameFileDialog(holder.getPosition());
-                            } if (item == 1) {
+                if(!recording.getFilePath().matches(".*\\/SoundRecorder\\/Deleted\\/.*")){
+                        if (recording.getUrl().equals("")) {
+                            builder.setItems(items, new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int item) {
+                                    if (item == 0) {
 
-                                deleteFileDialog(holder.getPosition());
-                            } else if (item == 2) {
+                                        renameFileDialog(holder.getPosition());
+                                    }
+                                    if (item == 1) {
 
-                                addTagDialog(holder.recordingFilePath);
-                            } else if( item == 3) {
+                                        deleteFileDialog(holder.getPosition());
+                                    } else if (item == 2) {
 
-                                cloudShare(holder.getLayoutPosition());
-                            }
+                                        addTagDialog(holder.recordingFilePath);
+                                    } else if (item == 3) {
+
+                                        cloudShare(holder.getLayoutPosition());
+                                    }
+                                }
+                            });
+                        } else {
+                            builder.setItems(items, new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int item) {
+                                    if (item == 0) {
+
+                                        renameFileDialog(holder.getPosition());
+                                    }
+                                    if (item == 1) {
+
+                                        deleteFileDialog(holder.getPosition());
+                                    } else if (item == 2) {
+
+                                        addTagDialog(holder.recordingFilePath);
+                                    }
+                                }
+                            });
                         }
-                    });
-                }
-                else {
-                    builder.setItems(items, new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int item) {
-                            if (item == 0) {
 
-                                renameFileDialog(holder.getPosition());
-                            }
-                            if (item == 1) {
+                        builder.setCancelable(true);
+                        builder.setNegativeButton(mContext.getString(R.string.dialog_action_cancel),
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        dialog.cancel();
+                                    }
+                                });
 
-                                deleteFileDialog(holder.getPosition());
-                            } else if (item == 2) {
-
-                                addTagDialog(holder.recordingFilePath);
-                            }
-                        }
-                    });
-                }
-
-                builder.setCancelable(true);
-                builder.setNegativeButton(mContext.getString(R.string.dialog_action_cancel),
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                dialog.cancel();
-                            }
-                        });
-
-                AlertDialog alert = builder.create();
-                alert.show();
-
+                        AlertDialog alert = builder.create();
+                        alert.show();
+                    }
                 return false;
             }
         });
+
     }
 
 

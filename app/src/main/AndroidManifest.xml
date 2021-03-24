@@ -24,7 +24,11 @@
         </intent-filter>
         </activity>
 
-        <activity android:name=".activities.MyUploadsActivity"></activity>
+        <activity
+            android:name=".activities.MyUploadsActivity"
+            android:theme="@style/CheetahAppTheme">
+            
+        </activity>
 
         <activity
             android:name=".activities.SqlDebugActivity"
