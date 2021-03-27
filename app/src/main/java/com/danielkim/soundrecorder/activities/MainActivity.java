@@ -31,10 +31,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.astuetz.PagerSlidingTabStrip;
 import com.danielkim.soundrecorder.DBHelper;
+import com.danielkim.soundrecorder.QrScannerActivity;
 import com.danielkim.soundrecorder.R;
 import com.danielkim.soundrecorder.fragments.FileViewerFragment;
 import com.danielkim.soundrecorder.fragments.FilterFragment;
@@ -122,11 +124,22 @@ public class MainActivity extends AppCompatActivity{
                 currentFileViewerFragment.getAdapter().updateFilePaths(DBHelper.NOT_DELETED);
                 viewTrash();
                 break;
+            case R.id.action_scanQR:
+                intent = new Intent(this, QrScannerActivity.class);
+                startActivity(intent);
+                break;
             default:
                 return super.onOptionsItemSelected(item);
         }
         return true;
     }
+
+
+
+
+
+
+
 
     public void viewTrash(){
 
@@ -137,6 +150,14 @@ public class MainActivity extends AppCompatActivity{
         super.onResume();
 
     }
+
+
+
+
+
+
+
+
 
     //    private boolean urlReachable(String file_url)  {
 //        try {
