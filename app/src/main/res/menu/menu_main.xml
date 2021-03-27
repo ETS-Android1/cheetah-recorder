@@ -20,18 +20,30 @@
         app:showAsAction="always"/>
 
     <item
+        android:id="@+id/action_view_trash"
+        android:icon="@drawable/ic_action_delete_outline"
+        android:orderInCategory="100"
+        android:title="See Deleted Files"
+        app:showAsAction="always"/>
+        />
+    <item
         android:id="@+id/action_settings"
-        android:orderInCategory="101"
+        android:orderInCategory="102"
         android:title="@string/action_settings" />
 
     <item
         android:id="@+id/action_debug"
-        android:orderInCategory="102"
+        android:orderInCategory="103"
         android:title="Debug" />
 
-    <item
+    <!--<item
         android:id="@+id/action_cloudDownload"
-        android:orderInCategory="103"
+        android:orderInCategory="104"
         android:title="Cloud Download"
-        />
+        />-->
+
+    <item android:id="@+id/action_cloud_uploads"
+        android:titleCondensed="Uploads"
+        android:title="Show Uploads"
+        android:checkable="true" />
 </menu>

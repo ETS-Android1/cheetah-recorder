@@ -47,9 +47,14 @@ public class FilterFragment extends DialogFragment {
     EditText    searchText;
     Button      searchButton;
 
+    // Text View - set to GONE when Date is not selected
+    TextView textMinDisplay;
+    TextView textMaxDisplay;
+
     Switch      doFilterFileDate;
     boolean     filterDate;
     EditText    minDateText;
+    EditText    minDateTitle;
     Calendar    minDate;
     EditText    maxDateText;
     Calendar    maxDate;
@@ -64,6 +69,12 @@ public class FilterFragment extends DialogFragment {
     int         fileSize;
     TextView    textSmallestSize;
     TextView    textLargestSize;
+
+    // Tag
+    boolean     filterTag;
+    Switch      doFilterTag;
+    TextView    tagText;
+    EditText    tagEditText;
 
     // variables
     SimpleDateFormat sqlLiteDate;
@@ -104,6 +115,8 @@ public class FilterFragment extends DialogFragment {
 
         // date search
         doFilterFileDate = filterView.findViewById(R.id.doFilterFileDate);
+        textMinDisplay = filterView.findViewById(R.id.textMinDisplay);
+        textMaxDisplay = filterView.findViewById(R.id.textMaxDisplay);
         minDateText = filterView.findViewById(R.id.minDateText);
         minDateText.setFocusable(false);
         maxDateText = filterView.findViewById(R.id.maxDateText);
@@ -117,6 +130,12 @@ public class FilterFragment extends DialogFragment {
         selectFileSize = filterView.findViewById(R.id.selectFileSize);
         textSmallestSize =  filterView.findViewById(R.id.textSmallestSize);
         textLargestSize = filterView.findViewById(R.id.textLargestSize);
+
+
+        // tag search
+        doFilterTag = filterView.findViewById(R.id.doFilterTag);
+        tagText = filterView.findViewById(R.id.tagTextView);
+        tagEditText = filterView.findViewById(R.id.tagEditView);
 
 
         // create date format
@@ -146,6 +165,10 @@ public class FilterFragment extends DialogFragment {
                     fileViewerFragment.getAdapter().updateFilePaths(query + " and " + DBHelper.DELETED);
                 else
                     fileViewerFragment.getAdapter().updateFilePaths();
+
+                getActivity().getFragmentManager().popBackStack();
+
+
             }
         });
 
@@ -253,19 +276,27 @@ public class FilterFragment extends DialogFragment {
         // assume false to start
         doFilterFileDate.setChecked(false);
         filterDate = false;
-        minDateText.setVisibility(View.INVISIBLE);
-        maxDateText.setVisibility(View.INVISIBLE);
+        minDateText.setVisibility(View.GONE);
+        maxDateText.setVisibility(View.GONE);
+        textMinDisplay.setVisibility(View.GONE);
+        textMaxDisplay.setVisibility(View.GONE);
 
         doFilterFileSize.setChecked(false);
         filterSize = false;
-        filterSize = false;
-        lessThan.setVisibility(View.INVISIBLE);
-        greaterThan.setVisibility(View.INVISIBLE);
-        sizeText.setVisibility(View.INVISIBLE);
-        selectFileSize.setVisibility(View.INVISIBLE);
-        textSmallestSize.setVisibility(View.INVISIBLE);
-        textLargestSize.setVisibility(View.INVISIBLE);
+        lessThan.setVisibility(View.GONE);
+        greaterThan.setVisibility(View.GONE);
+        sizeText.setVisibility(View.GONE);
+        selectFileSize.setVisibility(View.GONE);
+        textSmallestSize.setVisibility(View.GONE);
+        textLargestSize.setVisibility(View.GONE);
+        minDateText.setText("");
+        maxDateText.setText("");
 
+        // tag
+        filterTag = false;
+        doFilterTag.setChecked(false);
+        tagText.setVisibility(View.GONE);
+        tagEditText.setVisibility(View.GONE);
 
         // create listener functionality
         doFilterFileDate.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -277,12 +308,18 @@ public class FilterFragment extends DialogFragment {
                     filterDate = true;
                     minDateText.setVisibility(View.VISIBLE);
                     maxDateText.setVisibility(View.VISIBLE);
+                    textMinDisplay.setVisibility(View.VISIBLE);
+                    textMaxDisplay.setVisibility(View.VISIBLE);
                 }
                 else {
 
                     filterDate = false;
-                    minDateText.setVisibility(View.INVISIBLE);
-                    maxDateText.setVisibility(View.INVISIBLE);
+                    minDateText.setVisibility(View.GONE);
+                    maxDateText.setVisibility(View.GONE);
+                    textMinDisplay.setVisibility(View.GONE);
+                    textMaxDisplay.setVisibility(View.GONE);
+                    minDateText.setText("");
+                    maxDateText.setText("");
                 }
 
             }
@@ -305,17 +342,38 @@ public class FilterFragment extends DialogFragment {
                 else {
 
                     filterSize = false;
-                    lessThan.setVisibility(View.INVISIBLE);
-                    greaterThan.setVisibility(View.INVISIBLE);
-                    sizeText.setVisibility(View.INVISIBLE);
-                    selectFileSize.setVisibility(View.INVISIBLE);
-                    textSmallestSize.setVisibility(View.INVISIBLE);
-                    textLargestSize.setVisibility(View.INVISIBLE);
+                    lessThan.setVisibility(View.GONE);
+                    greaterThan.setVisibility(View.GONE);
+                    sizeText.setVisibility(View.GONE);
+                    selectFileSize.setVisibility(View.GONE);
+                    textSmallestSize.setVisibility(View.GONE);
+                    textLargestSize.setVisibility(View.GONE);
                 }
 
             }
         });
 
+        doFilterTag.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
+                if(isChecked){
+
+                    filterTag = true;
+                    tagText.setVisibility(View.VISIBLE);
+                    tagEditText.setVisibility(View.VISIBLE);
+
+                }
+                else {
+
+                    filterTag = false;
+                    tagText.setVisibility(View.GONE);
+                    tagEditText.setVisibility(View.GONE);
+
+                }
+
+            }
+        });
     }
 
     private String createSelectQuery(){
@@ -324,6 +382,7 @@ public class FilterFragment extends DialogFragment {
         StringBuilder textClause;
         StringBuilder dateClause;
         StringBuilder sizeClause;
+        StringBuilder tagClause;
         LinkedList<String> clauseGrouper;
         StringBuilder finalClause;
 
@@ -332,6 +391,7 @@ public class FilterFragment extends DialogFragment {
         textClause = new StringBuilder();
         dateClause = new StringBuilder();
         sizeClause = new StringBuilder();
+        tagClause = new StringBuilder();
         finalClause = new StringBuilder();
 
 
@@ -384,10 +444,21 @@ public class FilterFragment extends DialogFragment {
             sizeClause.append(fileSize);
         }
 
+        // tagClause
+        if (filterTag){
+            if(!tagEditText.getText().toString().equals("")){
+                tagClause.append(DBHelper.DBHelperItem.SAVED_RECORDING_TAG);
+                tagClause.append(" like '%");
+                tagClause.append(tagEditText.getText().toString());
+                tagClause.append("%' ");
+            }
+        }
+
 
 
         // create grouping for final clause
         clauseGrouper = new LinkedList<String>();
+
         if(!textClause.toString().equals(""))
             clauseGrouper.add(textClause.toString());
 
@@ -397,14 +468,17 @@ public class FilterFragment extends DialogFragment {
         if(!dateClause.toString().equals(""))
             clauseGrouper.add(dateClause.toString());
 
+        if(!tagClause.toString().equals(""))
+            clauseGrouper.add(tagClause.toString());
+
         for (int i = 0; i < clauseGrouper.size(); i++) {
 
             finalClause.append(clauseGrouper.get(i));
-            if (i < clauseGrouper.size() - 1)
+
+            if (i < clauseGrouper.size() - 1){
                 finalClause.append(" and ");
+            }
         }
-
-
         return finalClause.toString();
     }
 

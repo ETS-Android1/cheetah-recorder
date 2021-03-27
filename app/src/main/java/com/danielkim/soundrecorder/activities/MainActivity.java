@@ -9,10 +9,13 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.media.MediaMetadataRetriever;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
+
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
@@ -68,6 +71,7 @@ public class MainActivity extends AppCompatActivity{
         pager.setAdapter(new MyAdapter(getSupportFragmentManager()));
         tabs = (PagerSlidingTabStrip) findViewById(R.id.tabs);
         tabs.setViewPager(pager);
+        tabs.setTextColor(ContextCompat.getColor(this, R.color.text));
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setPopupTheme(R.style.ThemeOverlay_AppCompat_Light);
@@ -104,11 +108,19 @@ public class MainActivity extends AppCompatActivity{
             case R.id.action_search:
                 showFilterFragment();
             case R.id.action_refresh:
-
                 currentFileViewerFragment.getAdapter().updateFilePaths();
                 break;
-            case R.id.action_cloudDownload:
-                CloudDownloadDialog();
+            //case R.id.action_cloudDownload:
+            //    CloudDownloadDialog();
+            //    break;
+            case R.id.action_cloud_uploads:
+                intent = new Intent (this, MyUploadsActivity.class);
+                startActivity(intent);
+                currentFileViewerFragment.getAdapter().updateFilePaths();
+            case R.id.action_view_trash:
+                currentFileViewerFragment.getAdapter().updateFilePaths();
+                currentFileViewerFragment.getAdapter().updateFilePaths(DBHelper.NOT_DELETED);
+                viewTrash();
                 break;
             default:
                 return super.onOptionsItemSelected(item);
@@ -116,64 +128,17 @@ public class MainActivity extends AppCompatActivity{
         return true;
     }
 
+    public void viewTrash(){
 
-
-    public void CloudDownloadDialog () {
-        // File rename dialog
-        AlertDialog.Builder renameFileBuilder = new AlertDialog.Builder(this);
-
-        LayoutInflater inflater = LayoutInflater.from(this);
-        View view = inflater.inflate(R.layout.dialog_cloud_download, null);
-
-        final EditText input = (EditText) view.findViewById(R.id.url_input);
-
-        final String tempUrl = "https://firebasestorage.googleapis.com/v0/b/soundrecorder-f12a3.appspot.com/o/SoundRecorder%2Ffd2ea7ee-5c0b-45d8-be28-8a4856bbd9c8.mp4?alt=media&token=c9092b68-de83-4294-9ad2-625dfb3e543e";
-
-        renameFileBuilder.setTitle("Download from Cloud");
-        renameFileBuilder.setCancelable(true);
-        renameFileBuilder.setPositiveButton("Download",
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        String value = input.getText().toString().trim();
-
-                        try {
-//
-                            System.out.println("----------------------INPUIT = " + value);
-                            System.out.println("-----------------------------LENGTH = " + value.length());
-
-                            //urlReachable is only for get Requests. Look into alternative for url audio file checking
-//                            if (value.length() <= 0 || !(urlReachable(value)))
-
-                            //input validation & url reachable flag
-
-                                if (value.length() <= 0) {
-                                Toast.makeText(MainActivity.this, "Invalid URL", Toast.LENGTH_SHORT).show();
-                                return;
-                            }
-                                    doInBackground(value);
-                                    dialog.cancel();
-
-                        } catch (Exception e) {
-                            Log.e(LOG_TAG, "exception", e);
-                            Toast.makeText(MainActivity.this, "Invalid URL", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
-        renameFileBuilder.setNegativeButton(this.getString(R.string.dialog_action_cancel),
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        dialog.cancel();
-                    }
-                });
-
-        renameFileBuilder.setView(view);
-        AlertDialog alert = renameFileBuilder.create();
-        alert.show();
-
-        //updateFilePaths();
     }
 
-//    private boolean urlReachable(String file_url)  {
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+    }
+
+    //    private boolean urlReachable(String file_url)  {
 //        try {
 //            URL url = new URL(file_url);
 //
@@ -259,7 +224,7 @@ public class MainActivity extends AppCompatActivity{
 
                         //Add file to database
                         try {
-                            mDatabase.addRecording(mFileName, mFilePath, millSecond, mFileSize, "Cloud", "#95D9DA");
+                            mDatabase.addRecording(mFileName, mFilePath, millSecond, mFileSize, "Cloud", "#95D9DA", url, 1);
                         } catch (Exception e){
                             progressDialog.dismiss();
                             Toast.makeText(this, "Failed: " + e, Toast.LENGTH_LONG).show();
@@ -290,17 +255,6 @@ public class MainActivity extends AppCompatActivity{
             return flag;
         }
     }
-
-
-//    private static void getDuration(File file) {
-//        MediaMetadataRetriever mediaMetadataRetriever = new MediaMetadataRetriever();
-//        mediaMetadataRetriever.setDataSource(file.getAbsolutePath());
-//        String durationStr = mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
-//
-//        System.out.println("------------------------------------" + durationStr);
-//
-//        // return Utils.formateMilliSeccond(Long.parseLong(durationStr));
-//    }
 
 
     public void showFilterFragment(){

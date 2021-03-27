@@ -7,7 +7,7 @@
     android:orientation="vertical">
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/card_view"
+        android:id="@+id/upload_card_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -24,12 +24,12 @@
 
             <ImageView
                 android:id="@+id/imageView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="54dp"
+                android:layout_height="54dp"
                 android:layout_gravity="center_vertical"
                 android:layout_marginLeft="7dp"
                 android:layout_marginRight="7dp"
-                android:src="@drawable/ic_fileviewer" />
+                android:src="@drawable/ic_fileviewer_round" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -39,7 +39,7 @@
                 android:padding="4dp">
 
                 <TextView
-                    android:id="@+id/file_name_text"
+                    android:id="@+id/upload_file_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="sans-serif-condensed"
@@ -57,7 +57,7 @@
                     android:textSize="12sp" />
 
                 <TextView
-                    android:id="@+id/file_date_added_text"
+                    android:id="@+id/upload_url"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="sans-serif-condensed"
@@ -80,13 +80,16 @@
 
                 <Button
                     android:id="@+id/recordingTag"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="18dp"
+                    android:layout_width="108dp"
+                    android:layout_height="47dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:background="@drawable/trapezoid"
                     android:contextClickable="false"
                     card_view:layout_constraintBottom_toBottomOf="parent"
                     card_view:layout_constraintEnd_toEndOf="parent"
                     card_view:layout_constraintTop_toTopOf="parent" />
+
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </LinearLayout>
