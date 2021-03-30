@@ -231,7 +231,14 @@ public class TagCreateFragment extends DialogFragment {
                     public void onClick(DialogInterface dialog, int id) {
                         try {
                             String value = input.getText().toString().trim();
-                            mDatabase.addTag(value,colour);
+                            if(colour!=null)
+                            {
+                                mDatabase.addTag(value,colour);
+                            }
+                            else{
+                                mDatabase.addTag(value,"#FFFFFF" );
+                            }
+
 
                         } catch (Exception e) {
                             Log.e(LOG_TAG, "exception", e);

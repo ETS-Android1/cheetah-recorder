@@ -51,7 +51,7 @@ import java.util.UUID;
  * Created by Daniel on 12/29/2014.
  */
 public class FileViewerAdapter extends RecyclerView.Adapter<FileViewerAdapter.RecordingsViewHolder>
-    implements OnDatabaseChangedListener{
+        implements OnDatabaseChangedListener{
 
     private static final String LOG_TAG = "FileViewerAdapter";
 
@@ -105,11 +105,11 @@ public class FileViewerAdapter extends RecyclerView.Adapter<FileViewerAdapter.Re
         holder.vLength.setText(String.format("%02d:%02d", minutes, seconds));
         holder.vFileSize.setText(item.getSizeFormatted());
         holder.vDateAdded.setText(
-            DateUtils.formatDateTime(
-                mContext,
-                item.getTime(),
-                DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_NUMERIC_DATE | DateUtils.FORMAT_SHOW_TIME | DateUtils.FORMAT_SHOW_YEAR
-            )
+                DateUtils.formatDateTime(
+                        mContext,
+                        item.getTime(),
+                        DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_NUMERIC_DATE | DateUtils.FORMAT_SHOW_TIME | DateUtils.FORMAT_SHOW_YEAR
+                )
         );
         holder.recordingFilePath = item.getFilePath();
         if(item.getIsCloud() == 1)
@@ -122,42 +122,42 @@ public class FileViewerAdapter extends RecyclerView.Adapter<FileViewerAdapter.Re
         //if the tag is not empty display the text and color
         //if(!item.getTag().equals("")) {
 
-            holder.vTag.setText(item.getTag());
-            holder.vTag.setBackgroundColor(Color.parseColor(item.getColour()));
-            //holder.vTag.setDrawingCacheBackgroundColor(Color.parseColor(item.getColour()));
-            LayerDrawable layers = (LayerDrawable) holder.vTag.getBackground();
-            GradientDrawable shape = (GradientDrawable) (layers.findDrawableByLayerId(R.id.clr));
-            shape.setColor(Color.parseColor(item.getColour()));
-            final String temp = item.getTag();
+        holder.vTag.setText(item.getTag());
+        //holder.vTag.setBackgroundColor(Color.parseColor(item.getColour()));
+        //holder.vTag.setDrawingCacheBackgroundColor(Color.parseColor(item.getColour()));
+        LayerDrawable layers = (LayerDrawable) holder.vTag.getBackground();
+        GradientDrawable shape = (GradientDrawable) (layers.findDrawableByLayerId(R.id.clr));
+        shape.setColor(Color.parseColor(item.getColour()));
+        final String temp = item.getTag();
 
-            // do quickfilter
-            holder.vTag.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
+        // do quickfilter
+        holder.vTag.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
 
-                    if(!doQuickFilter) {
-                        updateFilePaths(
-                                DBHelper.DBHelperItem.SAVED_RECORDING_TAG + " = '" + temp + "' " +
-                                        " and " + DBHelper.DELETED);
-                        doQuickFilter = !doQuickFilter;
-                    }
-                    else{
-
-                        // variables
-                        String temp;
-
-                        temp = lastClause;
-                        lastClause = secondLastClause;
-                        secondLastClause = temp;
-                        updateFilePaths();
-                        doQuickFilter = !doQuickFilter;
-                    }
+                if(!doQuickFilter) {
+                    updateFilePaths(
+                            DBHelper.DBHelperItem.SAVED_RECORDING_TAG + " = '" + temp + "' " +
+                                    " and " + DBHelper.DELETED);
+                    doQuickFilter = !doQuickFilter;
                 }
-            });
+                else{
+
+                    // variables
+                    String temp;
+
+                    temp = lastClause;
+                    lastClause = secondLastClause;
+                    secondLastClause = temp;
+                    updateFilePaths();
+                    doQuickFilter = !doQuickFilter;
+                }
+            }
+        });
         //}
         //else{
 
-            //holder.vTag.setVisibility(View.INVISIBLE);
+        //holder.vTag.setVisibility(View.INVISIBLE);
         //}
 
         // define an on click listener to open PlaybackFragment
@@ -179,77 +179,77 @@ public class FileViewerAdapter extends RecyclerView.Adapter<FileViewerAdapter.Re
                 }
             }
         });
-            holder.cardView.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View v) {
-                    RecordingItem recording = getItem(position);
-                    ArrayList<String> entrys = new ArrayList<String>();
-                    entrys.add(mContext.getString(R.string.dialog_file_rename));
-                    entrys.add(mContext.getString(R.string.dialog_file_delete));
-                    entrys.add("Edit Tag");
-                    if(recording.getUrl().equals(""))
-                    {
-                        entrys.add("Cloud Share");
-                    }
+        holder.cardView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                RecordingItem recording = getItem(position);
+                ArrayList<String> entrys = new ArrayList<String>();
+                entrys.add(mContext.getString(R.string.dialog_file_rename));
+                entrys.add(mContext.getString(R.string.dialog_file_delete));
+                entrys.add("Edit Tag");
+                if(recording.getUrl().equals(""))
+                {
+                    entrys.add("Cloud Share");
+                }
 
 
 
-                    final CharSequence[] items = entrys.toArray(new CharSequence[entrys.size()]);
+                final CharSequence[] items = entrys.toArray(new CharSequence[entrys.size()]);
 
 
-                    // File delete confirm
+                // File delete confirm
                 AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
                 builder.setTitle(mContext.getString(R.string.dialog_title_options));
 
                 if(!recording.getFilePath().matches(".*\\/SoundRecorder\\/Deleted\\/.*")){
-                        if (recording.getUrl().equals("")) {
-                            builder.setItems(items, new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int item) {
-                                    if (item == 0) {
+                    if (recording.getUrl().equals("")) {
+                        builder.setItems(items, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int item) {
+                                if (item == 0) {
 
-                                        renameFileDialog(holder.getPosition());
-                                    }
-                                    if (item == 1) {
-
-                                        deleteFileDialog(holder.getPosition());
-                                    } else if (item == 2) {
-
-                                        addTagDialog(holder.recordingFilePath);
-                                    } else if (item == 3) {
-
-                                        cloudShare(holder.getLayoutPosition());
-                                    }
+                                    renameFileDialog(holder.getPosition());
                                 }
-                            });
-                        } else {
-                            builder.setItems(items, new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int item) {
-                                    if (item == 0) {
+                                if (item == 1) {
 
-                                        renameFileDialog(holder.getPosition());
-                                    }
-                                    if (item == 1) {
+                                    deleteFileDialog(holder.getPosition());
+                                } else if (item == 2) {
 
-                                        deleteFileDialog(holder.getPosition());
-                                    } else if (item == 2) {
+                                    addTagDialog(holder.recordingFilePath);
+                                } else if (item == 3) {
 
-                                        addTagDialog(holder.recordingFilePath);
-                                    }
+                                    cloudShare(holder.getLayoutPosition());
                                 }
-                            });
-                        }
+                            }
+                        });
+                    } else {
+                        builder.setItems(items, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int item) {
+                                if (item == 0) {
 
-                        builder.setCancelable(true);
-                        builder.setNegativeButton(mContext.getString(R.string.dialog_action_cancel),
-                                new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int id) {
-                                        dialog.cancel();
-                                    }
-                                });
+                                    renameFileDialog(holder.getPosition());
+                                }
+                                if (item == 1) {
 
-                        AlertDialog alert = builder.create();
-                        alert.show();
+                                    deleteFileDialog(holder.getPosition());
+                                } else if (item == 2) {
+
+                                    addTagDialog(holder.recordingFilePath);
+                                }
+                            }
+                        });
                     }
+
+                    builder.setCancelable(true);
+                    builder.setNegativeButton(mContext.getString(R.string.dialog_action_cancel),
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    dialog.cancel();
+                                }
+                            });
+
+                    AlertDialog alert = builder.create();
+                    alert.show();
+                }
                 return false;
             }
         });
@@ -591,7 +591,7 @@ public class FileViewerAdapter extends RecyclerView.Adapter<FileViewerAdapter.Re
 
         secondLastClause = lastClause;
         lastClause = clause;
-            filePaths = mDatabase.getFilePaths(lastClause);
+        filePaths = mDatabase.getFilePaths(lastClause);
 
         this.notifyDataSetChanged();
     }
