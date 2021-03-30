@@ -46,4 +46,8 @@
         android:titleCondensed="Uploads"
         android:title="Show Uploads"
         android:checkable="true" />
+    <item
+        android:id="@+id/action_add_tag"
+        android:orderInCategory="104"
+        android:title="Add tag" />
 </menu>

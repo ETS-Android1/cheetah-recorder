@@ -400,7 +400,19 @@ public class DBHelper extends SQLiteOpenHelper {
             return o2.compareTo(o1);
         }
     }
+    public long addTag(String tagName, String colour)
+    {
+        SQLiteDatabase db = getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put(DBHelperItem.TAG_SYSTEM_TAG_NAME, tagName);
+        cv.put(DBHelperItem.TAG_SYSTEM_TAG_COLOR, colour);
+        long rowId = db.insert(DBHelperItem.TAG_SYSTEM_NAME,null,cv);
+        if (mOnDatabaseChangedListener != null) {
+            mOnDatabaseChangedListener.onNewDatabaseEntryAdded();
+        }
 
+        return rowId;
+    }
     public long addRecording(String recordingName, String filePath, long length, double fileSize, String tag, String tagColour, String url, int cloud) {
 
         SQLiteDatabase db = getWritableDatabase();
@@ -461,6 +473,7 @@ public class DBHelper extends SQLiteOpenHelper {
             mOnDatabaseChangedListener.onDatabaseEntryRenamed();
         }
     }
+
     public void setTag(String recordingFilePath, int tagId){
         SQLiteDatabase db = getReadableDatabase();
         String[] projection = {
