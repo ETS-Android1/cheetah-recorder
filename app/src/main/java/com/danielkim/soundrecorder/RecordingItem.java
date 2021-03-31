@@ -15,6 +15,7 @@ public class RecordingItem implements Parcelable {
     private double mSize; // file size of the recording
     private String mTag; // tag type of the recording
     private String mColour; // tag colour of the recording
+    private String mTextColor;
     private String mUrl; // url of the recording if cloud
     private int mIsCloud;
     public RecordingItem() {
@@ -29,6 +30,7 @@ public class RecordingItem implements Parcelable {
         mSize = in.readDouble();
         mTag = in.readString();
         mColour = in.readString();
+        mTextColor = in.readString();
         mUrl = in.readString();
         mIsCloud = in.readInt();
     }
@@ -95,6 +97,10 @@ public class RecordingItem implements Parcelable {
         return mColour;
     }
 
+    public void setTextColor(String textColor){ mTextColor = textColor;}
+
+    public String getTextColor() { return mTextColor;}
+
     public void setUrl(String url) { mUrl = url; }
 
     public String getUrl(){ return mUrl; }
@@ -153,6 +159,7 @@ public class RecordingItem implements Parcelable {
         dest.writeDouble(mSize);
         dest.writeString(mTag);
         dest.writeString(mColour);
+        dest.writeString(mTextColor);
         dest.writeString(mUrl);
         dest.writeInt(mIsCloud);
 
