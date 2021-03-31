@@ -33,6 +33,7 @@ import com.danielkim.soundrecorder.R;
 import com.danielkim.soundrecorder.fragments.FileViewerFragment;
 import com.danielkim.soundrecorder.fragments.FilterFragment;
 import com.danielkim.soundrecorder.fragments.RecordFragment;
+import com.danielkim.soundrecorder.fragments.TagCreateFragment;
 
 import java.io.File;
 
@@ -103,6 +104,9 @@ public class MainActivity extends AppCompatActivity{
             //case R.id.action_cloudDownload:
             //    CloudDownloadDialog();
             //    break;
+            case R.id.action_add_tag:
+                showTagCreateFragment();
+                break;
             case R.id.action_cloud_uploads:
                 intent = new Intent (this, MyUploadsActivity.class);
                 startActivity(intent);
@@ -233,7 +237,7 @@ public class MainActivity extends AppCompatActivity{
 
                         //Add file to database
                         try {
-                            mDatabase.addRecording(mFileName, mFilePath, millSecond, mFileSize, "Cloud", "#95D9DA", url, 1);
+                            mDatabase.addRecording(mFileName, mFilePath, millSecond, mFileSize, "Cloud", "#95D9DA","#000000", url, 1);
                         } catch (Exception e){
                             progressDialog.dismiss();
                             Toast.makeText(this, "Failed: " + e, Toast.LENGTH_LONG).show();
@@ -265,7 +269,21 @@ public class MainActivity extends AppCompatActivity{
         }
     }
 
+    public void showTagCreateFragment(){
 
+        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        android.app.Fragment prev = getFragmentManager().findFragmentByTag("tagCreate");
+        if (prev != null) {
+            ft.remove(prev);
+        }
+        ft.addToBackStack(null);
+
+        // Create and show the dialog.
+        TagCreateFragment newFragment =
+                TagCreateFragment.
+                        newInstance(currentFileViewerFragment);
+        newFragment.show(ft, "tagCreate");
+    }
     public void showFilterFragment(){
 
         // create the filter fragment
