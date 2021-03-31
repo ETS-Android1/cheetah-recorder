@@ -123,6 +123,7 @@ public class FileViewerAdapter extends RecyclerView.Adapter<FileViewerAdapter.Re
         //if(!item.getTag().equals("")) {
 
         holder.vTag.setText(item.getTag());
+        holder.vTag.setTextColor(Color.parseColor(item.getTextColor()));
         //holder.vTag.setBackgroundColor(Color.parseColor(item.getColour()));
         //holder.vTag.setDrawingCacheBackgroundColor(Color.parseColor(item.getColour()));
         LayerDrawable layers = (LayerDrawable) holder.vTag.getBackground();

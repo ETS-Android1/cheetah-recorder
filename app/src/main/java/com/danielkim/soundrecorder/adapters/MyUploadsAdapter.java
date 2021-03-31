@@ -223,7 +223,7 @@ public class MyUploadsAdapter extends RecyclerView.Adapter<MyUploadsAdapter.MyUp
 
                         //Add file to database
                         try {
-                            mDatabase.addRecording(mFileName, mFilePath, millSecond, mFileSize, "", "#FFFFFF", url, 1);
+                            mDatabase.addRecording(mFileName, mFilePath, millSecond, mFileSize, "", "#FFFFFF", "#000000", url, 1);
                         } catch (Exception e){
                             progressDialog.dismiss();
                             Toast.makeText(mContext, "Failed: " + e, Toast.LENGTH_LONG).show();

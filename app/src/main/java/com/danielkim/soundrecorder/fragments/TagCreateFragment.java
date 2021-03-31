@@ -42,6 +42,7 @@ public class TagCreateFragment extends DialogFragment {
     private Button button8;
     private Button button9;
     private String colour;
+    private String textColor;
     public TagCreateFragment() {
 
     }
@@ -104,6 +105,7 @@ public class TagCreateFragment extends DialogFragment {
                 button8.setText("");
                 button9.setText("");
                 colour = (String)button1.getTag();
+                textColor = String.format("#%06X", 0xFFFFFF & button1.getCurrentTextColor());
             }
         });
         button2.setOnClickListener(new View.OnClickListener() {
@@ -119,6 +121,7 @@ public class TagCreateFragment extends DialogFragment {
                 button8.setText("");
                 button9.setText("");
                 colour = (String)button2.getTag();
+                textColor = String.format("#%06X", 0xFFFFFF & button2.getCurrentTextColor());
             }
         });
         button3.setOnClickListener(new View.OnClickListener() {
@@ -134,6 +137,7 @@ public class TagCreateFragment extends DialogFragment {
                 button8.setText("");
                 button9.setText("");
                 colour = (String)button3.getTag();
+                textColor = String.format("#%06X", 0xFFFFFF & button3.getCurrentTextColor());
             }
         });
         button4.setOnClickListener(new View.OnClickListener() {
@@ -149,6 +153,7 @@ public class TagCreateFragment extends DialogFragment {
                 button8.setText("");
                 button9.setText("");
                 colour = (String)button4.getTag();
+                textColor = String.format("#%06X", 0xFFFFFF & button4.getCurrentTextColor());
             }
         });
         button5.setOnClickListener(new View.OnClickListener() {
@@ -164,6 +169,7 @@ public class TagCreateFragment extends DialogFragment {
                 button8.setText("");
                 button9.setText("");
                 colour = (String)button5.getTag();
+                textColor = String.format("#%06X", 0xFFFFFF & button5.getCurrentTextColor());
             }
         });
         button6.setOnClickListener(new View.OnClickListener() {
@@ -179,6 +185,7 @@ public class TagCreateFragment extends DialogFragment {
                 button8.setText("");
                 button9.setText("");
                 colour = (String)button6.getTag();
+                textColor = String.format("#%06X", 0xFFFFFF & button6.getCurrentTextColor());
             }
         });
         button7.setOnClickListener(new View.OnClickListener() {
@@ -194,6 +201,7 @@ public class TagCreateFragment extends DialogFragment {
                 button8.setText("");
                 button9.setText("");
                 colour = (String)button7.getTag();
+                textColor = String.format("#%06X", 0xFFFFFF & button7.getCurrentTextColor());
             }
         });
         button8.setOnClickListener(new View.OnClickListener() {
@@ -209,6 +217,7 @@ public class TagCreateFragment extends DialogFragment {
                 button8.setText("\u2713");
                 button9.setText("");
                 colour = (String)button8.getTag();
+                textColor = String.format("#%06X", 0xFFFFFF & button8.getCurrentTextColor());
             }
         });
         button9.setOnClickListener(new View.OnClickListener() {
@@ -224,6 +233,7 @@ public class TagCreateFragment extends DialogFragment {
                 button8.setText("");
                 button9.setText("\u2713");
                 colour = (String)button9.getTag();
+                textColor = String.format("#%06X", 0xFFFFFF & button9.getCurrentTextColor());
             }
         });
         dialogBuilder.setPositiveButton(getActivity().getString(R.string.dialog_action_ok),
@@ -233,10 +243,10 @@ public class TagCreateFragment extends DialogFragment {
                             String value = input.getText().toString().trim();
                             if(colour!=null)
                             {
-                                mDatabase.addTag(value,colour);
+                                mDatabase.addTag(value,colour,textColor);
                             }
                             else{
-                                mDatabase.addTag(value,"#FFFFFF" );
+                                mDatabase.addTag(value,"#FFFFFF","#000000");
                             }
 
 
