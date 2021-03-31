@@ -597,7 +597,6 @@ public class DBHelper extends SQLiteOpenHelper {
         while(!c.isAfterLast()){
             RecordingItem item = getItemByFilePath(c.getString(c.getColumnIndex(DBHelperItem.SAVED_RECORDING_RECORDING_FILE_PATH)));
             String name = item.getName();
-//        File file = new File(getItem(position).getFilePath());
             String mFilePath = Environment.getExternalStorageDirectory().getAbsolutePath();
             mFilePath += "/SoundRecorder/" + name;
             File f = new File(mFilePath);
@@ -607,24 +606,62 @@ public class DBHelper extends SQLiteOpenHelper {
             oldFilePath.renameTo(f);
             renameItem(item, name, mFilePath);
 
-//            ContentValues cv = new ContentValues();
-//            cv.put(DBHelperItem.SAVED_RECORDING_RECORDING_FILE_PATH, Environment.getExternalStorageDirectory() + "/SoundRecorder/" + c.getString(c.getColumnIndex(DBHelperItem.SAVED_RECORDING_RECORDING_NAME)));
-//            db.update(
-//                    DBHelperItem.SAVED_RECORDINGS_NAME,
-//                    cv,
-//                    DBHelperItem._ID + " = " + c.getInt(c.getColumnIndex(DBHelperItem._ID)),
-//                    null
-//            );
-
             c.moveToNext();
         }
 
         c.close();
 
         if (mOnDatabaseChangedListener != null) {
-            mOnDatabaseChangedListener.onDatabaseEntryRenamed();
+            mOnDatabaseChangedListener.onNewDatabaseEntryAdded();
         }
     }
+
+    public void restoreDeletedFile(String filePath) {
+        SQLiteDatabase db = getReadableDatabase();
+        String[] projection = {
+                DBHelperItem._ID,
+                DBHelperItem.SAVED_RECORDING_RECORDING_NAME,
+                DBHelperItem.SAVED_RECORDING_RECORDING_FILE_PATH,
+                DBHelperItem.SAVED_RECORDING_RECORDING_LENGTH,
+                DBHelperItem.SAVED_RECORDING_TIME_ADDED,
+                DBHelperItem.SAVED_RECORDING_RECORDING_SIZE,
+                DBHelperItem.SAVED_RECORDING_TAG,
+                DBHelperItem.SAVED_RECORDING_TAG_COLOUR,
+                DBHelperItem.SAVED_RECORDING_URL,
+                DBHelperItem.SAVED_RECORDING_CLOUD
+        };
+
+        Cursor c = db.query(
+                DBHelperItem.SAVED_RECORDINGS_NAME,
+                projection,
+                DBHelperItem.SAVED_RECORDING_RECORDING_FILE_PATH + " like '%" + filePath + "%'",
+                null,
+                null,
+                null,
+                null);
+
+        c.moveToFirst();
+        if(!c.isAfterLast()){
+            RecordingItem item = getItemByFilePath(c.getString(c.getColumnIndex(DBHelperItem.SAVED_RECORDING_RECORDING_FILE_PATH)));
+            String name = item.getName();
+            String mFilePath = Environment.getExternalStorageDirectory().getAbsolutePath();
+            mFilePath += "/SoundRecorder/" + name;
+            File f = new File(mFilePath);
+
+
+            File oldFilePath = new File(item.getFilePath());
+            oldFilePath.renameTo(f);
+            renameItem(item, name, mFilePath);
+
+        }
+
+        c.close();
+
+        if (mOnDatabaseChangedListener != null) {
+            mOnDatabaseChangedListener.onNewDatabaseEntryAdded();
+        }
+    }
+
     public void emptyTrash() {
         SQLiteDatabase db = getReadableDatabase();
         RecordingItem item;
@@ -664,6 +701,7 @@ public class DBHelper extends SQLiteOpenHelper {
             mOnDatabaseChangedListener.onDatabaseEntryRenamed();
         }
     }
+
     public void injectString(String string) {
         SQLiteDatabase db = getWritableDatabase();
 
@@ -763,6 +801,5 @@ public class DBHelper extends SQLiteOpenHelper {
             Log.e("tag: ", e.getMessage());
         }
     }
-
 
 }

@@ -40,7 +40,6 @@ public class FileViewerFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         position = getArguments().getInt(ARG_POSITION);
-        observer.startWatching();
     }
 
     @Override
@@ -64,28 +63,6 @@ public class FileViewerFragment extends Fragment {
 
         return v;
     }
-
-    FileObserver observer =
-            new FileObserver(android.os.Environment.getExternalStorageDirectory().toString()
-                    + "/SoundRecorder") {
-                // set up a file observer to watch this directory on sd card
-                @Override
-                public void onEvent(int event, String file) {
-                    if(event == FileObserver.DELETE){
-                        // user deletes a recording file out of the app
-
-                        String filePath = android.os.Environment.getExternalStorageDirectory().toString()
-                                + "/SoundRecorder" + file + "]";
-
-                        Log.d(LOG_TAG, "File deleted ["
-                                + android.os.Environment.getExternalStorageDirectory().toString()
-                                + "/SoundRecorder" + file + "]");
-
-                        // remove file from database and recyclerview
-                        mFileViewerAdapter.removeOutOfApp(filePath);
-                    }
-                }
-            };
 
     public FileViewerAdapter getAdapter(){
 

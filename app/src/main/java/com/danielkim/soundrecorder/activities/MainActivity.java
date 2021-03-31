@@ -110,26 +110,17 @@ public class MainActivity extends AppCompatActivity{
             case R.id.action_refresh:
                 currentFileViewerFragment.getAdapter().updateFilePaths();
                 break;
-            //case R.id.action_cloudDownload:
-            //    CloudDownloadDialog();
-            //    break;
             case R.id.action_cloud_uploads:
                 intent = new Intent (this, MyUploadsActivity.class);
                 startActivity(intent);
-                currentFileViewerFragment.getAdapter().updateFilePaths();
+                break;
             case R.id.action_view_trash:
-                currentFileViewerFragment.getAdapter().updateFilePaths();
                 currentFileViewerFragment.getAdapter().updateFilePaths(DBHelper.NOT_DELETED);
-                viewTrash();
                 break;
             default:
                 return super.onOptionsItemSelected(item);
         }
         return true;
-    }
-
-    public void viewTrash(){
-
     }
 
     @Override

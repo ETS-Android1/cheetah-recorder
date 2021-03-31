@@ -82,7 +82,6 @@ public class TagViewerAdapter extends RecyclerView.Adapter<TagViewerAdapter.TagV
             public void onClick(View v) {
 
                 addTag(tagId);
-
             }
         });
     }
