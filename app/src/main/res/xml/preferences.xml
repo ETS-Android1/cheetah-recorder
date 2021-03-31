@@ -16,4 +16,14 @@
         android:key="@string/pref_empty_trash_key"
         android:summary="@string/pref_empty_trash_title"
         android:title="@string/pref_empty_trash_desc" />
+
+    <ListPreference
+        android:defaultValue="@string/pf_dark_auto"
+        android:dialogTitle="@string/pf_dark_dialog"
+        android:entries="@array/light_theme"
+        android:entryValues="@array/light_theme_value"
+        android:title="Set App theme"
+        android:summary="Set the theme to Dark Mode"
+        android:key="pref_dark_mode"
+        />
 </PreferenceScreen>
