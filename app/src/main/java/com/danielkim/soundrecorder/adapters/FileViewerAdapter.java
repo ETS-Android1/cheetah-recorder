@@ -112,9 +112,6 @@ public class FileViewerAdapter extends RecyclerView.Adapter<FileViewerAdapter.Re
         FirebaseApp.initializeApp(mContext);
         storage = FirebaseStorage.getInstance();
 
-
-
-        updateFilePaths();
         updateFilePaths();
     }
 
@@ -143,40 +140,14 @@ public class FileViewerAdapter extends RecyclerView.Adapter<FileViewerAdapter.Re
         holder.recordingFilePath = item.getFilePath();
 
         // assign only based on cloud download
-        if(item.getIsCloud() == 1)
-        {
+        if(item.getIsCloud() == 1) {
             holder.vClipart.setImageDrawable(mContext.getDrawable(R.drawable.ic_action_cloud_done));
-        }else
-        {
+        }
+        else {
             holder.vClipart.setImageDrawable(mContext.getDrawable(R.drawable.ic_fileviewer_round));
         }
-<<<<<<< HEAD
+
         //if the tag is not empty display the text and color
-        //if(!item.getTag().equals("")) {
-
-        holder.vTag.setText(item.getTag());
-        holder.vTag.setTextColor(Color.parseColor(item.getTextColor()));
-        //holder.vTag.setBackgroundColor(Color.parseColor(item.getColour()));
-        //holder.vTag.setDrawingCacheBackgroundColor(Color.parseColor(item.getColour()));
-        LayerDrawable layers = (LayerDrawable) holder.vTag.getBackground();
-        GradientDrawable shape = (GradientDrawable) (layers.findDrawableByLayerId(R.id.clr));
-        shape.setColor(Color.parseColor(item.getColour()));
-        final String temp = item.getTag();
-
-        // do quickfilter
-        holder.vTag.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                if(!doQuickFilter) {
-                    updateFilePaths(
-                            DBHelper.DBHelperItem.SAVED_RECORDING_TAG + " = '" + temp + "' " +
-                                    " and " + DBHelper.DELETED);
-                    doQuickFilter = !doQuickFilter;
-                }
-                else{
-=======
-
         // update the tag color
         holder.vTag.setText(item.getTag());
         LayerDrawable layers = (LayerDrawable) holder.vTag.getBackground();
@@ -197,36 +168,20 @@ public class FileViewerAdapter extends RecyclerView.Adapter<FileViewerAdapter.Re
                         doQuickFilter = !doQuickFilter;
                     }
                     else{
->>>>>>> origin/single_restore
+
 
                     // variables
                     String temp;
 
-<<<<<<< HEAD
                     temp = lastClause;
                     lastClause = secondLastClause;
                     secondLastClause = temp;
-                    updateFilePaths();
+                    updateFilePathsLastClauseFalse();
                     doQuickFilter = !doQuickFilter;
-                }
-            }
-        });
-        //}
-        //else{
-
-        //holder.vTag.setVisibility(View.INVISIBLE);
-        //}
-=======
-                        temp = lastClause;
-                        lastClause = secondLastClause;
-                        secondLastClause = temp;
-                        updateFilePathsLastClauseFalse();
-                        doQuickFilter = !doQuickFilter;
                     }
                 }
             }
         });
->>>>>>> origin/single_restore
 
         // define an on click listener to open PlaybackFragment
         holder.cardView.setOnClickListener(new View.OnClickListener() {
@@ -247,21 +202,7 @@ public class FileViewerAdapter extends RecyclerView.Adapter<FileViewerAdapter.Re
                 }
             }
         });
-<<<<<<< HEAD
-        holder.cardView.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                RecordingItem recording = getItem(position);
-                ArrayList<String> entrys = new ArrayList<String>();
-                entrys.add(mContext.getString(R.string.dialog_file_rename));
-                entrys.add(mContext.getString(R.string.dialog_file_delete));
-                entrys.add("Edit Tag");
-                if(recording.getUrl().equals(""))
-                {
-                    entrys.add("Cloud Share");
-                }
-=======
->>>>>>> origin/single_restore
+
 
         // assign the menu options for the system
         holder.cardView.setOnLongClickListener(new View.OnLongClickListener() {
@@ -270,92 +211,51 @@ public class FileViewerAdapter extends RecyclerView.Adapter<FileViewerAdapter.Re
             public boolean onLongClick(View v) {
 
                 // variables
-                RecordingItem recording = getItem(position);
-                ArrayList<String> entrys = new ArrayList<String>();
+                RecordingItem recording;
+                ArrayList<String> entrys;
+                final CharSequence[] items;
 
-<<<<<<< HEAD
-                final CharSequence[] items = entrys.toArray(new CharSequence[entrys.size()]);
-=======
+                // assign
+                recording = getItem(position);
+                entrys = new ArrayList<String>();
+
                 // update selection options
                 entrys.add(mContext.getString(R.string.dialog_file_rename));
                 entrys.add("Move to Trash");
                 entrys.add("Edit Tag");
                 if(recording.getUrl().equals(""))
                     entrys.add("Cloud Share");
->>>>>>> origin/single_restore
+                items = entrys.toArray(new CharSequence[entrys.size()]);
 
-                final CharSequence[] items = entrys.toArray(new CharSequence[entrys.size()]);
-
-<<<<<<< HEAD
-=======
-
->>>>>>> origin/single_restore
                 // File delete confirm
                 AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
                 builder.setTitle(mContext.getString(R.string.dialog_title_options));
 
                 // our logic tree, check first if the recording is deleted, then check
-                if(!recording.getFilePath().matches(".*\\/SoundRecorder\\/Deleted\\/.*")){
+                if(!recording.getFilePath().matches(".*/SoundRecorder/Deleted/.*")){
                     if (recording.getUrl().equals("")) {
                         builder.setItems(items, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int item) {
-                                if (item == 0) {
-
+                                if (item == 0)
                                     renameFileDialog(holder.getPosition());
-                                }
-                                if (item == 1) {
-
-<<<<<<< HEAD
-                                    deleteFileDialog(holder.getPosition());
-=======
+                                else if (item == 1)
                                     moveToTrashDialog(holder.getPosition());
->>>>>>> origin/single_restore
-                                } else if (item == 2) {
-
+                                else if (item == 2)
                                     addTagDialog(holder.recordingFilePath);
-                                } else if (item == 3) {
-
+                                else if (item == 3)
                                     cloudShare(holder.getLayoutPosition());
-                                }
-                            }
-                        });
-                    } else {
-                        builder.setItems(items, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int item) {
-                                if (item == 0) {
-
-                                    renameFileDialog(holder.getPosition());
-                                }
-                                if (item == 1) {
-<<<<<<< HEAD
-
-                                    deleteFileDialog(holder.getPosition());
-                                } else if (item == 2) {
-
-                                    addTagDialog(holder.recordingFilePath);
-                                }
                             }
                         });
                     }
-
-                    builder.setCancelable(true);
-                    builder.setNegativeButton(mContext.getString(R.string.dialog_action_cancel),
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int id) {
-                                    dialog.cancel();
-                                }
-                            });
-
-                    AlertDialog alert = builder.create();
-                    alert.show();
-                }
-=======
-
+                    else {
+                        builder.setItems(items, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int item) {
+                                if (item == 0)
+                                    renameFileDialog(holder.getPosition());
+                                else if (item == 1)
                                     moveToTrashDialog(holder.getPosition());
-                                } else if (item == 2) {
-
+                                else if (item == 2)
                                     addTagDialog(holder.recordingFilePath);
-                                }
                             }
                         });
                     }
@@ -378,11 +278,10 @@ public class FileViewerAdapter extends RecyclerView.Adapter<FileViewerAdapter.Re
                         public void onClick(DialogInterface dialog, int item) {
                             if (item == 0)
                                 restoreFileDialog(holder.getPosition());
-                            if (item == 1)
+                            else if (item == 1)
                                 deleteFileDialog(holder.getPosition());
                         }
                     });
-
                 }
 
                 // finish other options for the menu
@@ -397,7 +296,6 @@ public class FileViewerAdapter extends RecyclerView.Adapter<FileViewerAdapter.Re
                 AlertDialog alert = builder.create();
                 alert.show();
 
->>>>>>> origin/single_restore
                 return false;
             }
         });
@@ -572,7 +470,7 @@ public class FileViewerAdapter extends RecyclerView.Adapter<FileViewerAdapter.Re
         notifyItemChanged(position);
     }
 
-    public void restore(int position){
+    public void restore(int position) {
 
         Toast.makeText(
                 mContext,
@@ -583,7 +481,12 @@ public class FileViewerAdapter extends RecyclerView.Adapter<FileViewerAdapter.Re
                 Toast.LENGTH_SHORT
         ).show();
 
-<<<<<<< HEAD
+        mDatabase.restoreDeletedFile(getItem(position).getFilePath());
+
+        // update recycler view
+        updateFilePathsLastClause();
+        notifyDataSetChanged();
+    }
 
 
     public void QrCodeGenerator (final String url) {
@@ -695,9 +598,7 @@ public class FileViewerAdapter extends RecyclerView.Adapter<FileViewerAdapter.Re
 
     public void remove(int position) {
         //remove item from database, recyclerview and storage
-=======
         mDatabase.restoreDeletedFile(getItem(position).getFilePath());
->>>>>>> origin/single_restore
 
         // update recycler view
         updateFilePathsLastClause();
@@ -930,8 +831,7 @@ public class FileViewerAdapter extends RecyclerView.Adapter<FileViewerAdapter.Re
         secondLastClause = lastClause;
         lastClause = clause;
         filePaths = mDatabase.getFilePaths(lastClause);
-<<<<<<< HEAD
-=======
+
         this.notifyDataSetChanged();
     }
 
@@ -948,7 +848,6 @@ public class FileViewerAdapter extends RecyclerView.Adapter<FileViewerAdapter.Re
 
         // update file paths to the previous clause
         filePaths = mDatabase.getFilePaths(lastClause);
->>>>>>> origin/single_restore
 
         this.notifyDataSetChanged();
     }

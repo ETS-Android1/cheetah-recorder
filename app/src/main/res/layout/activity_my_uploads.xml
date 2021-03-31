@@ -10,14 +10,10 @@
 
     <include
         android:id="@+id/toolbar"
-<<<<<<< HEAD
         layout="@layout/toolbar"
         app:layout_behavior="android.support.design.widget.AppBarLayout$ScrollingViewBehavior"
         />
 
-=======
-        layout="@layout/toolbar"/>
->>>>>>> origin/single_restore
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/upload_recycler_view"

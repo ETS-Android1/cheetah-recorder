@@ -48,43 +48,36 @@ public class QrScannerActivity extends AppCompatActivity {
         // camera permission is granted by user or not.
         // request permission method is to request the
         // camera permission if not given.
-        if (checkPermission()) {
-            // if permission is already granted display a toast message
-            Toast.makeText(this, "Permission Granted..", Toast.LENGTH_SHORT).show();
-
-        } else {
+        if (!checkPermission())
             requestPermission();
-        }
 
+        if (checkPermission()){
+            CodeScannerView scannerView = findViewById(R.id.scanner_view);
+            mCodeScanner = new CodeScanner(this, scannerView);
+            mCodeScanner.setDecodeCallback(new DecodeCallback() {
+                @Override
+                public void onDecoded(@NonNull final Result result) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            String url = result.getText();
+                            boolean success = QR_URL_Download(url);
 
-        if (checkPermission())
-        {
-        CodeScannerView scannerView = findViewById(R.id.scanner_view);
-        mCodeScanner = new CodeScanner(this, scannerView);
-        mCodeScanner.setDecodeCallback(new DecodeCallback() {
-            @Override
-            public void onDecoded(@NonNull final Result result) {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        String url = result.getText();
-                        boolean success = QR_URL_Download(url);
-
-                        if (success) {
-                            Intent k = new Intent(QrScannerActivity.this, MainActivity.class);
-                            startActivity(k);
+                            if (success) {
+                                Intent k = new Intent(QrScannerActivity.this, MainActivity.class);
+                                startActivity(k);
+                            }
                         }
-                    }
-                });
-            }
-        });
-        scannerView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mCodeScanner.startPreview();
-            }
-        });
-    }
+                    });
+                }
+            });
+            scannerView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    mCodeScanner.startPreview();
+                }
+            });
+        }
     }
 
     @Override
@@ -203,7 +196,7 @@ public class QrScannerActivity extends AppCompatActivity {
 
                         //Add file to database
                         try {
-                            mDatabase.addRecording(mFileName, mFilePath, millSecond, mFileSize, "Cloud", "#95D9DA", url, 1);
+                            mDatabase.addRecording(mFileName, mFilePath, millSecond, mFileSize, "",  "#FFFFFF", "#000000", url, 1);
                         } catch (Exception e){
                             progressDialog.dismiss();
                             Toast.makeText(this, "Failed: " + e, Toast.LENGTH_LONG).show();

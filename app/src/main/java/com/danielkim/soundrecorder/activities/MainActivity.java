@@ -101,15 +101,9 @@ public class MainActivity extends AppCompatActivity{
             case R.id.action_refresh:
                 currentFileViewerFragment.getAdapter().updateFilePaths();
                 break;
-<<<<<<< HEAD
-            //case R.id.action_cloudDownload:
-            //    CloudDownloadDialog();
-            //    break;
             case R.id.action_add_tag:
                 showTagCreateFragment();
                 break;
-=======
->>>>>>> origin/single_restore
             case R.id.action_cloud_uploads:
                 intent = new Intent (this, MyUploadsActivity.class);
                 startActivity(intent);
@@ -127,49 +121,11 @@ public class MainActivity extends AppCompatActivity{
         return true;
     }
 
-<<<<<<< HEAD
-
-
-
-
-
-
-
-    public void viewTrash(){
-
-    }
-
-=======
->>>>>>> origin/single_restore
     @Override
     protected void onResume() {
         super.onResume();
 
     }
-
-
-
-
-
-
-
-
-
-    //    private boolean urlReachable(String file_url)  {
-//        try {
-//            URL url = new URL(file_url);
-//
-//            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-//            int code = connection.getResponseCode();
-//            if (code == 200)
-//                return true;
-//        }catch (Exception e) {
-//            return false;
-//        }
-//        return false;
-//    }
-
-
 
     protected Boolean doInBackground(String url) {
         boolean flag = true;
@@ -323,6 +279,7 @@ public class MainActivity extends AppCompatActivity{
                     return currentRecordFragment;
                 }
                 case 1:{
+
                     currentFileViewerFragment = FileViewerFragment.newInstance(position);
                     return currentFileViewerFragment;
                 }
@@ -339,7 +296,6 @@ public class MainActivity extends AppCompatActivity{
         public CharSequence getPageTitle(int position) {
             return titles[position];
         }
+
     }
-
-
 }
