@@ -55,7 +55,7 @@
     <string name="pref_restore_deleted_title">Restore Deleted Files</string>
     <string name="pref_restore_deleted_desc">Recover all deleted files</string>
     <string name="pref_empty_trash_key">pref_empty_trash</string>
-    <string name="pref_empty_trash_title">Files will be deleted permanently</string>
+    <string name="pref_empty_trash_title">Files will be Deleted Permanently</string>
     <string name="pref_empty_trash_desc">Empty Trash</string>
     <string name="execute">Execute</string>
     <!-- TODO: Remove or change this placeholder text -->

@@ -101,20 +101,21 @@ public class MainActivity extends AppCompatActivity{
             case R.id.action_refresh:
                 currentFileViewerFragment.getAdapter().updateFilePaths();
                 break;
+<<<<<<< HEAD
             //case R.id.action_cloudDownload:
             //    CloudDownloadDialog();
             //    break;
             case R.id.action_add_tag:
                 showTagCreateFragment();
                 break;
+=======
+>>>>>>> origin/single_restore
             case R.id.action_cloud_uploads:
                 intent = new Intent (this, MyUploadsActivity.class);
                 startActivity(intent);
-                currentFileViewerFragment.getAdapter().updateFilePaths();
+                break;
             case R.id.action_view_trash:
-                currentFileViewerFragment.getAdapter().updateFilePaths();
                 currentFileViewerFragment.getAdapter().updateFilePaths(DBHelper.NOT_DELETED);
-                viewTrash();
                 break;
             case R.id.action_scanQR:
                 intent = new Intent(this, QrScannerActivity.class);
@@ -126,6 +127,7 @@ public class MainActivity extends AppCompatActivity{
         return true;
     }
 
+<<<<<<< HEAD
 
 
 
@@ -137,6 +139,8 @@ public class MainActivity extends AppCompatActivity{
 
     }
 
+=======
+>>>>>>> origin/single_restore
     @Override
     protected void onResume() {
         super.onResume();
