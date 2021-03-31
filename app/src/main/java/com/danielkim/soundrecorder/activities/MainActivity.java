@@ -1,15 +1,12 @@
 package com.danielkim.soundrecorder.activities;
 
 import android.annotation.SuppressLint;
-import android.app.AlertDialog;
 import android.app.DownloadManager;
 import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.Color;
 import android.media.MediaMetadataRetriever;
 import android.media.MediaPlayer;
 import android.net.Uri;
@@ -26,27 +23,18 @@ import androidx.appcompat.widget.Toolbar;
 
 import android.os.Environment;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.astuetz.PagerSlidingTabStrip;
 import com.danielkim.soundrecorder.DBHelper;
-import com.danielkim.soundrecorder.QrScannerActivity;
 import com.danielkim.soundrecorder.R;
 import com.danielkim.soundrecorder.fragments.FileViewerFragment;
 import com.danielkim.soundrecorder.fragments.FilterFragment;
 import com.danielkim.soundrecorder.fragments.RecordFragment;
 
 import java.io.File;
-import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
 
 
 public class MainActivity extends AppCompatActivity{

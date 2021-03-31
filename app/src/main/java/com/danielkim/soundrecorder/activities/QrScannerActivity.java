@@ -1,4 +1,4 @@
-package com.danielkim.soundrecorder;
+package com.danielkim.soundrecorder.activities;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -18,15 +18,14 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
 import android.view.View;
-import android.widget.TextView;
 import android.widget.Toast;
 
 
 import com.budiyev.android.codescanner.CodeScanner;
 import com.budiyev.android.codescanner.CodeScannerView;
 import com.budiyev.android.codescanner.DecodeCallback;
-import com.danielkim.soundrecorder.activities.MainActivity;
-import com.danielkim.soundrecorder.activities.MyUploadsActivity;
+import com.danielkim.soundrecorder.DBHelper;
+import com.danielkim.soundrecorder.R;
 import com.google.zxing.Result;
 
 import java.io.File;
@@ -53,43 +52,11 @@ public class QrScannerActivity extends AppCompatActivity {
             // if permission is already granted display a toast message
             Toast.makeText(this, "Permission Granted..", Toast.LENGTH_SHORT).show();
 
-
-            CodeScannerView scannerView = findViewById(R.id.scanner_view);
-            mCodeScanner = new CodeScanner(this, scannerView);
-            mCodeScanner.setDecodeCallback(new DecodeCallback() {
-                @Override
-                public void onDecoded(@NonNull final Result result) {
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            String url = result.getText();
-                            boolean success = QR_URL_Download(url);
-
-                            if (success) {
-//                            Toast.makeText(QrScannerActivity.this, "HEREERERERE", Toast.LENGTH_SHORT).show();
-                                Intent k = new Intent(QrScannerActivity.this, MainActivity.class);
-                                startActivity(k);
-                            }
-
-                        }
-                    });
-                }
-            });
-            scannerView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    mCodeScanner.startPreview();
-                }
-            });
-
-
-
-
         } else {
             requestPermission();
         }
 
-/*
+
         if (checkPermission())
         {
         CodeScannerView scannerView = findViewById(R.id.scanner_view);
@@ -104,11 +71,9 @@ public class QrScannerActivity extends AppCompatActivity {
                         boolean success = QR_URL_Download(url);
 
                         if (success) {
-//                            Toast.makeText(QrScannerActivity.this, "HEREERERERE", Toast.LENGTH_SHORT).show();
                             Intent k = new Intent(QrScannerActivity.this, MainActivity.class);
                             startActivity(k);
                         }
-
                     }
                 });
             }
@@ -119,14 +84,8 @@ public class QrScannerActivity extends AppCompatActivity {
                 mCodeScanner.startPreview();
             }
         });
-
     }
-        */
     }
-
-
-
-
 
     @Override
     protected void onResume() {
@@ -139,8 +98,6 @@ public class QrScannerActivity extends AppCompatActivity {
         mCodeScanner.releaseResources();
         super.onPause();
     }
-
-
 
     private boolean checkPermission() {
         // here we are checking two permission that is vibrate
@@ -173,7 +130,6 @@ public class QrScannerActivity extends AppCompatActivity {
             }
         }
     }
-
 
 
     protected Boolean QR_URL_Download(String url) {
@@ -278,7 +234,4 @@ public class QrScannerActivity extends AppCompatActivity {
             return flag;
         }
     }
-
-
-
 }
