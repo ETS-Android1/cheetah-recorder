@@ -1,3 +1,5 @@
 <paths>
     <external-path path="SoundRecorder/" name="SoundRecorder" />
+    <files-path path="images/" name="myimages" />
+    <cache-path name="shared_images" path="images/"/>
 </paths>

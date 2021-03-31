@@ -1,15 +1,12 @@
 package com.danielkim.soundrecorder.activities;
 
 import android.annotation.SuppressLint;
-import android.app.AlertDialog;
 import android.app.DownloadManager;
 import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.Color;
 import android.media.MediaMetadataRetriever;
 import android.media.MediaPlayer;
 import android.net.Uri;
@@ -26,11 +23,8 @@ import androidx.appcompat.widget.Toolbar;
 
 import android.os.Environment;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.EditText;
 import android.widget.Toast;
 
 import com.astuetz.PagerSlidingTabStrip;
@@ -42,10 +36,6 @@ import com.danielkim.soundrecorder.fragments.RecordFragment;
 import com.danielkim.soundrecorder.fragments.TagCreateFragment;
 
 import java.io.File;
-import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
 
 
 public class MainActivity extends AppCompatActivity{
@@ -126,11 +116,22 @@ public class MainActivity extends AppCompatActivity{
                 currentFileViewerFragment.getAdapter().updateFilePaths(DBHelper.NOT_DELETED);
                 viewTrash();
                 break;
+            case R.id.action_scanQR:
+                intent = new Intent(this, QrScannerActivity.class);
+                startActivity(intent);
+                break;
             default:
                 return super.onOptionsItemSelected(item);
         }
         return true;
     }
+
+
+
+
+
+
+
 
     public void viewTrash(){
 
@@ -141,6 +142,14 @@ public class MainActivity extends AppCompatActivity{
         super.onResume();
 
     }
+
+
+
+
+
+
+
+
 
     //    private boolean urlReachable(String file_url)  {
 //        try {
