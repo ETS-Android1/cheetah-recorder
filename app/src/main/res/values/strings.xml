@@ -57,6 +57,7 @@
     <string name="pref_empty_trash_key">pref_empty_trash</string>
     <string name="pref_empty_trash_title">Files will be deleted permanently</string>
     <string name="pref_empty_trash_desc">Empty Trash</string>
+    <string name="pref_dark_mode">Dark Mode</string>
     <string name="execute">Execute</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
