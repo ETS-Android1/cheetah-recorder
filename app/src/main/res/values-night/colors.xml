@@ -4,9 +4,9 @@
     <color name="primary_dark">#2B2B2B</color>
     <color name="primary_light">#313335</color>
     <color name="primary_text">#fff</color>
-    <color name="accent">#393e46</color>
+    <color name="accent">#959595</color>
     <color name="accent_dark">#6098BE</color>
-    <color name="accent_darker">#4785AE</color>
+    <color name="accent_darker">#959595</color>
     <color name="secondary_text">#FF9800</color>
     <color name="divider">#000</color>
     <color name="text">#fff</color>
