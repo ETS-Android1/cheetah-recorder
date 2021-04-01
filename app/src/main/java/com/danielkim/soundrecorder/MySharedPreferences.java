@@ -10,6 +10,7 @@ import android.preference.PreferenceManager;
 
 public class MySharedPreferences {
     private static String PREF_HIGH_QUALITY = "pref_high_quality";
+    private static String PREF_DARK_MODE = "pref_dark_mode";
 
     public static void setPrefHighQuality(Context context, boolean isEnabled) {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
@@ -22,4 +23,5 @@ public class MySharedPreferences {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         return preferences.getBoolean(PREF_HIGH_QUALITY, false);
     }
+
 }

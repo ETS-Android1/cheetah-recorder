@@ -1,5 +1,5 @@
 <resources>
-    <style name="AppTheme.Base" parent="Theme.AppCompat.Light">
+    <style name="AppTheme.Base" parent="Theme.AppCompat.DayNight">
 
         <item name="windowActionBar">true</item>
         <item name="windowNoTitle">true</item>
@@ -13,6 +13,7 @@
         <item name="android:colorLongPressedHighlight">@color/accent</item>
         <item name="colorAccent">@color/accent</item>
     </style>
+
 
     <style name="CheetahSplashTheme" parent="@style/Theme.AppCompat.DayNight.NoActionBar">
         <item name="colorPrimary">@color/primary</item>

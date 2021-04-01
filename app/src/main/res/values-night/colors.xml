@@ -1,2 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <color name="primary">#453E3E</color>
+    <color name="primary_dark">#322F2E</color>
+    <color name="primary_light">#807676</color>
+    <color name="primary_text">#fff</color>
+    <color name="accent">#81AECC</color>
+    <color name="accent_dark">#6098BE</color>
+    <color name="accent_darker">#4785AE</color>
+    <color name="secondary_text">#FF9800</color>
+    <color name="divider">#000</color>
+    <color name="text">#000</color>
+    <color name="white">#504A4A</color>
+    <color name="tab_strip">#81634F</color>
+
+</resources>
