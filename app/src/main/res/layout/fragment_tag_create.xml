@@ -35,7 +35,8 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="20dp"
         android:background="@drawable/rounded_button"
-        android:tag="#FF6B6B"
+        android:tag="#FF858F"
+        android:textColor="#FFFFFF"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tag_entry" />
 
@@ -48,7 +49,7 @@
         android:layout_marginEnd="20dp"
         android:background="@drawable/rounded_button2"
         android:contextClickable="true"
-        android:tag="#292F36"
+        android:tag="#E01F35"
         android:textColor="#FFFFFF"
         app:layout_constraintEnd_toStartOf="@+id/button3"
         app:layout_constraintHorizontal_bias="0.497"
@@ -62,7 +63,7 @@
         android:layout_marginTop="20dp"
         android:layout_marginEnd="16dp"
         android:background="@drawable/rounded_button3"
-        android:tag="#F6EFA6"
+        android:tag="#F2C446"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tag_entry" />
 
@@ -72,7 +73,7 @@
         android:layout_height="50dp"
         android:layout_marginStart="16dp"
         android:background="@drawable/rounded_button4"
-        android:tag="#affede"
+        android:tag="#81DE59"
         app:layout_constraintBottom_toTopOf="@+id/button7"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/button" />
@@ -86,7 +87,7 @@
         android:layout_marginEnd="20dp"
         android:layout_marginBottom="20dp"
         android:background="@drawable/rounded_button5"
-        android:tag="#6f9998"
+        android:tag="#59C991"
         app:layout_constraintBottom_toTopOf="@+id/button8"
         app:layout_constraintEnd_toStartOf="@+id/button6"
         app:layout_constraintStart_toEndOf="@+id/button4"
@@ -101,7 +102,7 @@
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="20dp"
         android:background="@drawable/rounded_button6"
-        android:tag="#2C4251"
+        android:tag="#70CED2"
         android:textColor="#FFFFFF"
         app:layout_constraintBottom_toTopOf="@+id/button9"
         app:layout_constraintEnd_toEndOf="parent"
@@ -115,7 +116,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginBottom="16dp"
         android:background="@drawable/rounded_button7"
-        android:tag="#76354F"
+        android:tag="#8AADFF"
         android:textColor="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -126,7 +127,7 @@
         android:layout_height="50dp"
         android:layout_marginBottom="16dp"
         android:background="@drawable/rounded_button8"
-        android:tag="#e68aa8"
+        android:tag="#685DDE"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/button9"
         app:layout_constraintHorizontal_bias="0.497"
@@ -139,7 +140,7 @@
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
         android:background="@drawable/rounded_button9"
-        android:tag="#aeaede"
+        android:tag="#C07FE3"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 

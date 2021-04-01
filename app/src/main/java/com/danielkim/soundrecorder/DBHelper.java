@@ -133,22 +133,22 @@ public class DBHelper extends SQLiteOpenHelper {
         // create tag values
         cvNone.put(DBHelperItem.TAG_SYSTEM_TAG_NAME, "No Tag");
         cvNone.put(DBHelperItem.TAG_SYSTEM_TAG_COLOR, "#EEEEEE");
-        cvNone.put(DBHelperItem.TAG_SYSTEM_TEXT_COLOUR, "#000000");
+        cvNone.put(DBHelperItem.TAG_SYSTEM_TEXT_COLOUR, "#FFFFFF");
 
         cvWork.put(DBHelperItem.TAG_SYSTEM_TAG_NAME, "Work");
-        cvWork.put(DBHelperItem.TAG_SYSTEM_TAG_COLOR, "#9679F6");
-        cvWork.put(DBHelperItem.TAG_SYSTEM_TEXT_COLOUR, "#000000");
+        cvWork.put(DBHelperItem.TAG_SYSTEM_TAG_COLOR, "#F2C446");
+        cvWork.put(DBHelperItem.TAG_SYSTEM_TEXT_COLOUR, "#FFFFFF");
 
         cvSchool.put(DBHelperItem.TAG_SYSTEM_TAG_NAME, "School");
-        cvSchool.put(DBHelperItem.TAG_SYSTEM_TAG_COLOR, "#F8BD4F");
-        cvSchool.put(DBHelperItem.TAG_SYSTEM_TEXT_COLOUR, "#000000");
+        cvSchool.put(DBHelperItem.TAG_SYSTEM_TAG_COLOR, "#81DE59");
+        cvSchool.put(DBHelperItem.TAG_SYSTEM_TEXT_COLOUR, "#FFFFFF");
 
         cvGrocery.put(DBHelperItem.TAG_SYSTEM_TAG_NAME, "Grocery");
-        cvGrocery.put(DBHelperItem.TAG_SYSTEM_TAG_COLOR, "#68DF95");
-        cvGrocery.put(DBHelperItem.TAG_SYSTEM_TEXT_COLOUR, "#000000");
+        cvGrocery.put(DBHelperItem.TAG_SYSTEM_TAG_COLOR, "#C07FE3");
+        cvGrocery.put(DBHelperItem.TAG_SYSTEM_TEXT_COLOUR, "#FFFFFF");
 
         cvMemo.put(DBHelperItem.TAG_SYSTEM_TAG_NAME, "Memo");
-        cvMemo.put(DBHelperItem.TAG_SYSTEM_TAG_COLOR, "#F43E80");
+        cvMemo.put(DBHelperItem.TAG_SYSTEM_TAG_COLOR, "#8AADFF");
         cvMemo.put(DBHelperItem.TAG_SYSTEM_TEXT_COLOUR, "#FFFFFF");
 
 
