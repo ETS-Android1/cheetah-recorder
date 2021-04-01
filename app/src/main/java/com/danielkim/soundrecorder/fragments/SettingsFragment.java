@@ -1,6 +1,8 @@
 package com.danielkim.soundrecorder.fragments;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
@@ -25,16 +27,17 @@ public class SettingsFragment extends PreferenceFragment {
     private DBHelper mDatabase;
     private SharedPreferences.OnSharedPreferenceChangeListener listener;
     private static final String TAG = "MyActivity";
-
-
+    private Intent intent;
+    private Context mContext;
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         addPreferencesFromResource(R.xml.preferences);
 
-        Context mContext = getContext();
+        mContext = getContext();
         mDatabase = new DBHelper(mContext);
-
+        intent = new Intent(mContext,SettingsActivity.class);
         CheckBoxPreference highQualityPref = (CheckBoxPreference) findPreference(getResources().getString(R.string.pref_high_quality_key));
         highQualityPref.setChecked(MySharedPreferences.getPrefHighQuality(getActivity()));
         highQualityPref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
@@ -77,8 +80,23 @@ public class SettingsFragment extends PreferenceFragment {
             }
         });
 
-        Preference darkMode = findPreference(getString(R.string.pref_dark_mode));
-        darkMode.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+        CheckBoxPreference darkModePref = (CheckBoxPreference) findPreference(getResources().getString(R.string.pref_dark_mode));
+
+        darkModePref.setChecked(MySharedPreferences.getDarkMode(getActivity()));
+        darkModePref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+            @Override
+            public boolean onPreferenceChange(Preference preference, Object newValue) {
+                MySharedPreferences.setDarkMode(getActivity(), (boolean) newValue);
+                ((Activity)mContext).finish();
+                startActivity(intent);
+                return true;
+            }
+
+        });
+
+
+
+        /*darkMode.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
             @Override
             public boolean onPreferenceChange(Preference preference, Object newValue) {
                 switch((String) newValue){
@@ -93,7 +111,7 @@ public class SettingsFragment extends PreferenceFragment {
 
                 return true;
             }
-        });
+        });*/
 
     }
 }

@@ -5,17 +5,25 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
+
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.DrawableWrapper;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.LayerDrawable;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Environment;
 
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -67,6 +75,7 @@ public class FileViewerAdapter extends RecyclerView.Adapter<FileViewerAdapter.Re
     private RecordingItem itemHelper;
     private FirebaseStorage storage;
     private boolean doQuickFilter;
+    private SharedPreferences shared;
 
     Context mContext;
     LinearLayoutManager llm;
@@ -79,7 +88,7 @@ public class FileViewerAdapter extends RecyclerView.Adapter<FileViewerAdapter.Re
         llm = linearLayoutManager;
         mMainActivity = mainActivity;
         doQuickFilter = false;
-
+        shared =  PreferenceManager.getDefaultSharedPreferences(context);
         lastClause = DBHelper.DELETED;
         secondLastClause = DBHelper.DELETED;
 
@@ -112,12 +121,23 @@ public class FileViewerAdapter extends RecyclerView.Adapter<FileViewerAdapter.Re
             )
         );
         holder.recordingFilePath = item.getFilePath();
+
         if(item.getIsCloud() == 1)
         {
             holder.vClipart.setImageDrawable(mContext.getDrawable(R.drawable.ic_action_cloud_done));
         }else
         {
-            holder.vClipart.setImageDrawable(mContext.getDrawable(R.drawable.ic_fileviewer_round));
+            if(shared.getBoolean("Dark_Mode", false)){
+                holder.vClipart.setImageDrawable(mContext.getDrawable(R.drawable.ic_fileviewer_round_dark));
+                //AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+            }
+            else{
+                holder.vClipart.setImageDrawable(mContext.getDrawable(R.drawable.ic_fileviewer_round));
+                //AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+            }
+            //holder.vClipart.setImageDrawable(mContext.getDrawable(R.drawable.ic_fileviewer_round));
+
+
         }
         //if the tag is not empty display the text and color
         //if(!item.getTag().equals("")) {
