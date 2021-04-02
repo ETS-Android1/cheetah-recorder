@@ -147,7 +147,15 @@ public class FileViewerAdapter extends RecyclerView.Adapter<FileViewerAdapter.Re
             //holder.vTag.setDrawingCacheBackgroundColor(Color.parseColor(item.getColour()));
             LayerDrawable layers = (LayerDrawable) holder.vTag.getBackground();
             GradientDrawable shape = (GradientDrawable) (layers.findDrawableByLayerId(R.id.clr));
+            System.out.println(item.getColour()+ " " + item.getTag());
+            if((item.getColour().equalsIgnoreCase("#ffffffff") && item.getTag().equals("")) || (item.getColour().equalsIgnoreCase("#ff373737") && item.getTag().equals("")))
+            {
+                System.out.println("poggers");
+                item.setColour("#"+Integer.toHexString(mContext.getColor(R.color.white)));
+                mDatabase.changeTag(item, item.getTag(),item.getColour());
+            }
             shape.setColor(Color.parseColor(item.getColour()));
+
             final String temp = item.getTag();
 
             // do quickfilter

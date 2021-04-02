@@ -63,7 +63,6 @@ public class MainActivity extends AppCompatActivity{
 
     //Database
     private DBHelper mDatabase;
-    private MySharedPreferences mPref;
     // store fragments
     private RecordFragment currentRecordFragment;
     private FileViewerFragment currentFileViewerFragment;
