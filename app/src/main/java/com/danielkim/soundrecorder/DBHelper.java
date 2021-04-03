@@ -562,7 +562,7 @@ public class DBHelper extends SQLiteOpenHelper {
         Log.d("TEST", "RENNAMED" + recordingName + " " + filePath);
     }
 
-    @Deprecated
+
     public void changeTag(RecordingItem item, String tagName, String tagColour){
         SQLiteDatabase db = getWritableDatabase();
         ContentValues cv = new ContentValues();
@@ -570,9 +570,7 @@ public class DBHelper extends SQLiteOpenHelper {
         cv.put(DBHelperItem.SAVED_RECORDING_TAG_COLOUR, tagColour);
         db.update(DBHelperItem.SAVED_RECORDINGS_NAME, cv,
                 DBHelperItem._ID + "=" + item.getId(), null);
-        if (mOnDatabaseChangedListener != null) {
-            mOnDatabaseChangedListener.onDatabaseEntryRenamed();
-        }
+
     }
 
     public void changeUrl(RecordingItem item, String url)

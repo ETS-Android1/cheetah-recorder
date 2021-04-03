@@ -149,8 +149,7 @@ public class RecordingService extends Service {
 
         mRecorder = null;
         mTagName = "";
-        mColour = "#FFFFFF";
-        mTextColor = "#000000";
+        mColour = "#"+Integer.toHexString(getApplicationContext().getColor(R.color.white));
         mUrl = "";
 
         try {
