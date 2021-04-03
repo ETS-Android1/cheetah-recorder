@@ -9,6 +9,7 @@
 .gradle/checksums/md5-checksums.bin
 .gradle/checksums/checksums.lock
 .gradle/buildOutputCleanup/outputFiles.bin
+.gradle/buildOutputCleanup/buildOutputCleanup.lock
 .gradle/6.8.1/javaCompile/taskHistory.bin
 .gradle/6.8.1/javaCompile/javaCompile.lock
 .gradle/6.8.1/javaCompile/jarAnalysis.bin
