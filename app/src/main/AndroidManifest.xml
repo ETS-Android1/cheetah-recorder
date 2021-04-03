@@ -4,66 +4,81 @@
 
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.VIBRATE" />
 
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme">
-
+        <activity
+            android:name=".activities.QrScannerActivity"
+            android:parentActivityName=".activities.MainActivity"
+            android:theme="@style/CheetahAppTheme"
+            android:noHistory="false">
+        </activity>
         <activity
             android:name=".activities.SplashScreenActivity"
             android:label="@string/app_name"
-            android:parentActivityName=".activities.SplashScreenActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/CheetahAppTheme">
-        <intent-filter>
-            <action android:name="android.intent.action.MAIN" />
-            <category android:name="android.intent.category.DEFAULT" />
-            <category android:name="android.intent.category.LAUNCHER" />
-        </intent-filter>
+            android:theme="@style/CheetahSplashTheme"
+            android:noHistory="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
-
         <activity
             android:name=".activities.MyUploadsActivity"
-            android:theme="@style/CheetahAppTheme">
-            
+            android:theme="@style/CheetahAppTheme"
+            android:noHistory="false">
         </activity>
-
         <activity
             android:name=".activities.SqlDebugActivity"
-            android:theme="@style/CheetahAppTheme"/>
-
+            android:theme="@style/CheetahAppTheme"
+            android:noHistory="false"/>
         <activity
             android:name=".activities.MainActivity"
             android:label="@string/app_name"
+            android:parentActivityName=".activities.SplashScreenActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/CheetahAppTheme">
-        </activity>
-
+            android:theme="@style/CheetahAppTheme"
+            android:noHistory="false"/>
         <activity
             android:name=".activities.SettingsActivity"
             android:label="@string/action_settings"
             android:parentActivityName=".activities.MainActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/CheetahAppTheme">
+            android:theme="@style/CheetahAppTheme"
+            android:noHistory="false">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.danielkim.soundrecorder.activities.MainActivity" />
         </activity>
-
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="com.danielkim.soundrecorder.fileprovider"
             android:exported="false"
             android:grantUriPermissions="true"
-            android:theme="@style/CheetahAppTheme">
+            android:theme="@style/CheetahAppTheme"
+            android:noHistory="false">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/filepaths" />
         </provider>
-
         <service android:name=".RecordingService" />
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="com.example.myapp.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true"
+            android:noHistory="false">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/filepaths" />
+        </provider>
     </application>
 
 </manifest>

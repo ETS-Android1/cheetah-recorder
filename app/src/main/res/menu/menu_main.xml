@@ -8,7 +8,7 @@
         android:id="@+id/action_refresh"
         android:icon="@drawable/ic_action_refresh"
         android:orderInCategory="100"
-        android:title="Search"
+        android:title="Refresh"
         app:showAsAction="always"
         />
 
@@ -25,7 +25,7 @@
         android:orderInCategory="100"
         android:title="See Deleted Files"
         app:showAsAction="always"/>
-        />
+
     <item
         android:id="@+id/action_settings"
         android:orderInCategory="102"
@@ -36,14 +36,18 @@
         android:orderInCategory="103"
         android:title="Debug" />
 
-    <!--<item
-        android:id="@+id/action_cloudDownload"
-        android:orderInCategory="104"
-        android:title="Cloud Download"
-        />-->
-
     <item android:id="@+id/action_cloud_uploads"
         android:titleCondensed="Uploads"
-        android:title="Show Uploads"
-        android:checkable="true" />
+        android:title="Show Uploads" />
+
+    <item
+        android:id="@+id/action_add_tag"
+        android:orderInCategory="104"
+        android:title="Add Tag" />
+
+    <item
+        android:id="@+id/action_scanQR"
+        android:orderInCategory="105"
+        android:title="Scan QR" />
+
 </menu>

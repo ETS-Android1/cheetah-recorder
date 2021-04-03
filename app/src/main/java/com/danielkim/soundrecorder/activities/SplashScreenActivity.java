@@ -19,14 +19,22 @@ public class SplashScreenActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash_screen);
 
+    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        runMainDelay();
+    }
+
+    public void runMainDelay(){
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             public void run() {
                 runMain();
             }
-        }, 1200);   //5 seconds
-
+        }, 835);   //.835 seconds
     }
 
     public void runMain(){
@@ -35,14 +43,7 @@ public class SplashScreenActivity extends AppCompatActivity {
         Intent myIntent;
 
         myIntent = new Intent(this, MainActivity.class);
-        myIntent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
         this.startActivity(myIntent);
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        runMain();
-
-    }
 }
