@@ -8,8 +8,12 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 
+import android.graphics.Point;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.DrawableWrapper;
@@ -19,13 +23,17 @@ import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Environment;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.preference.PreferenceManager;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.Display;
 import android.view.LayoutInflater;
@@ -161,6 +169,11 @@ public class FileViewerAdapter extends RecyclerView.Adapter<FileViewerAdapter.Re
         //if(!item.getTag().equals("")) {
 
             holder.vTag.setText(item.getTag());
+            if(item.getTextColor()!= null)
+            {
+                holder.vTag.setTextColor(Color.parseColor(item.getTextColor()));
+            }
+
             //holder.vTag.setBackgroundColor(Color.parseColor(item.getColour()));
             //holder.vTag.setDrawingCacheBackgroundColor(Color.parseColor(item.getColour()));
             LayerDrawable layers = (LayerDrawable) holder.vTag.getBackground();
@@ -174,13 +187,14 @@ public class FileViewerAdapter extends RecyclerView.Adapter<FileViewerAdapter.Re
             }
             shape.setColor(Color.parseColor(item.getColour()));
 
-            final String temp = item.getTag();
+            final String temp = item.getTag() + "' AND " + DBHelper.DBHelperItem.SAVED_RECORDING_TAG_COLOUR + " = '" + item.getColour();
 
             // do quickfilter
             holder.vTag.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
+                System.out.println(DBHelper.DBHelperItem.SAVED_RECORDING_TAG + " = '" + temp + "' " +
+                        " and " + DBHelper.DELETED);
                 if(!lastClause.matches(DBHelper.NOT_DELETED)){
                     if(!doQuickFilter) {
                         updateFilePaths(

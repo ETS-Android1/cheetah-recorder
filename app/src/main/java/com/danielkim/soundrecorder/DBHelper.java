@@ -137,19 +137,19 @@ public class DBHelper extends SQLiteOpenHelper {
 
         cvWork.put(DBHelperItem.TAG_SYSTEM_TAG_NAME, "Work");
         cvWork.put(DBHelperItem.TAG_SYSTEM_TAG_COLOR, "#F2C446");
-        cvWork.put(DBHelperItem.TAG_SYSTEM_TEXT_COLOUR, "#FFFFFF");
+        cvWork.put(DBHelperItem.TAG_SYSTEM_TEXT_COLOUR, "#000000");
 
         cvSchool.put(DBHelperItem.TAG_SYSTEM_TAG_NAME, "School");
         cvSchool.put(DBHelperItem.TAG_SYSTEM_TAG_COLOR, "#81DE59");
-        cvSchool.put(DBHelperItem.TAG_SYSTEM_TEXT_COLOUR, "#FFFFFF");
+        cvSchool.put(DBHelperItem.TAG_SYSTEM_TEXT_COLOUR, "#000000");
 
         cvGrocery.put(DBHelperItem.TAG_SYSTEM_TAG_NAME, "Grocery");
         cvGrocery.put(DBHelperItem.TAG_SYSTEM_TAG_COLOR, "#C07FE3");
-        cvGrocery.put(DBHelperItem.TAG_SYSTEM_TEXT_COLOUR, "#FFFFFF");
+        cvGrocery.put(DBHelperItem.TAG_SYSTEM_TEXT_COLOUR, "#000000");
 
         cvMemo.put(DBHelperItem.TAG_SYSTEM_TAG_NAME, "Memo");
         cvMemo.put(DBHelperItem.TAG_SYSTEM_TAG_COLOR, "#8AADFF");
-        cvMemo.put(DBHelperItem.TAG_SYSTEM_TEXT_COLOUR, "#FFFFFF");
+        cvMemo.put(DBHelperItem.TAG_SYSTEM_TEXT_COLOUR, "#000000");
 
 
         // add tags to the system
@@ -435,7 +435,6 @@ public class DBHelper extends SQLiteOpenHelper {
 
         int i = 0;
         ContentValues cv = new ContentValues();
-
         db.delete(DBHelperItem.TAG_SYSTEM_NAME,"tag_name=? AND "+ DBHelperItem.TAG_SYSTEM_TAG_COLOR+" =?",whereArgs);
         Cursor c = db.query(
                 DBHelperItem.TAG_SYSTEM_NAME,
@@ -449,7 +448,7 @@ public class DBHelper extends SQLiteOpenHelper {
         while(!c.isAfterLast()){
             cv.put(DBHelperItem._ID, i);
             i++;
-            System.out.println(i);
+            //System.out.println(i);
             c.moveToNext();
 
         }
@@ -493,15 +492,37 @@ public class DBHelper extends SQLiteOpenHelper {
     {
         SQLiteDatabase db = getWritableDatabase();
         ContentValues cv = new ContentValues();
-        cv.put(DBHelperItem.TAG_SYSTEM_TAG_NAME, tagName);
-        cv.put(DBHelperItem.TAG_SYSTEM_TAG_COLOR, colour);
-        cv.put(DBHelperItem.TAG_SYSTEM_TEXT_COLOUR, textColour);
-        long rowId = db.insert(DBHelperItem.TAG_SYSTEM_NAME,null,cv);
-        if (mOnDatabaseChangedListener != null) {
-            mOnDatabaseChangedListener.onNewDatabaseEntryAdded();
+        String[] projection = {DBHelperItem._ID,
+                DBHelperItem.TAG_SYSTEM_TAG_COLOR,
+                DBHelperItem.TAG_SYSTEM_TAG_NAME
+        };
+        String whereArgs[] = new String[]{tagName,colour};
+
+        Cursor c = db.query(DBHelperItem.TAG_SYSTEM_NAME,
+                projection,
+                "tag_name=? AND "+ DBHelperItem.TAG_SYSTEM_TAG_COLOR+" =?",
+                whereArgs,
+                null,
+                null,
+                null,
+                null);
+        if(c.getCount() > 0 )
+        {
+            c.close();
+            return -1;
+        }
+        else{
+                cv.put(DBHelperItem.TAG_SYSTEM_TAG_NAME, tagName);
+                cv.put(DBHelperItem.TAG_SYSTEM_TAG_COLOR, colour);
+                cv.put(DBHelperItem.TAG_SYSTEM_TEXT_COLOUR, textColour);
+                long rowId = db.insert(DBHelperItem.TAG_SYSTEM_NAME,null,cv);
+                if (mOnDatabaseChangedListener != null) {
+                    mOnDatabaseChangedListener.onNewDatabaseEntryAdded();
+                }
+                c.close();
+                return rowId;
         }
 
-        return rowId;
     }
     public long addRecording(String recordingName, String filePath, long length, double fileSize, String tag, String tagColour, String textColor, String url, int cloud) {
 
@@ -608,7 +629,7 @@ public class DBHelper extends SQLiteOpenHelper {
             tagName = c.getString(c.getColumnIndex(DBHelperItem.TAG_SYSTEM_TAG_NAME));
             tagColor = c.getString(c.getColumnIndex(DBHelperItem.TAG_SYSTEM_TAG_COLOR));
             textColor = c.getString(c.getColumnIndex(DBHelperItem.TAG_SYSTEM_TEXT_COLOUR));
-
+            System.out.println(tagName);System.out.println(tagColor);System.out.println(textColor);
 
             if(tagName.equals("No Tag")){
 

@@ -151,7 +151,7 @@ public class RecordingService extends Service {
         mTagName = "";
         mColour = "#"+Integer.toHexString(getApplicationContext().getColor(R.color.white));
         mUrl = "";
-
+        mTextColor = "#"+Integer.toHexString(getApplicationContext().getColor(R.color.record_text));
         try {
             mDatabase.addRecording(mFileName, mFilePath, mElapsedMillis, mFileSize, mTagName, mColour,mTextColor, mUrl, mCloud);
 

@@ -479,6 +479,7 @@ public class FilterFragment extends DialogFragment {
                 finalClause.append(" and ");
             }
         }
+        System.out.println(finalClause.toString());
         return finalClause.toString();
     }
 

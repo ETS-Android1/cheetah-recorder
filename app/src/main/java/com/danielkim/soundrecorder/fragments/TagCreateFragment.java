@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.danielkim.soundrecorder.DBHelper;
@@ -243,10 +244,37 @@ public class TagCreateFragment extends DialogFragment {
                             String value = input.getText().toString().trim();
                             if(colour!=null)
                             {
-                                mDatabase.addTag(value,colour,textColor);
+                                if(mDatabase.addTag(value,colour,textColor) != -1){
+                                    Toast.makeText(
+                                            getContext(),
+                                            "Tag Successfully added.",
+                                            Toast.LENGTH_SHORT
+                                    ).show();
+                                }
+                                else{
+                                    Toast.makeText(
+                                            getContext(),
+                                            "Tag Already Exists.",
+                                            Toast.LENGTH_SHORT
+                                    ).show();
+                                }
                             }
                             else{
-                                mDatabase.addTag(value,"#FFFFFF","#000000");
+                                if(mDatabase.addTag(value,"#FFFFFF","#000000") != -1){
+                                    Toast.makeText(
+                                            getContext(),
+                                            "Tag Successfully added.",
+                                            Toast.LENGTH_SHORT
+                                    ).show();
+                                }
+                                else{
+                                    Toast.makeText(
+                                            getContext(),
+                                            "Tag Already Exists.",
+                                            Toast.LENGTH_SHORT
+                                    ).show();
+                                }
+
                             }
 
 
