@@ -20,7 +20,7 @@
         android:background="@drawable/custom_input"
         android:drawableStart="@drawable/ic_baseline_text_format_24"
         android:drawablePadding="12dp"
-        android:maxLength="30"
+        android:maxLength="20"
         android:ems="10"
         android:hint="Tag Name"
         android:inputType="text"
