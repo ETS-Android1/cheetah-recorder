@@ -179,7 +179,10 @@ public class FileViewerAdapter extends RecyclerView.Adapter<FileViewerAdapter.Re
             LayerDrawable layers = (LayerDrawable) holder.vTag.getBackground();
             GradientDrawable shape = (GradientDrawable) (layers.findDrawableByLayerId(R.id.clr));
             System.out.println(item.getColour()+ " " + item.getTag());
-            if((item.getColour().equalsIgnoreCase("#ffffff") && item.getTag().equals("")) || (item.getColour().equalsIgnoreCase("#373737") && item.getTag().equals("")))
+            if((item.getColour().equalsIgnoreCase("#ffffff") && item.getTag().equals("")) ||
+                    (item.getColour().equalsIgnoreCase("#ffffffff") && item.getTag().equals("")) ||
+                    (item.getColour().equalsIgnoreCase("#373737") && item.getTag().equals("")) ||
+                    (item.getColour().equalsIgnoreCase("#ff373737") && item.getTag().equals("")) )
             {
                 System.out.println("poggers");
                 item.setColour("#"+Integer.toHexString(mContext.getColor(R.color.white)));
