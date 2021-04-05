@@ -29,25 +29,34 @@
     <item
         android:id="@+id/action_settings"
         android:orderInCategory="102"
+        android:itemBackground="@color/white"
+        android:textColor="@color/record_text"
         android:title="@string/action_settings" />
 
     <item
         android:id="@+id/action_debug"
         android:orderInCategory="103"
+        android:itemBackground="@color/white"
+        android:textColor="@color/record_text"
         android:title="Debug" />
 
     <item android:id="@+id/action_cloud_uploads"
         android:titleCondensed="Uploads"
+        android:itemBackground="@color/white"
         android:title="Show Uploads" />
 
     <item
         android:id="@+id/action_add_tag"
         android:orderInCategory="104"
+        android:itemBackground="@color/white"
+        android:textColor="@color/record_text"
         android:title="Add Tag" />
 
     <item
         android:id="@+id/action_scanQR"
         android:orderInCategory="105"
+        android:itemBackground="@color/white"
+        android:textColor="@color/record_text"
         android:title="Scan QR" />
 
 </menu>

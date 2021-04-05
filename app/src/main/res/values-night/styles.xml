@@ -16,6 +16,8 @@
         <item name="colorControlNormal">@color/check</item>
         <item name="android:colorLongPressedHighlight">@color/accent</item>
         <item name="colorAccent">@color/accent</item>
+        <item name="android:itemBackground">@color/white</item>
+        <item name="android:textColor">@color/record_text</item>
     </style>
 
 
