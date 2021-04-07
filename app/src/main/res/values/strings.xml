@@ -55,8 +55,9 @@
     <string name="pref_restore_deleted_title">Restore Deleted Files</string>
     <string name="pref_restore_deleted_desc">Recover all deleted files</string>
     <string name="pref_empty_trash_key">pref_empty_trash</string>
-    <string name="pref_empty_trash_title">Files will be deleted permanently</string>
+    <string name="pref_empty_trash_title">Files will be Deleted Permanently</string>
     <string name="pref_empty_trash_desc">Empty Trash</string>
+    <string name="pref_dark_mode">Dark_Mode</string>
     <string name="execute">Execute</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
@@ -66,5 +67,6 @@
     values-round/strings.xml for round devices.
     -->
     <string name="hello_world">Hello Square World!</string>
+    <string name="qr_code">qr_code</string>
 
 </resources>

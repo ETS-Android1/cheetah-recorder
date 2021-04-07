@@ -9,6 +9,7 @@ import androidx.appcompat.widget.Toolbar;
 import com.danielkim.soundrecorder.R;
 import com.danielkim.soundrecorder.fragments.SettingsFragment;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NavUtils;
 
 
 /**
@@ -35,5 +36,11 @@ public class SettingsActivity extends AppCompatActivity {
                 .beginTransaction()
                 .replace(R.id.container, new SettingsFragment())
                 .commit();
+    }
+    @Override
+    public void onBackPressed()
+    {
+        NavUtils.navigateUpFromSameTask(this);
+        super.onBackPressed();
     }
 }

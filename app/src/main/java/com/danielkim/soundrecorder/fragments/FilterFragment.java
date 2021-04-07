@@ -164,7 +164,7 @@ public class FilterFragment extends DialogFragment {
                 if(!query.equals(""))
                     fileViewerFragment.getAdapter().updateFilePaths(query + " and " + DBHelper.DELETED);
                 else
-                    fileViewerFragment.getAdapter().updateFilePaths();
+                    fileViewerFragment.getAdapter().updateFilePathsLastClause();
 
                 getActivity().getFragmentManager().popBackStack();
 
@@ -479,6 +479,7 @@ public class FilterFragment extends DialogFragment {
                 finalClause.append(" and ");
             }
         }
+        System.out.println(finalClause.toString());
         return finalClause.toString();
     }
 

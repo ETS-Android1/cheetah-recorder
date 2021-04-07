@@ -1,19 +1,29 @@
 package com.danielkim.soundrecorder.adapters;
 
+import android.Manifest;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DownloadManager;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Point;
 import android.media.MediaMetadataRetriever;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Environment;
+import android.provider.MediaStore;
 import android.util.Log;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -22,6 +32,8 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -30,9 +42,17 @@ import com.danielkim.soundrecorder.R;
 import com.danielkim.soundrecorder.RecordingItem;
 import com.danielkim.soundrecorder.activities.MainActivity;
 import com.danielkim.soundrecorder.listeners.OnDatabaseChangedListener;
+import com.google.zxing.WriterException;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.LinkedList;
+
+import androidmads.library.qrgenearator.QRGContents;
+import androidmads.library.qrgenearator.QRGEncoder;
+import androidmads.library.qrgenearator.QRGSaver;
+
+import static android.content.Context.WINDOW_SERVICE;
 
 public class MyUploadsAdapter extends RecyclerView.Adapter<MyUploadsAdapter.MyUploadHolder>
         implements OnDatabaseChangedListener {
@@ -44,6 +64,11 @@ public class MyUploadsAdapter extends RecyclerView.Adapter<MyUploadsAdapter.MyUp
     private Context mContext;
     private LinkedList<RecordingItem> uploadedFiles;
     private LinearLayoutManager llm;
+
+    //QR code share
+    Bitmap bitmap;
+    QRGEncoder qrgEncoder;
+    private String savePath = Environment.getExternalStorageDirectory().getPath() + "/QRCode/";
 
     // data is passed into the constructor
     //MyUploadsAdapter(Context context) {
@@ -107,11 +132,161 @@ public class MyUploadsAdapter extends RecyclerView.Adapter<MyUploadsAdapter.MyUp
             @Override
             public void onClick(View v) {
 
+                ArrayList<String> entrys = new ArrayList<String>();
+                entrys.add("Share");
+                entrys.add("Download");
+                final CharSequence[] items = entrys.toArray(new CharSequence[entrys.size()]);
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+                builder.setTitle(mContext.getString(R.string.dialog_title_options));
+
+                builder.setItems(items, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int item) {
+                                if (item == 0) {
+//                                    System.out.println("---------------- link = " + holder.url.getText().toString());
+                                    QrCodeGenerator(holder.url.getText().toString());
+                                } else if (item == 1) {
+                                    CloudDownloadDialog(holder.url.getText().toString());
+                                }
+                            }
+                        });
+
+                builder.setCancelable(true);
+                builder.setNegativeButton(mContext.getString(R.string.dialog_action_cancel),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                            }
+                        });
+                AlertDialog alert = builder.create();
+                alert.show();
+
                 // click code goes here/
-                CloudDownloadDialog(holder.url.getText().toString());
+               // CloudDownloadDialog(holder.url.getText().toString());
             }
         });
     }
+
+
+
+
+
+
+    public void QrCodeGenerator (final String url) {
+
+        //Showing Progress bar
+        final ProgressDialog progressDialog = new ProgressDialog(mContext);
+        progressDialog.setTitle("Uploading...");
+        progressDialog.show();
+        progressDialog.setCancelable(false);
+
+        // File rename dialog
+        AlertDialog.Builder qrBuilder = new AlertDialog.Builder(mContext);
+
+        LayoutInflater inflater = LayoutInflater.from(mContext);
+        View view = inflater.inflate(R.layout.dialog_qr_generate, null);
+
+        final ImageView qrImage = (ImageView) view.findViewById(R.id.idIVQrcode);
+
+
+        WindowManager manager = (WindowManager) mContext.getSystemService(WINDOW_SERVICE);
+
+        // initializing a variable for default display.
+        Display display = manager.getDefaultDisplay();
+
+        // creating a variable for point which
+        // is to be displayed in QR Code.
+        Point point = new Point();
+        display.getSize(point);
+
+        // getting width and
+        // height of a point
+        int width = point.x;
+        int height = point.y;
+
+        // generating dimension from width and height.
+        int dimen = width < height ? width : height;
+        dimen = dimen * 3 / 4;
+
+        // setting this dimensions inside our qr code
+        // encoder to generate our qr code.
+        qrgEncoder = new QRGEncoder(url, null, QRGContents.Type.TEXT, dimen);
+
+
+        try {
+            bitmap = qrgEncoder.encodeAsBitmap();
+            qrImage.setImageBitmap(bitmap);
+
+        } catch (WriterException e) {
+            Log.e("Tag", e.toString());
+        }
+
+        //temporary save the file to disk in order to share it
+        saveToFiles();
+
+        qrBuilder.setView(view);
+        qrBuilder.setTitle("QR code");
+        qrBuilder.setCancelable(true);
+        qrBuilder.setPositiveButton(("Share"),
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        try {
+
+                            String path = Environment.getExternalStorageDirectory().toString()+"/QRCode/tempQr.jpg";
+                            Bitmap bitmap1 = BitmapFactory.decodeFile(path);
+
+                            String toSend = MediaStore.Images.Media.insertImage(mContext.getContentResolver(), bitmap, "QR", "Download Recording");
+                            Uri uri = Uri.parse(toSend);
+
+                            final Intent shareIntent = new Intent(Intent.ACTION_SEND);
+                            shareIntent.setType("image/jpg");
+                            shareIntent.putExtra(Intent.EXTRA_STREAM, uri);
+                            mContext.startActivity(Intent.createChooser(shareIntent, "Share image using"));
+
+
+                        } catch (Exception e) {
+                            Log.e(LOG_TAG, "exception", e);
+                            progressDialog.dismiss();
+                        }
+
+                        dialog.cancel();
+                    }
+                });
+        qrBuilder.setNegativeButton(("Cancel"),
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                    }
+                });
+
+        qrBuilder.setView(view);
+        AlertDialog alert = qrBuilder.create();
+        progressDialog.dismiss();
+        alert.show();
+    }
+
+
+    private void saveToFiles(){
+        if (ContextCompat.checkSelfPermission(mContext, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+            try {
+                boolean save = new QRGSaver().save(savePath, "tempQr", bitmap, QRGContents.ImageType.IMAGE_JPEG);
+
+                //Test to make sure image was saved
+                if(!save){
+                    Toast.makeText(mContext, "Error: Image Not saved", Toast.LENGTH_LONG).show();
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } else {
+            ActivityCompat.requestPermissions((Activity)mContext, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 0);
+        }
+    }
+
+
+
+
 
     public void CloudDownloadDialog(String url) {
         // File rename dialog
@@ -223,7 +398,7 @@ public class MyUploadsAdapter extends RecyclerView.Adapter<MyUploadsAdapter.MyUp
 
                         //Add file to database
                         try {
-                            mDatabase.addRecording(mFileName, mFilePath, millSecond, mFileSize, "", "#FFFFFF", url, 1);
+                            mDatabase.addRecording(mFileName, mFilePath, millSecond, mFileSize, "", "#FFFFFF", "#000000", url, 1);
                         } catch (Exception e){
                             progressDialog.dismiss();
                             Toast.makeText(mContext, "Failed: " + e, Toast.LENGTH_LONG).show();

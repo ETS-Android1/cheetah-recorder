@@ -1,50 +1,48 @@
 package com.danielkim.soundrecorder.activities;
 
 import android.annotation.SuppressLint;
-import android.app.AlertDialog;
 import android.app.DownloadManager;
 import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
-import android.graphics.Color;
 import android.media.MediaMetadataRetriever;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 import androidx.appcompat.app.AppCompatActivity;
+import android.preference.Preference;
+import android.preference.PreferenceFragment;
 
 import androidx.appcompat.widget.Toolbar;
 
 import android.os.Environment;
+import android.preference.CheckBoxPreference;
+import android.preference.PreferenceManager;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.EditText;
 import android.widget.Toast;
 
 import com.astuetz.PagerSlidingTabStrip;
 import com.danielkim.soundrecorder.DBHelper;
+import com.danielkim.soundrecorder.MySharedPreferences;
 import com.danielkim.soundrecorder.R;
 import com.danielkim.soundrecorder.fragments.FileViewerFragment;
 import com.danielkim.soundrecorder.fragments.FilterFragment;
 import com.danielkim.soundrecorder.fragments.RecordFragment;
+import com.danielkim.soundrecorder.fragments.TagCreateFragment;
 
 import java.io.File;
-import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
 
 
 public class MainActivity extends AppCompatActivity{
@@ -56,17 +54,23 @@ public class MainActivity extends AppCompatActivity{
 
     //Database
     private DBHelper mDatabase;
-
     // store fragments
     private RecordFragment currentRecordFragment;
     private FileViewerFragment currentFileViewerFragment;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        SharedPreferences shared = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        if(shared.getBoolean("Dark_Mode", false)){
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+        }
+        else{
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        }
         pager = (ViewPager) findViewById(R.id.pager);
         pager.setAdapter(new MyAdapter(getSupportFragmentManager()));
         tabs = (PagerSlidingTabStrip) findViewById(R.id.tabs);
@@ -78,6 +82,10 @@ public class MainActivity extends AppCompatActivity{
         if (toolbar != null) {
             setSupportActionBar(toolbar);
         }
+
+
+
+
     }
 
 
@@ -110,17 +118,19 @@ public class MainActivity extends AppCompatActivity{
             case R.id.action_refresh:
                 currentFileViewerFragment.getAdapter().updateFilePaths();
                 break;
-            //case R.id.action_cloudDownload:
-            //    CloudDownloadDialog();
-            //    break;
+            case R.id.action_add_tag:
+                showTagCreateFragment();
+                break;
             case R.id.action_cloud_uploads:
                 intent = new Intent (this, MyUploadsActivity.class);
                 startActivity(intent);
-                currentFileViewerFragment.getAdapter().updateFilePaths();
+                break;
             case R.id.action_view_trash:
-                currentFileViewerFragment.getAdapter().updateFilePaths();
                 currentFileViewerFragment.getAdapter().updateFilePaths(DBHelper.NOT_DELETED);
-                viewTrash();
+                break;
+            case R.id.action_scanQR:
+                intent = new Intent(this, QrScannerActivity.class);
+                startActivity(intent);
                 break;
             default:
                 return super.onOptionsItemSelected(item);
@@ -128,31 +138,18 @@ public class MainActivity extends AppCompatActivity{
         return true;
     }
 
-    public void viewTrash(){
-
-    }
-
     @Override
     protected void onResume() {
         super.onResume();
+        SharedPreferences shared = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        if(shared.getBoolean("Dark_Mode", false)){
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+        }
+        else{
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        }
 
     }
-
-    //    private boolean urlReachable(String file_url)  {
-//        try {
-//            URL url = new URL(file_url);
-//
-//            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-//            int code = connection.getResponseCode();
-//            if (code == 200)
-//                return true;
-//        }catch (Exception e) {
-//            return false;
-//        }
-//        return false;
-//    }
-
-
 
     protected Boolean doInBackground(String url) {
         boolean flag = true;
@@ -224,7 +221,7 @@ public class MainActivity extends AppCompatActivity{
 
                         //Add file to database
                         try {
-                            mDatabase.addRecording(mFileName, mFilePath, millSecond, mFileSize, "Cloud", "#95D9DA", url, 1);
+                            mDatabase.addRecording(mFileName, mFilePath, millSecond, mFileSize, "Cloud", "#95D9DA","#000000", url, 1);
                         } catch (Exception e){
                             progressDialog.dismiss();
                             Toast.makeText(this, "Failed: " + e, Toast.LENGTH_LONG).show();
@@ -256,7 +253,21 @@ public class MainActivity extends AppCompatActivity{
         }
     }
 
+    public void showTagCreateFragment(){
 
+        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        android.app.Fragment prev = getFragmentManager().findFragmentByTag("tagCreate");
+        if (prev != null) {
+            ft.remove(prev);
+        }
+        ft.addToBackStack(null);
+
+        // Create and show the dialog.
+        TagCreateFragment newFragment =
+                TagCreateFragment.
+                        newInstance(currentFileViewerFragment);
+        newFragment.show(ft, "tagCreate");
+    }
     public void showFilterFragment(){
 
         // create the filter fragment
@@ -292,6 +303,7 @@ public class MainActivity extends AppCompatActivity{
                     return currentRecordFragment;
                 }
                 case 1:{
+
                     currentFileViewerFragment = FileViewerFragment.newInstance(position);
                     return currentFileViewerFragment;
                 }
@@ -308,7 +320,6 @@ public class MainActivity extends AppCompatActivity{
         public CharSequence getPageTitle(int position) {
             return titles[position];
         }
+
     }
-
-
 }

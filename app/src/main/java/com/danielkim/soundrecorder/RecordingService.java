@@ -43,6 +43,7 @@ public class RecordingService extends Service {
     private int mElapsedSeconds = 0;
     private String mTagName = null;
     private String mColour = null;
+    private String mTextColor = null;
     private String mUrl = null;
     private int mCloud = 0;
     private OnTimerChangedListener onTimerChangedListener = null;
@@ -148,11 +149,11 @@ public class RecordingService extends Service {
 
         mRecorder = null;
         mTagName = "";
-        mColour = "#FFFFFF";
+        mColour = "#"+Integer.toHexString(getApplicationContext().getColor(R.color.white));
         mUrl = "";
-
+        mTextColor = "#"+Integer.toHexString(getApplicationContext().getColor(R.color.record_text));
         try {
-            mDatabase.addRecording(mFileName, mFilePath, mElapsedMillis, mFileSize, mTagName, mColour, mUrl, mCloud);
+            mDatabase.addRecording(mFileName, mFilePath, mElapsedMillis, mFileSize, mTagName, mColour,mTextColor, mUrl, mCloud);
 
         } catch (Exception e){
             Log.e(LOG_TAG, "exception", e);

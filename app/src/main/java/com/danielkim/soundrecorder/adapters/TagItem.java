@@ -6,13 +6,15 @@ public class TagItem {
     private int tagId;
     private String tagName;
     private String tagColor;
+    private String textColor;
 
     // tag constructor
-    public TagItem(int tagId, String tagName, String tagColor){
+    public TagItem(int tagId, String tagName, String tagColor, String textColor){
 
         this.tagId = tagId;
         this.tagName = tagName;
         this.tagColor = tagColor;
+        this.textColor = textColor;
     }
 
     public int getTagId() {
@@ -27,6 +29,8 @@ public class TagItem {
         return tagColor;
     }
 
+    public String getTagTextColor(){ return textColor; }
+
     public void setTagId(int tagId) {
         this.tagId = tagId;
     }
@@ -38,4 +42,6 @@ public class TagItem {
     public void setTagColor(String tagColor) {
         this.tagColor = tagColor;
     }
+
+    public void setTextColor(String textColor) { this.textColor = textColor; }
 }
