@@ -7,6 +7,9 @@ Files may also be uploaded to a firebase cloud storage. After files have been up
 
 Created from Daniel Kim's sound recording application as a class project. The goal was to add sorting and cloud capabilities.
 
+You may find this on google play:
+https://play.google.com/store/apps/details?id=com.teamcheetah.cheetahrecorder
+
 Check out the original:
 https://play.google.com/store/apps/details?id=com.danielkim.soundrecorder&hl=en_CA&gl=US
 
