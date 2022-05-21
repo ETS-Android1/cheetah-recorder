@@ -1,20 +1,20 @@
-Easy Sound Recorder
+Cheetah Sound Recorder
 =============
 
-<p>A simple sound recording app implementing Material Design.</p>
+<p>A simple sound recording app expanded upon from Daniel Kim's sound recording application.</p>
+This application allows for sound recordings to be created and stored on your phone. Files can be organized into categories using the tag system.
+Files may also be uploaded to a firebase cloud storage. After files have been uploaded to cloud the user will recieve a shareable link to be able to access their recording on another device. Users also have the option to share recordings via QR codes with each recording having a unique qr code associated with it.
 
-[![Android app on Google Play](https://developer.android.com/images/brand/en_app_rgb_wo_60.png)](https://play.google.com/store/apps/details?id=com.danielkim.soundrecorder) [![Android app on F-Droid](https://upload.wikimedia.org/wikipedia/commons/thumb/0/0d/Get_it_on_F-Droid.svg/200px-Get_it_on_F-Droid.svg.png)](https://f-droid.org/repository/browse/?fdid=com.danielkim.soundrecorder)
+Created from Daniel Kim's sound recording application as a class project. The goal was to add sorting and cloud capabilities.
 
-Screenshots:
+Check out the original:
+https://play.google.com/store/apps/details?id=com.danielkim.soundrecorder&hl=en_CA&gl=US
 
-![alt tag](http://i.imgur.com/4W5fj0Il.png) ![alt tag](http://i.imgur.com/7ggcFQzl.png) ![alt tag](http://i.imgur.com/RqD8S3Il.png) ![alt tag](http://i.imgur.com/H6ScO21l.png)
+Created by Team Cheetah; Group 2, Section 2 of CIS 3700; Winter 2021; University of Guelph.
 
-
-Credits / Libraries used:
-
+Resources Used.
+https://github.com/dkim0419/SoundRecorder
 https://github.com/makovkastar/FloatingActionButton
-
 https://github.com/MohammadAG/Android-SoundRecorder
-
 https://github.com/astuetz/PagerSlidingTabStrip
 
